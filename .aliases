@@ -10,4 +10,6 @@ alias _bash="docker exec -it -w /home/${_DOCKER_USER} \${_DOCKER_CONTAINER} bash
 alias _logs="docker logs \${_DOCKER_CONTAINER}"
 alias _restart="docker restart \${_DOCKER_CONTAINER}"
 alias _stop="docker stop \${_DOCKER_CONTAINER}"
+alias _rails_up="docker exec \${_DOCKER_CONTAINER} /share/bin/rails_up.sh"
+alias _rails_down="docker exec \${_DOCKER_CONTAINER} /share/bin/rails_down.sh"
 
