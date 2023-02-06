@@ -21,7 +21,6 @@ adduser rails_dev --disabled-password --gecos ""
 # echo rails_dev:'mypassword' | /usr/sbin/chpasswd
 
 # npmのセットアップ
-cd /home/rails_dev/
 apt install -y npm nodejs
 npm install n -g
 n stable
@@ -29,6 +28,7 @@ apt purge -y nodejs npm
 npm install yarn -g
 
 # Bundler経由でのrailsインストール
+cd /home/rails_dev/
 bundle init
 cp /docker_init/Gemfile.enable_rails ./Gemfile
 bundle install --path vendor/bundle
