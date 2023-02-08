@@ -2,15 +2,28 @@
 export _DOCKER_IMAGE="rails7_dev"
 export _DOCKER_CONTAINER="rails7"
 export _RAILS_DIR="/rails_app"
+
 alias _d="docker"
+
+# 掃除用
 alias _rm_all="docker rm -f \$(docker ps -aq)"
 alias _rm_images="docker rmi  \$(docker images -q)"
-alias _build="docker build -t \${_DOCKER_IMAGE} .; docker run --rm -it -v \$(pwd)/rails_app:/rails_app \${_DOCKER_IMAGE} bash -c '/docker_init/rails_setup.sh'"
+
+# ビルド用
+alias _build="docker build -t \${_DOCKER_IMAGE} ."
+alias _rails_setup="docker run --rm -it -v \$(pwd)/rails_app:/rails_app \${_DOCKER_IMAGE} bash -c '/docker_init/rails_setup.sh'"
+alias _build_rails_setup="_build && _rails_setup"
+
+# コンテナ操作用_起動＆停止
 alias _run="docker run -it -d -p 3000:3000 -v \$(pwd)/share:/share -v \$(pwd)/rails_app:/rails_app --name \${_DOCKER_CONTAINER} \${_DOCKER_IMAGE}"
-alias _bash="docker exec -it -w \${_RAILS_DIR} \${_DOCKER_CONTAINER} bash"
-alias _logs="docker logs \${_DOCKER_CONTAINER}"
-alias _restart="docker restart \${_DOCKER_CONTAINER}"
 alias _stop="docker stop \${_DOCKER_CONTAINER}"
+alias _restart="docker restart \${_DOCKER_CONTAINER}"
+alias _logs="docker logs \${_DOCKER_CONTAINER}"
+
+# コンテナ操作用_作業
+alias _bash="docker exec -it -w \${_RAILS_DIR} \${_DOCKER_CONTAINER} bash"
+
+# rails操作用
 alias _rails_up="docker exec \${_DOCKER_CONTAINER} /share/bin/rails_up.sh"
 alias _rails_down="docker exec \${_DOCKER_CONTAINER} /share/bin/rails_down.sh"
 
