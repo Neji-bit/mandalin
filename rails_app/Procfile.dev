@@ -1,0 +1,3 @@
+web: bin/rails server -p 4000
+css: bin/rails dartsass:watch
+bs: browser-sync start --config /share/bin/bs-config.js >> $_RAILS_DIR/log/browser-sync.log 2>> $_RAILS_DIR/log/browser-sync.error.log

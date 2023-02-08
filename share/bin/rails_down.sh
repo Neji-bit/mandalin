@@ -1,7 +1,6 @@
 #!/bin/bash
 
-cd ${_RAILS_DIR}
-PID=`cat tmp/pids/server.pid 2>/dev/null`
-[[ -n "$PID" ]] && kill $PID
+PGID=`ps --no-headers -o pgid -C foreman`
+[[ -n "$PGID" ]] && pkill -g $PGID
 
 exit

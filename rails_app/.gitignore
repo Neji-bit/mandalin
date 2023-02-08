@@ -37,3 +37,6 @@
 # Ignore vendors.
 /vendor/*
 !/vendor/.keep
+
+/app/assets/builds/*
+!/app/assets/builds/.keep

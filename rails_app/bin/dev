@@ -1,0 +1,17 @@
+#!/usr/bin/env sh
+
+# Prevention of double exec.
+ps -C foreman > /dev/null 2>&1 && exit
+
+# Initialize for foreman.
+if ! gem list foreman -i --silent; then
+  echo "Installing foreman..."
+  gem install foreman
+fi
+
+# Initialize for browser-sync.
+which browser-sync > /dev/null 2>&1 || npm install -g browser-sync
+
+bundle install
+
+exec foreman start -f Procfile.dev "$@"
