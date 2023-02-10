@@ -1,4 +1,115 @@
 // Sassy
-.test {
+body {
+  background-color: black;
+}
+.backboard {
+  background-color: navy;
+  height: 98%;
+  width: 98%;
+  position: absolute;
+  top: 1%;
+  left: 1%;
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  flex-direction: column;
+}
+
+.panel {
+  background-color: gray;
+  border-color: black;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.panel--top {
+  min-height: 3em;
+  max-height: 3em;
+  background: linear-gradient(160deg, mistyrose, pink);
+  border-radius: 15px 15px 0 0;
+  border-bottom: 1px solid black;
+  font-weight: bold;
+}
+
+.panel--middle {
+  color: gray;
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  background: linear-gradient(160deg, white, silver);
+}
+
+.panel--bottom {
+  color: blue;
+  min-height: 3em;
+  max-height: 3em;
+  background: linear-gradient(160deg, mistyrose, pink);
+  border-radius: 0 0 15px 15px;
+  border-top: 1px solid black;
+}
+
+.panel--left {
   color: orange;
+  min-width: 12em;
+  max-width: 12em;
+  background: linear-gradient(160deg, white, silver);
+}
+
+.panel--center {
+  color: pink;
+  width: 100%;
+  display: grid;
+  grid-template-rows: 33% 33% 33%;
+  grid-template-columns: 33% 33% 33%;
+  background: saddlebrown;
+  gap: 0.5%;
+  padding: 0.3%;
+}
+
+.panel--right {
+  color: green;
+  min-width: 12em;
+  max-width: 12em;
+  background: linear-gradient(160deg, white, silver);
+}
+
+
+.area {
+  background-color: black;
+  border-color: black;
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-rows: (100% / 3) (100% / 3) (100% / 3);
+  grid-template-columns: (100% / 3) (100% / 3) (100% / 3);
+}
+
+.cell {
+  color: black;
+  border: 1px solid;
+  border-color: black;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  font-size: 0.8em;
+}
+
+.cell--common {
+  background: linear-gradient(160deg, white, antiquewhite);
+}
+
+.cell--theme {
+  background: linear-gradient(160deg, navajowhite, goldenrod);
+  font-weight: bold;
+}
+
+.shadow {
+  box-shadow: -3px -3px 8px rgba(0,0,0,0.5) inset,  3px 3px 8px rgba(0,0,0,0.5) inset;
 }

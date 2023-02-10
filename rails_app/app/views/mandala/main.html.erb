@@ -1,3 +1,86 @@
-<h1>Mandala#main</h1>
-<p>Find me in app/views/mandala/main.html.erb</p>
-<div class="test">Hello World!</div>
+<script>
+  function cell_action(e) {
+    e.target.innerHTML="CLICKEDCLICKED\nCLICKEDCLICKED\nCLICKEDCLICKED\nCLICKEDCLICKED\nCLICKEDCLICKED"
+  }
+
+  function fixed_panel_size() {
+    Array.from(document.getElementsByClassName("cell")).forEach(cell => cell.innerHTML="")
+    panels = [
+      ["backboard", "98%", "98%"],
+      ["top", "100%", "3em"],
+      ["middle", "100%", "100%"],
+      ["bottom", "100%", "3em"],
+      ["left", "12em", null],
+      ["center", null, null],
+      ["right", "12em", null]
+    ]
+    console.log(getComputedStyle(document.getElementsByTagName("body")[0]).width)
+    console.log(getComputedStyle(document.getElementsByTagName("body")[0]).height)
+    panels.forEach(ary => {
+      let _e = document.getElementById(ary[0])
+      _e.style.width = ary[1]
+      _e.style.height = ary[2]
+
+      _e.style.width = getComputedStyle(_e).width
+      _e.style.height = getComputedStyle(_e).height
+    })
+    Array.from(document.getElementsByClassName("cell")).forEach(cell => cell.innerHTML="テスト")
+  }
+
+  function resize_window() {
+      console.log("RESIZE")
+      fixed_panel_size()
+  }
+
+  function init() {
+    let center = document.getElementById("center")
+    let area = document.createElement("div")
+    area.className = "area"
+
+    let cell = document.createElement("div")
+    cell.className = "cell cell--common shadow"
+
+    for(let i = 0; i < 9; i++) {
+      let c = cell.cloneNode(true)
+      c.innerHTML = i
+      if(i == 4) {
+          c.className = "cell cell--theme shadow"
+      }
+      area.appendChild(c)
+    }
+
+    for(let i = 0; i < 9; i++) {
+      let a = area.cloneNode(true)
+      center.appendChild(a)
+    }
+    Array.from(document.getElementsByClassName("cell")).forEach(cell => cell.addEventListener("click", cell_action))
+    fixed_panel_size()
+
+    window.addEventListener("resize", resize_window)
+  }
+  window.onload = init;
+</script>
+
+
+
+<div id="backboard" class="backboard">
+  <div id="top" class="panel panel--top">
+    マンダラチャート
+  </div>
+
+  <div id="middle" class="panel panel--middle">
+
+    <div id="left" class="panel panel--left">
+    </div>
+
+    <div id="center" class="panel panel--center">
+    </div>
+
+    <div id="right" class="panel panel--right">
+    </div>
+
+  </div>
+
+  <div id="bottom" class="panel panel--bottom">
+  </div>
+</div>
