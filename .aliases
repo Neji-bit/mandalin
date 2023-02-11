@@ -4,6 +4,7 @@ export _DOCKER_CONTAINER="rails7"
 export _RAILS_DIR="/rails_app"
 
 alias _d="docker"
+alias _g="git"
 
 # 掃除用
 alias _rm_all="docker rm -f \$(docker ps -aq)"

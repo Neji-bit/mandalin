@@ -1,6 +1,64 @@
 <script>
   function cell_action(e) {
-    e.target.innerHTML="CLICKEDCLICKED\nCLICKEDCLICKED\nCLICKEDCLICKED\nCLICKEDCLICKED\nCLICKEDCLICKED"
+    e.target.classList.toggle("cell--theme")
+    data_save()
+  }
+
+  // Format of JSON:
+  //  [
+  //    {
+  //      "title": "FirstPage",
+  //      "notes": [
+  //        { "id": "cell-ww", "showName": "TEST", "class": "cell--theme" },
+  //        { "id": "cell-we", "showName": "TEST2", "class": "cell--theme" },
+  //      ]
+  //    }, 
+  //    {
+  //      "title": "SecondPage",
+  //      "notes": [
+  //        { "id": "cell-ww", "showName": "TEST", "class": "cell--theme" },
+  //        { "id": "cell-we", "showName": "TEST2", "class": "cell--theme" },
+  //      ]
+  //    }, 
+  //  ]
+
+  function to_json() {
+      let data = []
+      let notes = []
+      let page = {"title": "Sample", "notes": notes}
+      data.push(page)
+      Array.from(document.getElementsByClassName("cell")).forEach( cell => {
+          notes.push({"id": cell.id, "showName": cell.innerHTML || "", "class": cell.classList.value || ""})
+        }
+      )
+      return data
+  }
+
+  function data_save() {
+    let data = to_json()
+    json = JSON.stringify(data)
+    localStorage.setItem("mandala", json)
+  }
+
+  function data_load() {
+    pages = JSON.parse(localStorage.getItem("mandala"))
+    if(! pages) return false
+    pages.forEach(page => {
+      page.notes.forEach(note => {
+        let cell = document.getElementById(note.id)
+        if(! cell) return
+        cell.innerHTML = note.showName || ""
+        if(note.class) {
+            note.class.split(/ +/).forEach(cls => cell.classList.add(cls))
+        }
+      })
+    })
+    return true
+  }
+
+  function data_init() {
+    Array.from(document.getElementsByClassName("cell")).forEach(cell => cell.innerHTML="テスト")
+    document.querySelectorAll("[id^=cell][id$=d]").forEach(cell => cell.classList.add("cell--theme"))
   }
 
   function fixed_panel_size() {
@@ -14,8 +72,6 @@
       ["center", null, null],
       ["right", "12em", null]
     ]
-    console.log(getComputedStyle(document.getElementsByTagName("body")[0]).width)
-    console.log(getComputedStyle(document.getElementsByTagName("body")[0]).height)
     panels.forEach(ary => {
       let _e = document.getElementById(ary[0])
       _e.style.width = ary[1]
@@ -24,11 +80,9 @@
       _e.style.width = getComputedStyle(_e).width
       _e.style.height = getComputedStyle(_e).height
     })
-    Array.from(document.getElementsByClassName("cell")).forEach(cell => cell.innerHTML="テスト")
   }
 
   function resize_window() {
-      console.log("RESIZE")
       fixed_panel_size()
   }
 
@@ -40,23 +94,28 @@
     let cell = document.createElement("div")
     cell.className = "cell cell--common shadow"
 
+    let cell_ids = "wersdfzxc"
     for(let i = 0; i < 9; i++) {
       let c = cell.cloneNode(true)
-      c.innerHTML = i
-      if(i == 4) {
-          c.className = "cell cell--theme shadow"
-      }
+      c.setAttribute("id", `cell-N${cell_ids[i]}`)
       area.appendChild(c)
     }
 
     for(let i = 0; i < 9; i++) {
       let a = area.cloneNode(true)
+      a.setAttribute("id", `area-${cell_ids[i]}`)
+      Array.from(a.getElementsByClassName("cell")).forEach(cell => cell.setAttribute("id", cell.id.replace("N", cell_ids[i])))
       center.appendChild(a)
     }
     Array.from(document.getElementsByClassName("cell")).forEach(cell => cell.addEventListener("click", cell_action))
     fixed_panel_size()
 
     window.addEventListener("resize", resize_window)
+
+    if(! data_load()) {
+      data_init()
+      data_save()
+    }
   }
   window.onload = init;
 </script>
