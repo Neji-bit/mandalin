@@ -94,9 +94,6 @@ body {
   width: 100%;
   text-align: center;
   z-index: 2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   overflow: hidden;
   font-size: 0.8em;
 }
@@ -113,3 +110,72 @@ body {
 .shadow {
   box-shadow: -3px -3px 8px rgba(0,0,0,0.5) inset,  3px 3px 8px rgba(0,0,0,0.5) inset;
 }
+
+.tag--cell--id {
+	height: 2em;
+	width: 24px;
+	z-index: 10;
+	position: fixed;
+	display: flex;
+	align-items: center;
+	overflow: hidden;
+	padding-left: 6px;
+	margin-top: 4px;
+	margin-left: 4px;
+	font-style: italic;
+	font-weight: initial;
+	font-size: 10px;
+	background: coral;
+	border-radius: 5px;
+}
+
+.content--cell--title {
+	width: 100%;
+	height: 100%;
+	z-index: 9;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+}
+
+._hidden {
+  display: none;
+}
+
+input {
+  font-family: "Lucida Console", Courier, monospace;
+}
+
+#notepad {
+  position: absolute;
+  z-index: 20;
+  width: 70%;
+  height: 60%;
+  background: gray;
+  margin: 10% 15% 15% 15%;
+}
+
+#content--notepad--title {
+  background: green;
+  width: 100%;
+}
+#content--notepad--textarea {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+}
+
+#cursor {
+  width: 100px;
+  height: 100px;
+  background: red;
+  z-index: 20;
+  position: relative;
+}
+
+.cell--current {
+  border: red solid 2px;
+  box-sizing: border-box;
+}
+

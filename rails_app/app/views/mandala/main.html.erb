@@ -1,6 +1,27 @@
 <script>
   function cell_action(e) {
-    e.target.classList.toggle("cell--theme")
+//    e.currentTarget.classList.toggle("cell--theme")
+//    data_save()
+    document.getElementById("notepad").classList.remove("_hidden")
+  }
+
+  function exec_command(line) {
+    let ary = Array.from(line.trim())
+    let action = ary.shift()
+    if(action == 'i') {
+      let area = ary.shift()
+      let cell = ary.shift()
+      let alt = ary.join('')
+      if("wersdfzxc".includes(area) && "wersdfzxc".includes(cell)) {
+        document.getElementById(`cell-${area}${cell}`).getElementsByClassName("content--cell--title")[0].innerHTML = alt
+      }
+    }
+    if(action == ':') {
+      if("clear" == ary.join('')) {
+        Array.from(document.getElementsByClassName("content--cell--title")).forEach(c => c.innerHTML = null)
+      }
+    }
+    document.getElementById("command").value = null
     data_save()
   }
 
@@ -28,7 +49,11 @@
       let page = {"title": "Sample", "notes": notes}
       data.push(page)
       Array.from(document.getElementsByClassName("cell")).forEach( cell => {
-          notes.push({"id": cell.id, "showName": cell.innerHTML || "", "class": cell.classList.value || ""})
+          notes.push({
+              "id": cell.id, 
+              "showName": cell.getElementsByClassName("content--cell--title")[0].innerHTML || "",
+              "class": cell.classList.value || "",
+              "text": cell.getElementsByClassName("content--cell--text")[0].innerHTML || ""})
         }
       )
       return data
@@ -47,22 +72,22 @@
       page.notes.forEach(note => {
         let cell = document.getElementById(note.id)
         if(! cell) return
-        cell.innerHTML = note.showName || ""
+        cell.getElementsByClassName("content--cell--title")[0].innerHTML = note.showName || ""
         if(note.class) {
             note.class.split(/ +/).forEach(cls => cell.classList.add(cls))
         }
+        cell.getElementsByClassName("content--cell--text")[0].innerHTML = note.text || ""
       })
     })
     return true
   }
 
   function data_init() {
-    Array.from(document.getElementsByClassName("cell")).forEach(cell => cell.innerHTML="テスト")
+    Array.from(document.getElementsByClassName("content--cell--title")).forEach(cell => cell.innerHTML="テスト")
     document.querySelectorAll("[id^=cell][id$=d]").forEach(cell => cell.classList.add("cell--theme"))
   }
 
   function fixed_panel_size() {
-    Array.from(document.getElementsByClassName("cell")).forEach(cell => cell.innerHTML="")
     panels = [
       ["backboard", "98%", "98%"],
       ["top", "100%", "3em"],
@@ -93,6 +118,16 @@
 
     let cell = document.createElement("div")
     cell.className = "cell cell--common shadow"
+    let tag = document.createElement("div")
+    tag.className = "tag--cell--id"
+    cell.appendChild(tag)
+    let text = document.createElement("div")
+    text.className = "content--cell--text _hidden"
+    cell.appendChild(text)
+    let content = document.createElement("div")
+    content.className = "content--cell--title"
+    content.innerHTML = "content"
+    cell.appendChild(content)
 
     let cell_ids = "wersdfzxc"
     for(let i = 0; i < 9; i++) {
@@ -107,6 +142,13 @@
       Array.from(a.getElementsByClassName("cell")).forEach(cell => cell.setAttribute("id", cell.id.replace("N", cell_ids[i])))
       center.appendChild(a)
     }
+
+    Array.from(document.getElementsByClassName("tag--cell--id")).forEach( t => {
+      let value = /..$/.exec(t.parentNode.id)[0]
+      t.innerHTML = value
+      }
+    )
+
     Array.from(document.getElementsByClassName("cell")).forEach(cell => cell.addEventListener("click", cell_action))
     fixed_panel_size()
 
@@ -116,6 +158,76 @@
       data_init()
       data_save()
     }
+
+    let command = document.getElementById("command")
+    command.addEventListener("input", e => {
+      let line = e.currentTarget.value
+      let arrows = ["qwesdfzxc"]
+      if(line.length == 2) {
+        let cell = document.getElementById(`cell-${line}`)
+        if(cell) {
+          // cell.classList.toggle("cell--theme")
+          e.currentTarget.value = null
+          document.getElementById("content--notepad--textarea").value = cell.getElementsByClassName("content--cell--text")[0].innerHTML
+          document.getElementById("notepad").classList.remove("_hidden")
+          document.getElementById("content--notepad--textarea").focus()
+          Array.from(document.getElementsByClassName("cell--current")).forEach(c => c.classList.remove("cell--current"))
+          cell.classList.add("cell--current")
+        }
+      } else {
+        if(line.length == 1) {
+          if(line == "t") {
+            Array.from(document.getElementsByClassName("tag--cell--id")).forEach(t => t.classList.toggle("_hidden"))
+            e.currentTarget.value = null
+          }
+        }
+      }
+    })
+    command.focus()
+    window.addEventListener("keydown", (e)=>{
+      const keycode = e.keyCode;
+      const code  = e.code;
+      const onShift = e.shiftKey;
+      const onCtrl  = e.ctrlKey;
+      const onAlt   = e.altKey;
+      const onMeta  = e.metaKey;
+
+      let command = document.getElementById("command")
+
+      if(e.isComposing) return
+
+      // コマンドを削除し、コマンドにフォーカスを当てる
+      if(code == "Escape") {
+        // テキストエリアを閉じる（ついでにテキストをDOMへ保存）
+        if(document.activeElement === document.getElementById("content--notepad--textarea")) {
+          let notepad = document.getElementById("notepad")
+          notepad.classList.add("_hidden")
+          document.getElementById("command").focus()
+          let cell = document.getElementsByClassName("cell--current")[0]
+          cell.getElementsByClassName("content--cell--text")[0].innerHTML = document.getElementById("content--notepad--textarea").value
+          data_save()
+        } else {
+          command.focus()
+          command.value = null
+          e.preventDefault()
+        }
+      }
+      // コマンドにフォーカスを当てる
+      if(code == "Space") {
+        if(document.activeElement !== command) {
+          command.focus()
+          e.preventDefault()
+        }
+      }
+      // コマンドを実行し、コマンドを削除する（フォーカスがコマンドに当たっている場合）
+      if(code == "Enter") {
+        if(document.activeElement === command) {
+          exec_command(command.value)
+          command.value = null
+          e.preventDefault()
+        }
+      }
+    });
   }
   window.onload = init;
 </script>
@@ -141,5 +253,11 @@
   </div>
 
   <div id="bottom" class="panel panel--bottom">
+    <input id="command"></input>
+  </div>
+
+  <div id="notepad" class="notepad _hidden">
+    <div id="content--notepad--title">title</div>
+    <textarea id="content--notepad--textarea"></textarea>
   </div>
 </div>
