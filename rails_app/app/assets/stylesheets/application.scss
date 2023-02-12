@@ -166,14 +166,6 @@ input {
   padding: 10px;
 }
 
-#cursor {
-  width: 100px;
-  height: 100px;
-  background: red;
-  z-index: 20;
-  position: relative;
-}
-
 .cell--current {
   border: red solid 2px;
   box-sizing: border-box;
