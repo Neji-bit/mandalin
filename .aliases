@@ -27,6 +27,7 @@ alias _bash="docker exec -it -w \${_RAILS_DIR} \${_DOCKER_CONTAINER} bash"
 # rails操作用
 alias _rails_up="docker exec \${_DOCKER_CONTAINER} /share/bin/rails_up.sh"
 alias _rails_down="docker exec \${_DOCKER_CONTAINER} /share/bin/rails_down.sh"
+alias _ps="docker exec -it -w \${_RAILS_DIR} \${_DOCKER_CONTAINER} bash -c 'ps -ef f'"
 
 # browser-sync操作用
 alias _bs_up="docker exec \${_DOCKER_CONTAINER} /share/bin/bs_up.sh"
