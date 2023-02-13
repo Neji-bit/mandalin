@@ -27,4 +27,9 @@ n stable
 apt purge -y nodejs npm
 npm install yarn -g
 
+# bashログイン用の.bashrc読み込み設定を追加する
+echo "" >> /etc/bash.bashrc
+echo "[[ -e /share/dotfiles/.bashrc ]] && . /share/dotfiles/.bashrc" >> /etc/bash.bashrc
+echo "" >> /etc/bash.bashrc
+
 exit 0
