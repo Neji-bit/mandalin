@@ -67,6 +67,7 @@ body {
   max-width: 12em;
   background: linear-gradient(160deg, white, silver);
   display: initial;
+  overflow: hidden;
 }
 
 .map {
@@ -158,7 +159,7 @@ body {
 }
 
 .map.small .content--cell--subject {
-  height: 4em;
+  height: 60px;
   border-bottom: 1px solid;
 }
 
@@ -207,8 +208,24 @@ input {
 .page {
   background: paleturquoise;
   color: black;
-  padding: 6px 0px 6px 8px;
   font-family: "Lucida Console", Courier, monospace;
+  display: flex;
+}
+
+.page--address {
+  height: 100%;
+  padding: 8px 8px 8px 8px;
+}
+
+.page--title {
+  width: 100%;
+  height: 100%;
+  padding: 8px 0px 8px 8px;
+}
+
+.page.current {
+  border: red solid 2px;
+  box-sizing: border-box;
 }
 
 #import_export {

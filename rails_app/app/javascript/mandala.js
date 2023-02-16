@@ -1,5 +1,15 @@
 const ADDRESS = "wersdfzxc"
+const PAGE_ADDRESS = "0123456789abcdef"
 const STORAGE_NAME = "mandala"
+let MASTER = {}
+
+//  セルクリック時の処理。あとでいい。
+function cell_action(e) {
+//    e.currentTarget.classList.toggle("cell--theme")
+//    Data.save()
+//  _$("#notepad").classList.remove("_hidden")
+}
+
 
 // JQueryライクのDOM検索メソッドを自前で実装。
 class Selector {
@@ -23,78 +33,100 @@ let _$cls = (selector, from = document) => [...from.getElementsByClassName(selec
 let _$q = (selector, from = document) => [...from.querySelectorAll(selector)]
 
 
-// Format of JSON:
-//  [
-//    {
-//      "title": "FirstPage",
-//      "notes": [
-//        { "id": "cell-ww", "showName": "TEST", "class": "cell--theme" },
-//        { "id": "cell-we", "showName": "TEST2", "class": "cell--theme" },
-//      ]
-//    }, 
-//    {
-//      "title": "SecondPage",
-//      "notes": [
-//        { "id": "cell-ww", "showName": "TEST", "class": "cell--theme" },
-//        { "id": "cell-we", "showName": "TEST2", "class": "cell--theme" },
-//      ]
-//    }, 
-//  ]
 class Data {
-  static init = () => {
-    _$(".content--cell--subject").forEach(cell => cell.innerHTML="テスト")
-    _$("*[id^=cell][id$=d]").forEach(cell => cell.classList.add("cell--theme"))
+  static jsonFormat = () => {
+    let json = {"notes": [], "title": ""}
+    ADDRESS.split("").forEach(a => {
+      ADDRESS.split("").forEach(c => {
+        json.notes.push({
+          "id": `cell-${a}${c}`,
+          "showName": "",
+          "class": "cell cell--common shadow",
+          "text": ""})
+      })
+    })
+    return json
+  }
+
+  //  マスターデータを読み込む。
+  static loadMaster = () => {
+    try {
+      MASTER = JSON.parse(localStorage.getItem(STORAGE_NAME))
+    } catch(e) {
+      return false
+    }
+    return MASTER
+  }
+  //  マスターデータを新規作成（＝保存＆読み込み）する。
+  static initMaster = () => {
+    let json = {}
+    json.pages = []
+    PAGE_ADDRESS.split("").forEach(a => {
+      json.pages.push("")
+    })
+    json.currentPage = 0
+    localStorage.setItem(STORAGE_NAME, JSON.stringify(json))
+    this.loadMaster()
+  }
+  //  マスターデータを保存。
+  static saveMaster = (master) => {
+    localStorage.setItem(STORAGE_NAME, JSON.stringify(master))
   }
 
   //  ストレージからの単純な読み取りだけ。
-  static read = () => {
-    return JSON.parse(localStorage.getItem(STORAGE_NAME))
+  static read = (pageId) => {
+    let json = localStorage.getItem(`${STORAGE_NAME}_${pageId}`)
+    try {
+      return JSON.parse(json)
+    } catch(e) {
+      return null
+    }
   }
 
   //  データをアプリに反映する。
   static apply = (json) => {
-    _$("#right").innerHTML = null
-    json.forEach(page => {
-      page.notes.forEach(note => {
-        let cell = _$id(note.id)
-        if(! cell) return
-        _$(".content--cell--subject", cell)[0].innerHTML = note.showName || ""
-        if(note.class) {
-          note.class.split(/ +/).forEach(cls => cell.classList.add(cls))
-        }
-        _$(".content--cell--note", cell)[0].innerHTML = note.text || ""
-      })
-      let _page = document.createElement("div")
-      _page.className = "page shadow"
-      _page.innerHTML = page.title
-      _$("#right").appendChild(_page)
+    json.notes.forEach(note => {
+      let cell = _$id(note.id)
+      if(! cell) return
+      _$(".content--cell--subject", cell)[0].innerHTML = note.showName || ""
+      if(note.class) {
+        note.class.split(/ +/).forEach(cls => cell.classList.add(cls))
+      }
+      _$(".content--cell--note", cell)[0].innerHTML = note.text || ""
+    })
+    this.applyMaster()
+  }
+  static applyMaster = () => {
+    MASTER.pages.forEach((page, index) => {
+      _$("#right").children[index].children[1].innerHTML = page
     })
   }
 
   //  データの読み取り＆アプリへの適用をセットで行う。
-  static load = () => {
-    let json = this.read()
-    if(! json) return false
+  static loadPage = (pageId) => {
+    let json = this.read(pageId)
+    if(! json) {
+      this.write(Data.jsonFormat(), `${STORAGE_NAME}_${pageId}`)
+      json = this.read(pageId)
+    }
     this.apply(json)
     return true
   }
 
   //  ストレージへの書き込み。
-  static write = (json) => {
-    localStorage.setItem(STORAGE_NAME, JSON.stringify(json))
+  static write = (json, storageName = STORAGE_NAME) => {
+    localStorage.setItem(storageName, JSON.stringify(json))
   }
 
   //  アプリ情報を保存する。
-  static save = () => {
+  static savePage = (pageId) => {
     let json = this.#to_json()
-    Data.write(json)
+    Data.write(json, `${STORAGE_NAME}_${pageId}`)
   }
 
   static #to_json = () => {
-    let data = []
     let notes = []
     let page = {"title": "Sample", "notes": notes}
-    data.push(page)
     _$(".cell").forEach( cell => {
       notes.push({
         "id": cell.id, 
@@ -103,7 +135,7 @@ class Data {
         "text": _$(".content--cell--note", cell)[0].innerHTML || ""
       })
     })
-    return data
+    return page
   }
 }
 
@@ -132,8 +164,18 @@ class Command {
               Map.small()
             }
           }
+        } else if(line[0] == '/') {
+          //  ページを開く
+          let subcmd = line[1]
+          if(PAGE_ADDRESS.includes(subcmd)) {
+            Page.specify(subcmd)
+            MASTER.currentPage = subcmd
+            Data.saveMaster(MASTER)
+            e.currentTarget.value = null
+          }
         } else {
         let cell = _$(`#cell-${line}`)
+          //  セルを開く
           if(cell) {
             // cell.classList.toggle("cell--theme")
             e.currentTarget.value = null
@@ -170,7 +212,7 @@ class Command {
           notepad.classList.add("_hidden")
           _$("#command").focus()
           _$(".content--cell--note", Cell.current())[0].innerHTML = _$("#content--notepad--textarea").value
-          Data.save()
+          Data.savePage(Page.currentId())
         } else {
           command.focus()
           command.value = null
@@ -178,34 +220,6 @@ class Command {
         }
         return
       }
-//      if(code == "Space") {
-//        let active = document.activeElement
-//        // コマンドにフォーカスを当てる
-//        if(Display.is_normal()) {
-//          //  コマンドにフォーカスが当たっている時は、普通にスペース入力として解釈する。
-//          if(active !== command) {
-//            command.focus()
-//            e.preventDefault()
-//          }
-//          return
-//        }
-//        //  テキスト入力時のスペース処理
-//        if(active.classList.contains("content--cell--subject") || active.classList.contains("content--cell--note")) {
-//          let text = active.innerHTML
-//          let selection = window.getSelection()
-//          console.log(selection)
-//          let caret = [selection.anchorOffset, selection.focusOffset].sort()
-//          active.innerHTML = text.substr(0, caret[0]) + " " + text.substr(caret[1])
-//          let range = document.createRange()
-//          range.setStart(active.firstChild, caret[0] + 1)
-//          range.setEnd(active.firstChild, caret[0] + 1)
-//          selection.removeAllRanges()
-//          selection.addRange(range)
-//          e.preventDefault()
-//          return
-//        }
-//        return
-//      }
       if(code == "Enter") {
         // コマンドを実行し、コマンドを削除する（フォーカスがコマンドに当たっている場合）
         if(document.activeElement === command) {
@@ -221,7 +235,6 @@ class Command {
             let text = active.innerHTML
             let selection = window.getSelection()
             let caret = [selection.anchorOffset, selection.focusOffset].sort()
-            console.log(caret)
             active.innerHTML = text.substr(0, caret[0]) + "\n" + text.substr(caret[1])
             let range = document.createRange()
             range.setStart(active.firstChild, caret[0] + 1)
@@ -250,15 +263,16 @@ class Command {
           //  丁寧なカーソル当て
           _$("#import_export").value = null
           _$("#import_export").focus()
-          let strings = JSON.stringify(Data.read(), null, "  ")
+          let strings = JSON.stringify(Data.read(MASTER.currentPage), null, "  ")
           _$("#import_export").value = strings
         } else {
           let json
           try {
             json = JSON.parse(_$("#import_export").value)
             _$("#import_export").classList.add("_hidden")
-            Data.write(json)
-            Data.load()
+            Data.write(json, `${STORAGE_NAME}_${MASTER.currentPage}`)
+            Data.loadPage(Page.currentId())
+            Data.applyMaster()
           } catch(e) {
             console.log("JSON.parseに失敗しました")
           }
@@ -274,6 +288,7 @@ class Command {
     })
   }
 
+  //  コマンドの解釈と実行
   static exec = (line) => {
     let ary = Array.from(line.trim())
     let action = ary.shift()
@@ -296,8 +311,66 @@ class Command {
         localStorage.setItem(`${STORAGE_NAME}_${backupName}`, localStorage.getItem(STORAGE_NAME))
       }
     }
+    if(action == '/') {
+      let subcmd = ary.shift()
+      //  リネーム
+      if(subcmd == '/') {
+        let page = ary.shift()
+        if(PAGE_ADDRESS.includes(page)) {
+          MASTER.pages[page] = ary.join("")
+          Data.saveMaster(MASTER)
+          Data.applyMaster()
+        }
+      }
+      //  入れ替え
+      if(subcmd == '_') {
+        let left = ary.shift()
+        let right = ary.shift()
+        if(PAGE_ADDRESS.includes(left) && PAGE_ADDRESS.includes(right)) {
+          let leftPage = Data.read(left)
+          let rightPage = Data.read(right)
+          let leftName = MASTER.pages[left]
+          let rightName = MASTER.pages[right]
+          MASTER.pages[right] = leftName
+          MASTER.pages[left] = rightName
+          Data.saveMaster(MASTER)
+          Data.write(leftPage, `${STORAGE_NAME}_${right}`)
+          Data.write(rightPage, `${STORAGE_NAME}_${left}`)
+          Data.loadPage(Page.currentId())
+          Data.applyMaster()
+        }
+      }
+      //  コピー
+      if(subcmd == '>') {
+        let left = ary.shift()
+        let right = ary.shift()
+        if(PAGE_ADDRESS.includes(left) && PAGE_ADDRESS.includes(right)) {
+          let leftPage = Data.read(left)
+          let rightPage = Data.read(right)
+          let leftName = MASTER.pages[left]
+          let rightName = MASTER.pages[right]
+          MASTER.pages[right] = leftName
+          Data.saveMaster(MASTER)
+          Data.write(leftPage, `${STORAGE_NAME}_${right}`)
+          Data.loadPage(Page.currentId())
+          Data.applyMaster()
+        }
+      }
+      //  初期化
+      if(subcmd == '-') {
+        ary.forEach(p => {
+          if(PAGE_ADDRESS.includes(p)) {
+            Data.write(Data.jsonFormat(), `${STORAGE_NAME}_${p}`)
+            MASTER.pages[p] = ""
+            Data.saveMaster(MASTER)
+            Data.loadPage(Page.currentId())
+            Data.applyMaster()
+          }
+        })
+      }
+    }
     _$("#command").value = null
-    Data.save()
+    Data.savePage(Page.currentId())
   }
 }
 
@@ -346,6 +419,13 @@ class Display {
       t.innerHTML = value
       }
     )
+    _$("*[id^=cell][id$=d]").forEach(cell => cell.classList.add("cell--theme"))
+
+    //  ページ枠を作る
+    PAGE_ADDRESS.split("").forEach(address => {
+      Page.add(address)
+    })
+    Page.focus(_$(".page")[0])
   }
 
   //  画面上のパネルのサイズを固定させる（＝ピクセルサイズ指定にする）。
@@ -416,39 +496,34 @@ class Display {
   }
 }
 
-function cell_action(e) {
-//    e.currentTarget.classList.toggle("cell--theme")
-//    Data.save()
-//  _$("#notepad").classList.remove("_hidden")
-}
-
 function init() {
+  //  画面上に枠だけ作る
   Display.init()
   Display.fixed_panel_size()
   window.addEventListener("resize", Display.resize_window)
 
+  //  これは余計な処理
   _$(".cell").forEach(cell => cell.addEventListener("click", cell_action))
 
-  if(! Data.load()) {
-    Data.init()
-    Data.save()
-  }
+  //  データ読み込み。ここで「主データ」をまずは読み、次に現在ページを読むようにする。
+  if(! Data.loadMaster()) Data.initMaster()
+  let currentPage = MASTER.currentPage || 0
+  Data.loadPage(currentPage)
+  Page.focus(_$(`#page_${currentPage}`))
 
+  //  コマンド枠を初期化する。
   Command.init()
   command.focus()
-  let _json = {"subject": "sub", "note": "not", "tags": [{"tagName": "tag"}]}
-  let _c = new Cell(_$("#cell-ww").id, _json)
-
-  //  let page = new Page(json)
-  //  page.areas
-  //  page.cells
-  //  page.areas["a"].cells
-  //  _$("#cell-ww").instance.parent.parent
-
 }
 window.onload = init;
 
 class Page {
+  list = []
+
+  static currentId = () => {
+    return Number(/.$/.exec(this.current().id)[0])
+  }
+
   static current = () => {
     return _$q(".page.current")[0]
   }
@@ -459,6 +534,28 @@ class Page {
   static unfocus = () => {
     let current = this.current()
     if(current) current.classList.remove("current")
+  }
+
+  static add = (address = "0", title = null) => {
+    let page = document.createElement("div")
+    page.id = `page_${address}`
+    page.className = "page shadow"
+    page.setAttribute("contenteditable", true)
+    _$("#right").appendChild(page)
+    let _address = document.createElement("div")
+    _address.className = "page--address"
+    _address.innerHTML = `${address}:`
+    page.appendChild(_address)
+    let _title = document.createElement("div")
+    _title.className = "page--title"
+    _title.innerHTML = title
+    page.appendChild(_title)
+  }
+
+  //  指定されたページを開く（カレントにする、データ読む、なければ作る）
+  static specify = (page_num) => {
+    this.focus(_$(`#page_${page_num}`))
+    Data.loadPage(page_num)
   }
 }
 
