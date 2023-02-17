@@ -2,6 +2,44 @@
 body {
   background-color: black;
 }
+input {
+  font-family: "Lucida Console", Courier, monospace;
+}
+
+//  データ直接更新のチート機能  {
+#import_export {
+  position: absolute;
+  z-index: 30;
+  top: 10%;
+  right: 10%;
+  bottom: 10%;
+  left: 10%;
+  font-family: "Lucida Console", Courier, monospace;
+}
+//  }
+
+//  廃止予定。セルのノート更新フォーム  {
+#notepad {
+  position: absolute;
+  z-index: 20;
+  width: 70%;
+  height: 60%;
+  background: gray;
+  margin: 10% 15% 15% 15%;
+}
+
+#content--notepad--title {
+  background: green;
+  width: 100%;
+}
+#content--notepad--textarea {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+}
+//  }
+
+//  画面の大部品  {
 .backboard {
   background-color: navy;
   height: 98%;
@@ -69,7 +107,9 @@ body {
   display: initial;
   overflow: hidden;
 }
+//  }
 
+//  マップ系  {
 .map {
   color: pink;
   width: 100%;
@@ -83,10 +123,13 @@ body {
   grid-template-columns: 33% 33% 33%;
   background: saddlebrown;
   gap: 0.5%;
+  .content--cell--note {
+    display: none;
+  }
 }
-.map.small {
-}
+//  }
 
+//  エリア系  {
 .area {
   background-color: black;
   border-color: black;
@@ -96,7 +139,9 @@ body {
   grid-template-rows: (100% / 3) (100% / 3) (100% / 3);
   grid-template-columns: (100% / 3) (100% / 3) (100% / 3);
 }
+//  }
 
+//  セル系  {
 .cell {
   color: black;
   border: 1px solid;
@@ -109,21 +154,17 @@ body {
   font-size: 0.8em;
   white-space: pre-wrap;
   font-weight: bold;
+  s {
+    text-decoration: line-through 2px solid red;
+  }
 }
 
 .cell--common {
   background: linear-gradient(160deg, white, antiquewhite);
   font-weight: bold;
-}
 
-.cell--theme {
-  background: linear-gradient(160deg, navajowhite, goldenrod);
-  font-size: large;
-  font-family: "Lucida Console", Courier, monospace;
-}
-
-.shadow {
-  box-shadow: -3px -3px 8px rgba(0,0,0,0.5) inset,  3px 3px 8px rgba(0,0,0,0.5) inset;
+//  font-family: "Lucida Console", Courier, monospace;
+  font-size: 14px;
 }
 
 .tag--cell--id {
@@ -144,6 +185,149 @@ body {
 	border-radius: 5px;
 }
 
+.content--cell--wrap--subject {
+  //  background: yellow;
+  height: 100%;
+  display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+}
+
+.content--cell--subject {
+  //  background: blue;
+  width: 100%;
+  font-weight: bold;
+  font-size: 13px;
+  font-family: "Lucida Console", Courier, monospace;
+}
+
+.content--cell--_subject {
+  //  background: green;
+  background: transparent;
+  resize: none;
+  border: none;
+  text-align: center;
+  font-weight: bold;
+  font-size: 13px;
+  font-family: "Lucida Console", Courier, monospace;
+  overflow: hidden;
+}
+.content--cell--_note {
+  overflow: hidden;
+  background: transparent;
+}
+:focus {
+  outline: none;
+}
+
+.cell--theme {
+  background: linear-gradient(160deg, navajowhite, goldenrod);
+  .content--cell--subject {
+    font-size: 16px;
+  }
+}
+
+.map.large {
+  .content--cell--wrap--note {
+    display: none;
+  }
+  .content--cell--subject {
+    //  background: pink;
+    padding: 10px;
+    font-size: 14px;
+  }
+  .content--cell--_subject {
+    //  background: silver;
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+  }
+  .cell--theme .content--cell--subject {
+    font-size: 18px;
+  }
+  .cell--theme .content--cell--_subject {
+    font-size: 18px;
+  }
+}
+
+.map.small {
+  .cell {
+  }
+  .content--cell--wrap--subject {
+    //  background: yellow;
+    height: 60px;
+    padding: 0px;
+    margin: 0px;
+    border-bottom: 1px solid black;
+  }
+  .content--cell--subject {
+    //  background: pink;
+    padding: 10px;
+  }
+  .content--cell--_subject {
+    //  background: silver;
+    width: 100%;
+    padding: 10px;
+  }
+  .content--cell--subject {
+    font-size: 16px;
+  }
+  .content--cell--_subject {
+    font-size: 16px;
+  }
+  .cell--theme .content--cell--subject {
+    font-size: 20px;
+  }
+  .cell--theme .content--cell--_subject {
+    font-size: 20px;
+  }
+  .content--cell--wrap--note {
+    //  background: green;
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+  }
+  .content--cell--note {
+    //  background: pink;
+    height: 100%;
+    text-align: initial;
+    padding: 10px 14px 10px 14px;
+    font-weight: initial;
+    font-size: 14px;
+  }
+  .content--cell--_note {
+    //  background: silver;
+    width: 100%;
+    height: 100%;
+    padding: 10px 14px 10px 14px;
+    font-weight: initial;
+    font-size: 14px;
+  }
+}
+
+/*
+.cell textarea {
+  padding: 0px;
+  margin: 0px;
+  background: transparent;
+  text-align: center;
+  font-weight: bold;
+//  font-family: "Lucida Console", Courier, monospace;
+  resize: none;
+  border: none;
+  font-size: 14px;
+}
+:focus {
+//  outline: none;
+}
+
+.cell--theme {
+  background: linear-gradient(160deg, navajowhite, goldenrod);
+  font-size: large;
+  font-family: "Lucida Console", Courier, monospace;
+}
+
 .content--cell--subject {
 	width: 100%;
 	height: 100%;
@@ -157,56 +341,27 @@ body {
 .content--cell--note {
   text-align: left;
 }
+*/
 
-.map.small .content--cell--subject {
-  height: 60px;
-  border-bottom: 1px solid;
-}
+//  }
 
-.map.small .content--cell--note {
-  height: calc(100% - 4em);
-  text-align: left;
-}
-
-.map.large .content--cell--note {
-  border-bottom: 1px solid;
-  display: none;
+//  修飾系  {
+.shadow {
+  box-shadow: -3px -3px 8px rgba(0,0,0,0.5) inset,  3px 3px 8px rgba(0,0,0,0.5) inset;
 }
 
 ._hidden {
   display: none !important;
 }
-
-input {
-  font-family: "Lucida Console", Courier, monospace;
-}
-
-#notepad {
-  position: absolute;
-  z-index: 20;
-  width: 70%;
-  height: 60%;
-  background: gray;
-  margin: 10% 15% 15% 15%;
-}
-
-#content--notepad--title {
-  background: green;
-  width: 100%;
-}
-#content--notepad--textarea {
-  width: 100%;
-  height: 100%;
-  padding: 10px;
-}
-
 .cell.current {
   border: red solid 2px;
   box-sizing: border-box;
 }
+//  }
 
+//  ページ系  {
 .page {
-  background: paleturquoise;
+  background: linear-gradient(160deg, lightcyan, paleturquoise);
   color: black;
   font-family: "Lucida Console", Courier, monospace;
   display: flex;
@@ -227,14 +382,5 @@ input {
   border: red solid 2px;
   box-sizing: border-box;
 }
-
-#import_export {
-  position: absolute;
-  z-index: 30;
-  top: 10%;
-  right: 10%;
-  bottom: 10%;
-  left: 10%;
-  font-family: "Lucida Console", Courier, monospace;
-}
+//  }
 
