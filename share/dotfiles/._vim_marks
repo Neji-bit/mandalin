@@ -1,0 +1,18 @@
+# Vimマーク指定ファイル（TSV）
+# カラム説明：
+#   カラム１：  マーク記号
+#   カラム２：  検索テキスト
+#   カラム３：  ファイル名
+#
+# ※ 連続したタブは、一つとして扱われる。
+
+A	^class Selector				/rails_app/app/javascript/mandala.js
+B	^class MasterData			/rails_app/app/javascript/mandala.js
+C	^class PageData				/rails_app/app/javascript/mandala.js
+D	^class Command				/rails_app/app/javascript/mandala.js
+E	^class Display				/rails_app/app/javascript/mandala.js
+F	^class Page						/rails_app/app/javascript/mandala.js
+G	^class Map						/rails_app/app/javascript/mandala.js
+H	^class Area						/rails_app/app/javascript/mandala.js
+I	^class Cell						/rails_app/app/javascript/mandala.js
+J	^class CellIdTag			/rails_app/app/javascript/mandala.js

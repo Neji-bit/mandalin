@@ -1,1 +1,2 @@
 alias _ps="ps -ef f"
+alias vim_marks="vim_marks.rb > ~/._viminfo_marks"

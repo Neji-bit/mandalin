@@ -5,10 +5,8 @@ eval "$(rbenv init -)"
 # Bundler経由でのrailsインストール
 cd $_RAILS_DIR
 bundle init
-cp /docker_init/Gemfile.enable_rails ./Gemfile
 bundle install --path vendor/bundle
 bundle exec rails new -f .
-cp /docker_init/Gemfile.enable_rails ./Gemfile
 rm ./Gemfile.lock
 bundle install --path vendor/bundle
 bundle exec bin/rails importmap:install

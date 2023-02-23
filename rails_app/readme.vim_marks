@@ -1,0 +1,49 @@
+2023.02.23
+
+vim-marks:
+
+目的：
+* 「vimのマーク機能を、外部ファイルで定義できるようにする」仕組み。
+* 自分で作ってしまった。きっと絶対、既存の仕組みとかあるんじゃないかな。
+* 便利は便利だから「もっと良いものが見つかるまで」使っていこう。 
+
+
+使い方：
+* 1. マーク化したい行を、 ~/._vim_marks に記載する。
+* 2. vim を開く。
+* 3. :Marks を実行。
+  * /share_bin/vim_marks.rb が実行され、~/._viminfo_marks が生成／更新される。
+  * ~/._viminfo_marks がvimに読み込まれ、マークとして有効になる。
+* 4. :marks で結果を確認。
+* 5. :MarkFile で、 ~/._vim_marks を開く。ガイドとして利用してください。
+
+
+仕組み：
+* 「vimのマークはviminfoに記載される」仕組みを利用。
+  * 「２枚目のviminfoを自作して読み込むことで、マークを外部からインポートできる」という発想。
+* viminfoの記法はよくわからない＆わかりづらいため、専用のTSVで記載できるようにした。
+  * ~/._vim_marks           : 独自TSV。"マーク記号, 正規表現, ファイルフルパス" の３項目で書く。
+  * /share/bin/vim_marks.rb : ._vim_marks を ._viminfo_marks に変換するスクリプト。
+  * ~/._viminfo_marks       : viminfoとして利用可能な成果ファイル。
+
+
+関係ファイル：
+* ↑に記載したファイル３つ
+* ~/.vimrc
+  * ↓に記載した補助コマンドを追記。
+
+
+Vimに定義したコマンド（例）：
+  " 独自定義。専用に切り出した上書き用viminfoを読み込む。Mark位置を切り出した形。
+  command MarkFile vsplit ~/._vim_marks
+  command Marks call Marks_()
+  function Marks_()
+    !vim_marks.rb > ~/._viminfo_marks 2>/dev/null
+    rv! ~/._viminfo_marks
+  endfunction
+
+備考：
+* とりあえず勢いで作った。せっかくならもう少しスマートに磨きたい。
+* vim上で Marks を実行したとき、１ステップ止まる（Please press Enter が出る）のを飛ばしたい。
+  * silent は試してダメだった。なんか実行後にvim画面が黒くなってしまう。
+

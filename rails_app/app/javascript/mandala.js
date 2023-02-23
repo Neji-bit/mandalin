@@ -185,13 +185,11 @@ class Command {
         let cell = _$(`#cell-${line}`)
           //  セルを開く
           if(cell) {
-            // cell.classList.toggle("cell--theme")
-            e.currentTarget.value = null
-            _$("#content--notepad--textarea").value = _$(".content--cell--note", cell)[0].innerHTML
-            _$("#notepad").classList.remove("_hidden")
-            _$("#content--notepad--textarea").focus()
-            Cell.focus(cell)
-            Area.focus(cell.parentNode)
+            let subject = _$(".content--cell--subject", cell)[0]
+            let _subject = _$(".content--cell--_subject", cell)[0]
+            subject.classList.add("_hidden")
+            _subject.classList.remove("_hidden")
+            _subject.focus()
           }
         }
       }
