@@ -5,7 +5,10 @@
 # apt系パッケージのインストール
 apt update -y
 apt upgrade -y
-apt install -y libssl-dev libreadline-dev zlib1g-dev build-essential git vim curl wget ruby-build libyaml-dev
+apt install -y libssl-dev libreadline-dev zlib1g-dev build-essential git vim curl wget ruby-build libyaml-dev language-pack-ja tzdata
+
+# タイムゾーンの設定
+echo "Asia/Tokyo" > /etc/timezone
 
 # rbenv経由でruby3.2のインストール
 git clone https://github.com/sstephenson/rbenv.git ~/.rbenv

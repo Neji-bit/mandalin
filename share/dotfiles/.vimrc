@@ -31,3 +31,12 @@ function Marks_()
   rv! ~/._viminfo_marks
 endfunction
 
+" 取り急ぎの「一括設定コマンド」。vimを開いたら :Init 。
+command Init call Init_()
+function Init_()
+  Marks
+  MarkFile
+  norm 20<
+  norm 
+endfunction
+

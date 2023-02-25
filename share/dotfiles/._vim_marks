@@ -6,13 +6,76 @@
 #
 # ※ 連続したタブは、一つとして扱われる。
 
-A	^class Selector				/rails_app/app/javascript/mandala.js
-B	^class MasterData			/rails_app/app/javascript/mandala.js
-C	^class PageData				/rails_app/app/javascript/mandala.js
-D	^class Command				/rails_app/app/javascript/mandala.js
-E	^class Display				/rails_app/app/javascript/mandala.js
-F	^class Page						/rails_app/app/javascript/mandala.js
-G	^class Map						/rails_app/app/javascript/mandala.js
-H	^class Area						/rails_app/app/javascript/mandala.js
-I	^class Cell						/rails_app/app/javascript/mandala.js
-J	^class CellIdTag			/rails_app/app/javascript/mandala.js
+0	^mandala コマンドリスト								/rails_app/commandlist.readme
+A	^class Selector												/rails_app/app/javascript/mandala.js
+B	^class MasterData											/rails_app/app/javascript/mandala.js
+#   static data
+#   static load
+#   static init
+#   static save
+#   static apply
+C	^class PageData												/rails_app/app/javascript/mandala.js
+#   static jsonFormat
+#   static read
+#   static apply
+#   static load
+#   static write
+#   static save
+#   static #toJson
+D	^class Command												/rails_app/app/javascript/mandala.js
+#   static init = () => {
+#   static #initCommandLine = () => {
+#   static #initListenKey = () => {
+#   static exec = (line) => {
+E	^class Display												/rails_app/app/javascript/mandala.js
+#   static init = () => {
+#   static fixedPanelSize = () => {
+#   static resizeWindow = () => {
+#   static full = () => {
+#   static normal = () => {
+#   static toggle = () => {
+#   static isNormal = () => {
+F	^class Page {													/rails_app/app/javascript/mandala.js
+#   static currentId = () => {
+#   static current = () => {
+#   static focus = (dom) => {
+#   static unfocus = () => {
+#   static add = (address = "0", title = null) => {
+#   static specify = (page_num) => {
+G	^class Map														/rails_app/app/javascript/mandala.js
+#   static current = () => {
+#   static focus = (dom) => {
+#   static unfocus = () => {
+#   static large = () => {
+#   static small = () => {
+#   static toggle = () => {
+#   static refresh = () => {
+#   static setKeeper = (area) => {
+#   static removeKeeper = (area) => {
+H	^class Area														/rails_app/app/javascript/mandala.js
+#   static current = () => {
+#   static focus = (dom) => {
+#   static unfocus = () => {
+#   static swap = (left, right) => {
+I	^class Cell														/rails_app/app/javascript/mandala.js
+# 	static current
+#   static defaultCursor
+# 	static focus
+# 	static unfocus
+# 	static swap
+#   static refresh = (dom) => {
+#   static clickSubject = (e) => {
+#   static blurSubject = (e) => {
+#   static clickNote = (e) => {
+#   static blurNote = (e) => {
+J	^class CellIdTag											/rails_app/app/javascript/mandala.js
+#   static init = () => {
+#   static enable = () => {
+#   static disable = () => {
+#   static toggle = () => {
+K	function init() {											/rails_app/app/javascript/mandala.js
+L	function textareaAdjustment(e) {			/rails_app/app/javascript/mandala.js
+
+# ここからスタイルシート
+M	Sassy	                                /rails_app/app/assets/stylesheets/application.scss
+

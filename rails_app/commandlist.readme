@@ -1,0 +1,28 @@
+mandala コマンドリスト
+
+ページ操作：
+/{PageId}           : ページを開く
+//{PageId}{Text}    : ページタイトルを更新する
+/_{PageId}{PageId}  : ページを入れ替える
+/>{PageId}{PageId}  : ページを複製する
+/-{PageId}          : ページを削除する
+
+エリア操作：
+q{AreaId}           : 指定エリアで小マップを開く
+[_{AreaId}{AreaId}  : エリアを入れ替える
+[>{AreaId}{AreaId}  : エリアを複製する
+[-{AreaId}          : エリアを削除する
+
+セル操作：
+^_{CellId}{CellId}  : セルを入れ替える
+^>{CellId}{CellId}  : セルを複製する
+^-{CellId}          : セルを削除する
+i{CellId}{Text}     : セルのサブジェクトを更新する
+{CellId}            : セルのサブジェクトにフォーカスを当てる
+
+全体操作：
+Ctrl+T              : セルIDタグの表示（トグル）
+Ctrl+@              : 全画面モード（トグル）
+qq                  : 大マップ表示
+ESC                 : コマンドラインにフォーカスする
+

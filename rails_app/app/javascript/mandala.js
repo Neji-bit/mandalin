@@ -105,6 +105,8 @@ class PageData {
       _$(".content--cell--note", cell)[0].innerHTML = _$(".content--cell--_note", cell)[0].value
     })
     MasterData.apply()
+    //  セルの表示更新
+    _$(".cell").forEach(e => { Cell.refresh(e) })
   }
 
   //  データの読み取り＆アプリへの適用をセットで行う。
@@ -185,11 +187,8 @@ class Command {
         let cell = _$(`#cell-${line}`)
           //  セルを開く
           if(cell) {
-            let subject = _$(".content--cell--subject", cell)[0]
-            let _subject = _$(".content--cell--_subject", cell)[0]
-            subject.classList.add("_hidden")
-            _subject.classList.remove("_hidden")
-            _subject.focus()
+            let wrap = _$(".content--cell--wrap--subject", cell)[0]
+            Cell.focusSubject(wrap)
           }
         }
       }
@@ -426,9 +425,12 @@ class Display {
     //  セルのひな形を作成
     let cell = document.createElement("div")
     cell.className = "cell cell--common shadow"
+    cell.classList.add("status--with--note")
 
     let tag = document.createElement("div")
     tag.className = "tag--cell--id"
+    let iconNote = document.createElement("div")
+    iconNote.className = "icon--cell--note"
 
     let wrapSubject = document.createElement("div")
     wrapSubject.className = "content--cell--wrap--subject"
@@ -440,6 +442,7 @@ class Display {
     _subject.className = "content--cell--_subject _hidden"
     _subject.setAttribute("rows", 1)
     _subject.setAttribute("spellcheck", false)
+    _subject.setAttribute("wrap", "off")
 
     let wrapNote = document.createElement("div")
     wrapNote.className = "content--cell--wrap--note"
@@ -464,6 +467,7 @@ class Display {
     wrapNote.appendChild(note)
     wrapNote.appendChild(_note)
     cell.appendChild(tag)
+    cell.appendChild(iconNote)
     cell.appendChild(wrapSubject)
     cell.appendChild(wrapNote)
 
@@ -481,6 +485,12 @@ class Display {
       _$(".cell", a).forEach(cell => cell.setAttribute("id", cell.id.replace("N", ADDRESS[i])))
       map_large.appendChild(a)
     }
+    //  セルのクリックは透過させない。透過すると選択できなくなるため。
+    _$(".cell").forEach((c) => {
+      c.addEventListener("click", (e) => {
+        e.stopPropagation()
+      })
+    })
 
     //  エリアの中央セルを装飾する
     _$("*[id^=cell][id$=d]").forEach(cell => cell.classList.add("cell--theme"))
@@ -489,57 +499,34 @@ class Display {
     PAGE_ADDRESS.split("").forEach(address => {
       Page.add(address)
     })
+    //  ごまかし。ページの入力がtextareaではないため、これでイベントの透過を止める。
+    _$(".page").forEach((p) => {
+      p.addEventListener("click", (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+      })
+    })
     Page.focus(_$(".page")[0])
 
     //  セルへの入力機能。
     //    表示（div）と入力（textarea）の二重構造。
 
-    _$(".content--cell--wrap--subject").forEach(s => {
-      s.addEventListener("click", (e) => {
-        let cell = e.currentTarget
-        let subject = _$(".content--cell--subject", cell)[0]
-        let _subject = _$(".content--cell--_subject", cell)[0]
-        subject.classList.add("_hidden")
-        _subject.classList.remove("_hidden")
-        _subject.focus()
-      })
-    })
-    _$(".content--cell--_subject").forEach(s => {
-      s.addEventListener("blur", (e) => {
-        let _subject = e.currentTarget
-        let subject = _$(".content--cell--subject", _subject.parentNode)[0]
-        subject.innerHTML = _subject.value
-        subject.classList.remove("_hidden")
-        _subject.classList.add("_hidden")
-        PageData.save(Page.currentId())
-      })
-    })
-
-    _$(".content--cell--wrap--note").forEach(n => {
-      n.addEventListener("click", (e) => {
-        let cell = e.currentTarget
-        let note = _$(".content--cell--note", cell)[0]
-        let _note = _$(".content--cell--_note", cell)[0]
-        note.classList.add("_hidden")
-        _note.classList.remove("_hidden")
-        _note.focus()
-      })
-    })
-    _$(".content--cell--_note").forEach(n => {
-      n.addEventListener("blur", (e) => {
-        let _note = e.currentTarget
-        let note = _$(".content--cell--note", _note.parentNode)[0]
-        note.innerHTML = _note.value
-        note.classList.remove("_hidden")
-        _note.classList.add("_hidden")
-        PageData.save(Page.currentId())
-      })
-    })
+    _$(".content--cell--wrap--subject").forEach(s => { s.addEventListener("dblclick", (e) => { Cell.focusSubject(e.currentTarget) }) })
+    _$(".content--cell--_subject").forEach(s => { s.addEventListener("blur", (e) => { Cell.blurSubject(e.currentTarget) }) })
+    _$(".content--cell--_subject").forEach(s => { s.addEventListener("change", (e) => { Cell.changeSubject(e.currentTarget) }) })
+    _$(".content--cell--wrap--note").forEach(n => { n.addEventListener("dblclick", (e) => { Cell.focusNote(e.currentTarget) }) })
+    _$(".content--cell--_note").forEach(n => { n.addEventListener("blur", (e) => { Cell.blurNote(e.currentTarget) }) })
+    _$(".content--cell--_note").forEach(n => { n.addEventListener("change", (e) => { Cell.changeNote(e.currentTarget) }) })
 
     //- 改行に合わせてテキストエリアのサイズ変更
     _$(".content--cell--_subject").forEach(s => {
       s.addEventListener("input", textareaAdjustment)
       s.addEventListener("focus", textareaAdjustment)
+    })
+
+    //  突き抜けてきたクリックイベントは全部コマンドラインへのフォーカスに当てる。
+    _$q("body")[0].addEventListener("click", () => {
+      _$("#command").focus()
     })
   }
 
@@ -615,33 +602,43 @@ class Display {
 class Page {
   list = []
 
+  //  現在開いているページのID（0-f）を返す
   static currentId = () => {
     return (/.$/.exec(this.current().id)[0])
   }
-
+  //  現在開いているページのDoMを返す
   static current = () => {
     return _$q(".page.current")[0]
   }
+
+  //  指定されたページにフォーカスを当てる
   static focus = (dom) => {
     this.unfocus()
     dom.classList.add("current")
   }
+  //  現在指定されているページのカレントを外す
   static unfocus = () => {
     let current = this.current()
     if(current) current.classList.remove("current")
   }
 
+  //  ページDoMを生成し画面に追加する
   static add = (address = "0", title = null) => {
     let page = document.createElement("div")
     page.id = `page_${address}`
     page.className = "page shadow"
-    page.setAttribute("contenteditable", true)
     _$("#right").appendChild(page)
     let _address = document.createElement("div")
     _address.className = "page--address"
     _address.innerHTML = `${address}:`
+    _address.addEventListener("click", (e) => {
+      let id = /.?/.exec((e.currentTarget.innerHTML))[0]
+      console.log(id)
+      Page.specify(id)
+    })
     page.appendChild(_address)
     let _title = document.createElement("div")
+    _title.setAttribute("contenteditable", true)
     _title.className = "page--title"
     _title.innerHTML = title
     page.appendChild(_title)
@@ -651,6 +648,8 @@ class Page {
   static specify = (page_num) => {
     this.focus(_$(`#page_${page_num}`))
     PageData.load(page_num)
+    //  セルのカーソル状態をデフォルトに戻す
+    Cell.defaultCursor()
   }
 }
 
@@ -758,6 +757,10 @@ class Cell {
   static current = () => {
     return _$q(".cell.current")[0]
   }
+  static defaultCursor = () => {
+    _$q(".current.cell").forEach((e) => e.classList.remove("current"))
+    Cell.focus(_$("#cell-dd"))
+  }
   static focus = (dom) => {
     this.unfocus()
     dom.classList.add("current")
@@ -767,17 +770,17 @@ class Cell {
     if(current) current.classList.remove("current")
   }
 
-  static swap = (left, right) => {
-    if(!(left && right)) return false
+  static swap = (l_dom, r_dom) => {
+    if(!(l_dom && r_dom)) return false
     //  要素を持つ
-    let leftSubject = _$(".content--cell--subject", left)[0]
-    let leftSubjectData = _$(".content--cell--_subject", left)[0]
-    let rightSubject = _$(".content--cell--subject", right)[0]
-    let rightSubjectData = _$(".content--cell--_subject", right)[0]
-    let leftNote = _$(".content--cell--note", left)[0]
-    let leftNoteData = _$(".content--cell--_note", left)[0]
-    let rightNote = _$(".content--cell--note", right)[0]
-    let rightNoteData = _$(".content--cell--_note", right)[0]
+    let leftSubject = _$(".content--cell--subject", l_dom)[0]
+    let leftSubjectData = _$(".content--cell--_subject", l_dom)[0]
+    let rightSubject = _$(".content--cell--subject", r_dom)[0]
+    let rightSubjectData = _$(".content--cell--_subject", r_dom)[0]
+    let leftNote = _$(".content--cell--note", l_dom)[0]
+    let leftNoteData = _$(".content--cell--_note", l_dom)[0]
+    let rightNote = _$(".content--cell--note", r_dom)[0]
+    let rightNoteData = _$(".content--cell--_note", r_dom)[0]
 
     //  値を交換
     let _SubjectData = leftSubjectData.value
@@ -788,11 +791,68 @@ class Cell {
     rightNoteData.value = _NoteData
 
     //  表示更新
-    leftSubject.innerHTML = leftSubjectData.value
-    leftNote.innerHTML = leftNoteData.value
-    rightSubject.innerHTML = rightSubjectData.value
-    rightNote.innerHTML = rightNoteData.value
+    Cell.refresh(l_dom)
+    Cell.refresh(r_dom)
     return true
+  }
+
+  //  表示更新
+  static refresh = (dom) => {
+    let subject = _$(".content--cell--subject", dom)[0]
+    let _subject = _$(".content--cell--_subject", dom)[0]
+    let note = _$(".content--cell--note", dom)[0]
+    let _note = _$(".content--cell--_note", dom)[0]
+    subject.innerHTML = _subject.value
+    note.innerHTML = _note.value
+    //  アイコン表示状態の更新
+    if(_note.value) {
+      dom.classList.add("status--with--note")
+    } else {
+      dom.classList.remove("status--with--note")
+    }
+  }
+
+  static focusSubject = (dom) => {
+    let wrap = dom
+    let subject = _$(".content--cell--subject", wrap)[0]
+    let _subject = _$(".content--cell--_subject", wrap)[0]
+    subject.classList.add("_hidden")
+    _subject.classList.remove("_hidden")
+    _subject.focus()
+    wrap.classList.add("status--overwrite")
+  }
+  static blurSubject = (dom) => {
+    let _subject = dom
+    let subject = _$(".content--cell--subject", _subject.parentNode)[0]
+    subject.innerHTML = _subject.value
+    subject.classList.remove("_hidden")
+    _subject.classList.add("_hidden")
+    Cell.refresh(subject.closest(".cell"))
+    _subject.closest(".content--cell--wrap--subject").classList.remove("status--overwrite")
+  }
+  static changeSubject = (dom) => {
+    PageData.save(Page.currentId())
+  }
+  static focusNote = (dom) => {
+    let wrap = dom
+    let note = _$(".content--cell--note", wrap)[0]
+    let _note = _$(".content--cell--_note", wrap)[0]
+    note.classList.add("_hidden")
+    _note.classList.remove("_hidden")
+    _note.focus()
+    wrap.classList.add("status--overwrite")
+  }
+  static blurNote = (dom) => {
+    let _note = dom
+    let note = _$(".content--cell--note", _note.parentNode)[0]
+    note.innerHTML = _note.value
+    note.classList.remove("_hidden")
+    _note.classList.add("_hidden")
+    Cell.refresh(note.closest(".cell"))
+    _note.closest(".content--cell--wrap--note").classList.remove("status--overwrite")
+  }
+  static changeNote = (dom) => {
+    PageData.save(Page.currentId())
   }
 }
 
@@ -836,8 +896,7 @@ function init() {
   //  データ読み込み。ここで「主データ」をまずは読み、次に現在ページを読むようにする。
   if(! MasterData.load()) MasterData.init()
   let currentPage = MasterData.data.currentPage || 0
-  PageData.load(currentPage)
-  Page.focus(_$(`#page_${currentPage}`))
+  Page.specify(currentPage)
 
   //  セルタグの値を設定する
   CellIdTag.init()

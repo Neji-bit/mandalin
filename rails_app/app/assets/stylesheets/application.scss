@@ -6,6 +6,10 @@ input {
   font-family: "Lucida Console", Courier, monospace;
 }
 
+.status--overwrite {
+  background-color: rgba(255,105,212,0.1);
+}
+
 //  データ直接更新のチート機能  {
 #import_export {
   position: absolute;
@@ -253,10 +257,14 @@ input {
 
 .map.small {
   .cell {
+    display: flex;
+    flex-flow: column;
   }
   .content--cell--wrap--subject {
     //  background: yellow;
-    height: 60px;
+    height: 49.56px;
+    min-height: 49.56px;
+    max-height: 49.56px;
     padding: 0px;
     margin: 0px;
     border-bottom: 1px solid black;
@@ -264,16 +272,12 @@ input {
   .content--cell--subject {
     //  background: pink;
     padding: 10px;
+    font-size: 16px;
   }
   .content--cell--_subject {
     //  background: silver;
     width: 100%;
     padding: 10px;
-  }
-  .content--cell--subject {
-    font-size: 16px;
-  }
-  .content--cell--_subject {
     font-size: 16px;
   }
   .cell--theme .content--cell--subject {
@@ -284,7 +288,7 @@ input {
   }
   .content--cell--wrap--note {
     //  background: green;
-    height: 100%;
+    height: calc(100% - 49.56px);
     padding: 0px;
     margin: 0px;
   }
@@ -295,15 +299,29 @@ input {
     padding: 10px 14px 10px 14px;
     font-weight: initial;
     font-size: 14px;
+    overflow: scroll;
+    font-family: "Lucida Console", Courier, monospace;
   }
   .content--cell--_note {
     //  background: silver;
-    width: 100%;
-    height: 100%;
+    width: calc(100% - 14px - 14px);
+    height: calc(100% - 10px - 10px);
     padding: 10px 14px 10px 14px;
+    border: none;
     font-weight: initial;
     font-size: 14px;
+    font-family: "Lucida Console", Courier, monospace;
   }
+}
+.cell.status--with--note .icon--cell--note {
+	height: 8px;
+	width: 8px;
+	z-index: 10;
+	position: fixed;
+	margin-top: 2px;
+	margin-left: 2px;
+	background: lawngreen;
+	border-radius: 4px;
 }
 
 /*
