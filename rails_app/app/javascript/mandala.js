@@ -117,12 +117,15 @@ class PageData {
       json = this.read(pageId)
     }
     this.apply(json)
+    //  アンドゥ履歴に現状を初期値として設定。
+    Undo.init(JSON.stringify(json))
     return true
   }
 
   //  ストレージへの書き込み。
   static write = (json, storageName = STORAGE_NAME) => {
     localStorage.setItem(storageName, JSON.stringify(json))
+    Undo.push(JSON.stringify(json))
   }
 
   //  アプリ情報を保存する。
@@ -299,6 +302,17 @@ class Command {
       if(code == "KeyK" && onCtrl) {
         let history = History.next()
         if(typeof history.command == "string") _$("#command").value = history.command
+        return
+      }
+      //  アンドゥ／リドゥ
+      if(code == "KeyU" && onCtrl) {
+        let json = Undo.undo()
+        if(json) PageData.apply(JSON.parse(json))
+        return
+      }
+      if(code == "KeyJ" && onCtrl) {
+        let json = Undo.redo()
+        if(json) PageData.apply(JSON.parse(json))
         return
       }
     })
@@ -656,6 +670,46 @@ class History {
 
   static toJson = () => {
     return JSON.stringify(this.queue)
+  }
+}
+
+//  Undo
+//  一般的なアンドゥ管理。
+//  この情報は、保存されない。
+//  Undoを適用したい対象（例：PageData）にて、init, push を適時呼ぶこと。
+class Undo {
+  static queue = []
+  static max = 20
+  static counter = 0
+
+  static init = (json_str) => {
+    this.counter = 0
+    this.queue = [json_str]
+  }
+
+  static undo = () => {
+    let result = null
+    if(this.counter + 1 < this.queue.length) {
+      this.counter++
+      result = this.queue[this.counter]
+    }
+    return result
+  }
+  static redo = () => {
+    let result = null
+    if(0 <= this.counter - 1) {
+      this.counter--
+      result = this.queue[this.counter]
+    }
+    return result
+  }
+  static push = (json_str) => {
+    while(this.counter) {
+      this.counter--
+      this.queue.shift()
+    }
+    this.queue.unshift(json_str)
+    if(this.max < this.queue.length) this.queue.pop()
   }
 }
 
