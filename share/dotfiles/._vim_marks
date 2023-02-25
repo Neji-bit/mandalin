@@ -35,6 +35,11 @@ E	^class Display												/rails_app/app/javascript/mandala.js
 #   static normal = () => {
 #   static toggle = () => {
 #   static isNormal = () => {
+F	^class History	                      /rails_app/app/javascript/mandala.js
+#   static push = (command) => {
+#   static prev = () => {
+#   static next = () => {
+#   static toJson = () => {
 F	^class Page {													/rails_app/app/javascript/mandala.js
 #   static currentId = () => {
 #   static current = () => {

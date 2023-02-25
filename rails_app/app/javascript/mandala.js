@@ -290,6 +290,17 @@ class Command {
         e.currentTarget.value = null
         return
       }
+      //  コマンド履歴
+      if(code == "KeyI" && onCtrl) {
+        let history = History.prev()
+        if(typeof history.command == "string") _$("#command").value = history.command
+        return
+      }
+      if(code == "KeyK" && onCtrl) {
+        let history = History.next()
+        if(typeof history.command == "string") _$("#command").value = history.command
+        return
+      }
     })
   }
 
@@ -407,6 +418,7 @@ class Command {
         Cell.swap(_left, _right)
       }
     }
+    History.push(_$("#command").value)
     _$("#command").value = null
     PageData.save(Page.currentId())
   }
@@ -598,6 +610,55 @@ class Display {
   }
 }
 
+//  コマンド履歴。
+//  上下キーで履歴を参照できる。
+//  履歴を呼び出し書き換え実行、した場合、元の履歴は残り、実行分が新しい履歴が追加される。
+//  履歴の上限は（ひとまず）20件まで。
+//  履歴は保存に残る。
+//  履歴キューを復帰させる際は、泥臭く History.queue を上書きすること。
+class History {
+  //  履歴キュー。0番地は「現在入力中のコマンドを仮保存する領域」。履歴は1番地目以降。
+  static queue = [""]
+  static max = 20
+  static counter = 0
+
+  static push = (command) => {
+    this.queue[0] = command
+    this.queue.unshift("")
+    if(this.max < this.queue.length) this.queue.pop()
+    this.counter = 0
+  }
+
+  //  「前の一件」を返す。
+  //  戻り値：{command:, number:, total:}
+  //  返すべき履歴がない場合、{null, null, total} を返す。
+  static prev = () => {
+    let result = {command: null, number: null, total: this.queue.length}
+    //  0番地目から1番地目へ移動する際は、入力途中のコマンドを0番地目に控える。
+    if(this.counter == 0) this.queue[0] = _$("#command").value
+    if(this.counter + 1 < this.queue.length) {
+      this.counter++
+      result.command = this.queue[this.counter]
+      result.number = this.counter
+    }
+    return result
+  }
+
+  static next = () => {
+    let result = {command: null, number: null, total: this.queue.length}
+    if(0 < this.counter) {
+      this.counter--
+      result.command = this.queue[this.counter]
+      result.number = this.counter
+    }
+    return result
+  }
+
+  static toJson = () => {
+    return JSON.stringify(this.queue)
+  }
+}
+
 //  ページ
 class Page {
   list = []
@@ -633,7 +694,6 @@ class Page {
     _address.innerHTML = `${address}:`
     _address.addEventListener("click", (e) => {
       let id = /.?/.exec((e.currentTarget.innerHTML))[0]
-      console.log(id)
       Page.specify(id)
     })
     page.appendChild(_address)
