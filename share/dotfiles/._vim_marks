@@ -40,6 +40,8 @@ F	^class History	                      /rails_app/app/javascript/mandala.js
 #   static prev = () => {
 #   static next = () => {
 #   static toJson = () => {
+F	^class Book {	                       /rails_app/app/javascript/mandala.js
+#   static init = () => {
 F	^class Page {													/rails_app/app/javascript/mandala.js
 #   static currentId = () => {
 #   static current = () => {

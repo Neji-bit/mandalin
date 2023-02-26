@@ -30,9 +30,9 @@ class MasterData {
   static data = null
 
   //  マスターデータを読み込む。以降は MasterData.data を参照すること。
-  static load = () => {
+  static load = (bookId = Book.bookId) => {
     try {
-      this.data = JSON.parse(localStorage.getItem(STORAGE_NAME))
+      this.data = JSON.parse(localStorage.getItem(`${STORAGE_NAME}_${bookId}`))
     } catch(e) {
       return false
     }
@@ -40,20 +40,20 @@ class MasterData {
   }
 
   //  マスターデータを初期化する。ストレージへの保存も行う。
-  static init = () => {
+  static init = (bookId = Book.bookId) => {
     let json = {}
     json.pages = []
     PAGE_ADDRESS.split("").forEach(a => {
       json.pages.push("")
     })
     json.currentPage = 0
-    localStorage.setItem(STORAGE_NAME, JSON.stringify(json))
-    this.load()
+    localStorage.setItem(`${STORAGE_NAME}_${bookId}`, JSON.stringify(json))
+    this.load(bookId)
   }
 
   //  MasterData.data をストレージに保存する。
-  static save = () => {
-    localStorage.setItem(STORAGE_NAME, JSON.stringify(this.data))
+  static save = (bookId = Book.bookId) => {
+    localStorage.setItem(`${STORAGE_NAME}_${bookId}`, JSON.stringify(this.data))
   }
 
   //  マスターデータ（＝ページ）を画面に適用。
@@ -82,8 +82,8 @@ class PageData {
   }
 
   //  ストレージからの単純な読み取りだけ。
-  static read = (pageId) => {
-    let json = localStorage.getItem(`${STORAGE_NAME}_${pageId}`)
+  static read = (pageId, bookId = Book.bookId) => {
+    let json = localStorage.getItem(`${STORAGE_NAME}_${bookId}_${pageId}`)
     try {
       return JSON.parse(json)
     } catch(e) {
@@ -110,11 +110,11 @@ class PageData {
   }
 
   //  データの読み取り＆アプリへの適用をセットで行う。
-  static load = (pageId) => {
-    let json = this.read(pageId)
+  static load = (pageId, bookId = Book.bookId) => {
+    let json = this.read(pageId, bookId)
     if(! json) {
-      this.write(PageData.jsonFormat(), `${STORAGE_NAME}_${pageId}`)
-      json = this.read(pageId)
+      this.write(PageData.jsonFormat(), `${STORAGE_NAME}_${bookId}_${pageId}`)
+      json = this.read(pageId, bookId)
     }
     this.apply(json)
     //  アンドゥ履歴に現状を初期値として設定。
@@ -129,9 +129,9 @@ class PageData {
   }
 
   //  アプリ情報を保存する。
-  static save = (pageId) => {
+  static save = (pageId, bookId = Book.bookId) => {
     let json = this.#toJson()
-    PageData.write(json, `${STORAGE_NAME}_${pageId}`)
+    PageData.write(json, `${STORAGE_NAME}_${bookId}_${pageId}`)
   }
 
   static #toJson = () => {
@@ -154,10 +154,114 @@ class PageData {
 //  ホットキー系の両方をまとめて書いている。
 class Command {
   static init = () => {
+    //  ホットキーの設定
+    this.#initHotKey()
+    //  コマンド枠の設定
     this.#initCommandLine()
-    this.#initListenKey()
   }
 
+  //  単発キー（＝ホットキー）系の実装
+  static #initHotKey = () => {
+    window.addEventListener("keydown", (e)=>{
+      const keycode = e.keyCode;
+      const code  = e.code;
+      const onShift = e.shiftKey;
+      const onCtrl  = e.ctrlKey;
+      const onAlt   = e.altKey;
+      const onMeta  = e.metaKey;
+
+      let command = _$("#command")
+
+      // 日本語変換中のキータイプは無視する
+      if(e.isComposing) return
+
+      // コマンドを削除し、コマンドにフォーカスを当てる
+      if(code == "Escape") {
+        // テキストエリアを閉じる（ついでにテキストをDOMへ保存）
+        if(document.activeElement === _$("#content--notepad--textarea")) {
+          let notepad = _$("#notepad")
+          notepad.classList.add("_hidden")
+          _$("#command").focus()
+          _$(".content--cell--note", Cell.current())[0].innerHTML = _$("#content--notepad--textarea").value
+          PageData.save(Page.currentId())
+        } else {
+          command.focus()
+          command.value = null
+          e.preventDefault()
+        }
+        return
+      }
+      if(code == "Enter") {
+        // コマンドを実行し、コマンドを削除する（フォーカスがコマンドに当たっている場合）
+        if(document.activeElement === command) {
+          Command.exec(command.value)
+          command.value = null
+          e.preventDefault()
+        }
+        return
+      }
+      //  '@' + Ctrl: 全画面表示
+      if(code == "BracketLeft" && onCtrl) {
+        Display.toggle()
+        e.preventDefault()
+        return
+      }
+      //  '[' + Ctrl: データ読み込みテキストエリアの表示
+      if(code == "BracketRight" && onCtrl) {
+        e.preventDefault()
+        if(_$("#import_export").classList.contains("_hidden")) {
+          _$("#import_export").classList.remove("_hidden")
+          //  丁寧なカーソル当て
+          _$("#import_export").value = null
+          _$("#import_export").focus()
+          let strings = JSON.stringify(PageData.read(MasterData.data.currentPage), null, "  ")
+          _$("#import_export").value = strings
+        } else {
+          let json
+          try {
+            json = JSON.parse(_$("#import_export").value)
+            _$("#import_export").classList.add("_hidden")
+            PageData.write(json, `${STORAGE_NAME}_${Book.bookId}_${MasterData.data.currentPage}`)
+            PageData.load(Page.currentId())
+            MasterData.apply()
+          } catch(e) {
+            console.log("JSON.parseに失敗しました")
+          }
+        }
+        return
+      }
+      //  タグの表示／非表示切り替え
+      if(code == "KeyT" && onCtrl) {
+        CellIdTag.toggle()
+        e.currentTarget.value = null
+        return
+      }
+      //  コマンド履歴
+      if(code == "KeyI" && onCtrl) {
+        let history = History.prev()
+        if(typeof history.command == "string") _$("#command").value = history.command
+        return
+      }
+      if(code == "KeyK" && onCtrl) {
+        let history = History.next()
+        if(typeof history.command == "string") _$("#command").value = history.command
+        return
+      }
+      //  アンドゥ／リドゥ
+      if(code == "KeyU" && onCtrl) {
+        let json = Undo.undo()
+        if(json) PageData.apply(JSON.parse(json))
+        return
+      }
+      if(code == "KeyJ" && onCtrl) {
+        let json = Undo.redo()
+        if(json) PageData.apply(JSON.parse(json))
+        return
+      }
+    })
+  }
+
+  //  コマンド枠の設定
   static #initCommandLine = () => {
     let command = _$("#command")
     command.addEventListener("input", e => {
@@ -198,128 +302,9 @@ class Command {
     })
   }
 
-  static #initListenKey = () => {
-    window.addEventListener("keydown", (e)=>{
-      const keycode = e.keyCode;
-      const code  = e.code;
-      const onShift = e.shiftKey;
-      const onCtrl  = e.ctrlKey;
-      const onAlt   = e.altKey;
-      const onMeta  = e.metaKey;
-
-      let command = _$("#command")
-
-      // 日本語変換中のキータイプは無視する
-      if(e.isComposing) return
-
-      // コマンドを削除し、コマンドにフォーカスを当てる
-      if(code == "Escape") {
-        // テキストエリアを閉じる（ついでにテキストをDOMへ保存）
-        if(document.activeElement === _$("#content--notepad--textarea")) {
-          let notepad = _$("#notepad")
-          notepad.classList.add("_hidden")
-          _$("#command").focus()
-          _$(".content--cell--note", Cell.current())[0].innerHTML = _$("#content--notepad--textarea").value
-          PageData.save(Page.currentId())
-        } else {
-          command.focus()
-          command.value = null
-          e.preventDefault()
-        }
-        return
-      }
-      if(code == "Enter") {
-        // コマンドを実行し、コマンドを削除する（フォーカスがコマンドに当たっている場合）
-        if(document.activeElement === command) {
-          Command.exec(command.value)
-          command.value = null
-          e.preventDefault()
-        } else {
-        //  ちょっと無理やり実装。
-        //  セル（=contenteditable）への直接入力時、Enterを「ただの改行コード入力」に差し替える。
-          let active = document.activeElement
-          if(active.classList.contains("content--cell--subject") || active.classList.contains("content--cell--note")) {
-            let text = active.innerHTML
-            let selection = window.getSelection()
-            let caret = [selection.anchorOffset, selection.focusOffset].sort()
-            let left = text.substr(0, caret[0])
-            let right = text.substr(caret[1])
-            active.innerHTML = left + "\n" + right
-            let range = document.createRange()
-            range.setStart(active.firstChild, caret[0] + 1)
-            range.setEnd(active.firstChild, caret[0] + 1)
-            selection.removeAllRanges()
-            selection.addRange(range)
-            e.preventDefault()
-          }
-        }
-        return
-      }
-
-      //  '@' + Ctrl: 全画面表示
-      if(code == "BracketLeft" && onCtrl) {
-        Display.toggle()
-        e.preventDefault()
-        return
-      }
-
-      //  '[' + Ctrl: データ読み込みテキストエリアの表示
-      if(code == "BracketRight" && onCtrl) {
-        e.preventDefault()
-        if(_$("#import_export").classList.contains("_hidden")) {
-          _$("#import_export").classList.remove("_hidden")
-          //  丁寧なカーソル当て
-          _$("#import_export").value = null
-          _$("#import_export").focus()
-          let strings = JSON.stringify(PageData.read(MasterData.data.currentPage), null, "  ")
-          _$("#import_export").value = strings
-        } else {
-          let json
-          try {
-            json = JSON.parse(_$("#import_export").value)
-            _$("#import_export").classList.add("_hidden")
-            PageData.write(json, `${STORAGE_NAME}_${MasterData.data.currentPage}`)
-            PageData.load(Page.currentId())
-            MasterData.apply()
-          } catch(e) {
-            console.log("JSON.parseに失敗しました")
-          }
-        }
-        return
-      }
-      //  タグの表示／非表示切り替え
-      if(code == "KeyT" && onCtrl) {
-        CellIdTag.toggle()
-        e.currentTarget.value = null
-        return
-      }
-      //  コマンド履歴
-      if(code == "KeyI" && onCtrl) {
-        let history = History.prev()
-        if(typeof history.command == "string") _$("#command").value = history.command
-        return
-      }
-      if(code == "KeyK" && onCtrl) {
-        let history = History.next()
-        if(typeof history.command == "string") _$("#command").value = history.command
-        return
-      }
-      //  アンドゥ／リドゥ
-      if(code == "KeyU" && onCtrl) {
-        let json = Undo.undo()
-        if(json) PageData.apply(JSON.parse(json))
-        return
-      }
-      if(code == "KeyJ" && onCtrl) {
-        let json = Undo.redo()
-        if(json) PageData.apply(JSON.parse(json))
-        return
-      }
-    })
-  }
-
   //  コマンドの解釈と実行
   static exec = (line) => {
+    let is_correct = false
     let ary = Array.from(line.trim())
     let action = ary.shift()
     if(action == 'i') {
@@ -331,6 +316,7 @@ class Command {
         let _subject = _$(".content--cell--_subject", _$(`#cell-${area}${cell}`))[0]
         _subject.value = alt
         subject.innerHTML = _subject.value
+        is_correct = true
       }
     }
     //  長ものコマンド
@@ -339,10 +325,12 @@ class Command {
       let tmp
       if("clear" == command) {
         _$(".content--cell--subject").forEach(c => c.innerHTML = null)
+        is_correct = true
       }
       if(tmp = /backup(.*)/.exec(command)) {
         let backupName = tmp[1].trim()
         localStorage.setItem(`${STORAGE_NAME}_${backupName}`, localStorage.getItem(STORAGE_NAME))
+        is_correct = true
       }
     }
     //  ページ系
@@ -355,6 +343,7 @@ class Command {
           MasterData.data.pages[parseInt(page, 16)] = ary.join("")
           MasterData.save()
           MasterData.apply()
+          is_correct = true
         }
       }
       //  入れ替え
@@ -375,6 +364,7 @@ class Command {
           PageData.write(rightPage, `${STORAGE_NAME}_${left}`)
           PageData.load(Page.currentId())
           MasterData.apply()
+          is_correct = true
         }
       }
       //  コピー
@@ -393,6 +383,7 @@ class Command {
           PageData.write(leftPage, `${STORAGE_NAME}_${right}`)
           PageData.load(Page.currentId())
           MasterData.apply()
+          is_correct = true
         }
       }
       //  初期化
@@ -404,6 +395,7 @@ class Command {
             MasterData.save()
             PageData.load(Page.currentId())
             MasterData.apply()
+            is_correct = true
           }
         })
       }
@@ -417,7 +409,7 @@ class Command {
         let right = ary.shift()
         let _left = _$(`#area-${left}`)
         let _right = _$(`#area-${right}`)
-        Area.swap(_left, _right)
+        is_correct = Area.swap(_left, _right)
       }
     }
     //  セル系
@@ -429,12 +421,15 @@ class Command {
         let right = ary.shift() + ary.shift()
         let _left = _$(`#cell-${left}`)
         let _right = _$(`#cell-${right}`)
-        Cell.swap(_left, _right)
+        is_correct = Cell.swap(_left, _right)
       }
     }
-    History.push(_$("#command").value)
-    _$("#command").value = null
-    PageData.save(Page.currentId())
+    //  コマンドが正常に処理されたら、保存＆履歴＆Undoに入れる。
+    if(is_correct) {
+      PageData.save(Page.currentId())
+      History.push(_$("#command").value)
+      _$("#command").value = null
+    }
   }
 }
 
@@ -710,6 +705,25 @@ class Undo {
     }
     this.queue.unshift(json_str)
     if(this.max < this.queue.length) this.queue.pop()
+  }
+}
+
+//  ブック
+class Book {
+  static bookId = ""
+  static init = () => {
+    this.bookId = this.#urlParams()["book"] || ""
+  }
+  static #urlParams = () => {
+    let params = {}
+    let _params = (document.location.search || "").substring(1)
+    if(!_params) return params
+    _params.split("&").forEach( p => {
+       var set = p.split('=');
+       params[decodeURIComponent(set[0])] = decodeURIComponent(set[1] || null)
+      }
+    )
+    return params
   }
 }
 
@@ -1006,6 +1020,9 @@ function init() {
 
   //  これは余計な処理
   _$(".cell").forEach(cell => cell.addEventListener("click", cell_action))
+
+  //  ブックの初期化
+  Book.init()
 
   //  データ読み込み。ここで「主データ」をまずは読み、次に現在ページを読むようにする。
   if(! MasterData.load()) MasterData.init()
