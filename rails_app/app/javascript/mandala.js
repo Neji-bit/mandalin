@@ -137,7 +137,7 @@ class PageData {
   static #toJson = () => {
     let notes = []
     let page = {"title": "Sample", "notes": notes}
-    _$(".cell").forEach( cell => {
+    _$q(".map .cell").forEach( cell => {
       notes.push({
         "id": cell.id, 
         "showName": _$(".content--cell--_subject", cell)[0].value || "",
@@ -256,6 +256,11 @@ class Command {
       if(code == "KeyJ" && onCtrl) {
         let json = Undo.redo()
         if(json) PageData.apply(JSON.parse(json))
+        return
+      }
+      //  セルビューの表示トグル
+      if(code == "KeyC" && onCtrl) {
+        Detail.toggle(_$("#map_detail"))
         return
       }
     })
@@ -424,6 +429,40 @@ class Command {
         is_correct = Cell.swap(_left, _right)
       }
     }
+    //  セルビュー（左）
+    //  コマンド履歴／アンドゥには入れない。
+    if(action == '<') {
+      let view_left = _$("#map_detail_left")
+      let view = _$("#map_detail")
+      let keeper = _$("#map_detail_left_keeper")
+      if(ary[0] == '-') {
+        Detail.backto(view_left, keeper)
+      } else {
+        let cell_id = ary.shift() + ary.shift()
+        let cell = _$(`#cell-${cell_id}`)
+        if(cell) {
+          Detail.show()
+          Detail.pickup(view_left, keeper, cell)
+        }
+      }
+    }
+    //  セルビュー（右）
+    //  コマンド履歴／アンドゥには入れない。
+    if(action == '>') {
+      let view_right = _$("#map_detail_right")
+      let view = _$("#map_detail")
+      let keeper = _$("#map_detail_right_keeper")
+      if(ary[0] == '-') {
+        Detail.backto(view_right, keeper)
+      } else {
+        let cell_id = ary.shift() + ary.shift()
+        let cell = _$(`#cell-${cell_id}`)
+        if(cell) {
+          Detail.show()
+          Detail.pickup(view_right, keeper, cell)
+        }
+      }
+    }
     //  コマンドが正常に処理されたら、保存＆履歴＆Undoに入れる。
     if(is_correct) {
       PageData.save(Page.currentId())
@@ -506,6 +545,7 @@ class Display {
       _$(".cell", a).forEach(cell => cell.setAttribute("id", cell.id.replace("N", ADDRESS[i])))
       map_large.appendChild(a)
     }
+
     //  セルのクリックは透過させない。透過すると選択できなくなるため。
     _$(".cell").forEach((c) => {
       c.addEventListener("click", (e) => {
@@ -577,6 +617,14 @@ class Display {
 
       _e.style.width = getComputedStyle(_e).width
       _e.style.height = getComputedStyle(_e).height
+    })
+    //  セルビュー（浮いているdiv）のサイズ設定
+    let detail = _$("#map_detail")
+    let center = _$("#center")
+    let rect = center.getBoundingClientRect(center)
+    let styles = ["offsetLeft", "offsetTop", "width", "height"]
+    styles.forEach(s => {
+      detail.style[s] = `${rect[s]}px`
     })
   }
 
@@ -898,16 +946,37 @@ class Cell {
     if(current) current.classList.remove("current")
   }
 
+  static clear = (dom) => {
+    let subjectData = _$(".content--cell--_subject", dom)[0]
+    let noteData = _$(".content--cell--_note", dom)[0]
+    subjectData.value = null
+    noteData.value = null
+    Cell.refresh(dom)
+  }
+
+  static copy = (f_dom, t_dom) => {
+    if(!(f_dom && t_dom)) return false
+    //  要素を持つ
+    let fromSubjectData = _$(".content--cell--_subject", f_dom)[0]
+    let toSubjectData = _$(".content--cell--_subject", t_dom)[0]
+    let fromNoteData = _$(".content--cell--_note", f_dom)[0]
+    let toNoteData = _$(".content--cell--_note", t_dom)[0]
+
+    //  値を交換
+    toSubjectData.value = fromSubjectData.value
+    toNoteData.value = fromNoteData.value
+
+    //  表示更新
+    Cell.refresh(t_dom)
+    return true
+  }
+
   static swap = (l_dom, r_dom) => {
     if(!(l_dom && r_dom)) return false
     //  要素を持つ
-    let leftSubject = _$(".content--cell--subject", l_dom)[0]
     let leftSubjectData = _$(".content--cell--_subject", l_dom)[0]
-    let rightSubject = _$(".content--cell--subject", r_dom)[0]
     let rightSubjectData = _$(".content--cell--_subject", r_dom)[0]
-    let leftNote = _$(".content--cell--note", l_dom)[0]
     let leftNoteData = _$(".content--cell--_note", l_dom)[0]
-    let rightNote = _$(".content--cell--note", r_dom)[0]
     let rightNoteData = _$(".content--cell--_note", r_dom)[0]
 
     //  値を交換
@@ -1064,3 +1133,83 @@ function textareaAdjustment(e) {
 }
 
 //  }
+
+class Detail {
+  //  指定したパネル（左or右）を対象に、持っているセルをマップに戻す。
+  static backto(map_detail_panel, keeper) {
+    //  セルをマップに戻す
+    let cell = Detail.cell(map_detail_panel)
+    if(cell) {
+      keeper.after(cell)
+      map_detail_panel.appendChild(keeper)
+      map_detail_panel.classList.add("_hidden")
+    } else {
+      //  セルがもう戻されている状態でさらにbacktoがコールされたら、keeperを解除する意図と解釈する。
+      keeper.cell = null
+    }
+  }
+  //  指定したパネル（左or右）に、指定したセルを移動させる。
+  //  パネルが既にセルを持っている場合は、一度戻してから実行する。
+  static pickup(map_detail_panel, keeper, cell) {
+    //  応急処置。パネルに既に載っているセルが指定された場合、なにもしない。
+    //  （本当は可能にしたい。設計が上手くできていないので、あとで直す）
+    if(cell.closest("#map_detail")) return
+    Detail.backto(map_detail_panel, keeper)
+    cell.after(keeper)
+    map_detail_panel.appendChild(cell)
+    map_detail_panel.classList.remove("_hidden")
+  }
+  //  指定したパネルが持っているセルを返す。ない場合はnull。
+  static cell(map_detail_panel) {
+    return _$(".cell", map_detail_panel)[0] || null
+  }
+
+  //  セル詳細を隠す。
+  //  隠す際、keeperに「参照していたセルの情報」を残す。
+  static hidden = (map_detail = _$("#map_detail")) => {
+    if(map_detail.classList.contains("_hidden")) return
+    let left_panel = _$("#map_detail_left")
+    let left_cell = Detail.cell(left_panel)
+    let left_keeper = _$("#map_detail_left_keeper")
+    let right_panel = _$("#map_detail_right")
+    let right_cell = Detail.cell(right_panel)
+    let right_keeper = _$("#map_detail_right_keeper")
+    if(left_cell) {
+      Detail.backto(left_panel, left_keeper)
+      left_keeper.cell = left_cell
+    }
+    if(right_cell) {
+      Detail.backto(right_panel, right_keeper)
+      right_keeper.cell = right_cell
+    }
+    map_detail.classList.add("_hidden")
+  }
+
+  static show = (map_detail = _$("#map_detail")) => {
+    if(! map_detail.classList.contains("_hidden")) return
+    let left_panel = _$("#map_detail_left")
+    let left_keeper = _$("#map_detail_left_keeper")
+    let left_cell = left_keeper.cell
+    let right_panel = _$("#map_detail_right")
+    let right_keeper = _$("#map_detail_right_keeper")
+    let right_cell = right_keeper.cell
+    if(left_cell) {
+      Detail.pickup(left_panel, left_keeper, left_cell)
+      left_keeper.cell = null
+    }
+    if(right_cell) {
+      Detail.pickup(right_panel, right_keeper, right_cell)
+      right_keeper.cell = null
+    }
+    map_detail.classList.remove("_hidden")
+  }
+
+  static toggle = (map_detail = _$("#map_detail")) => {
+    if(map_detail.classList.contains("_hidden")) {
+      Detail.show(map_detail)
+    } else {
+      Detail.hidden(map_detail)
+    }
+  }
+}
+

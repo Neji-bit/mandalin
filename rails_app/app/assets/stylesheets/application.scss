@@ -255,7 +255,7 @@ input {
   }
 }
 
-.map.small {
+.map.small , .map.detail {
   .cell {
     display: flex;
     flex-flow: column;
@@ -399,6 +399,25 @@ input {
 .page.current {
   border: red solid 2px;
   box-sizing: border-box;
+}
+//  }
+
+//  セルビュー {
+#map_detail {
+  position: absolute;
+  background-color: rgba(255,255,255,0.5);
+  z-index: 100;
+  display: grid;
+  grid-auto-columns: minmax(50%, 100%);
+  padding: 4px;
+  //  表示の寸法はJSで設定する（centerパネルとぴったり同じに上書きする）
+}
+.map--detail--panel {
+  grid-row: 1;
+}
+#map_detail_left {
+}
+#map_detail_right {
 }
 //  }
 
