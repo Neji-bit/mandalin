@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    container_name: mandala_postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - db-store:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=passw0rd
+      - POSTGRES_USER=postgres
+  rails:
+    build: .
+    container_name: mandala_rails
+    command: bash -c "/share/bin/rails_setup.sh && /share/bin/rails_up.sh"
+    volumes:
+      - ./share:/share
+      - ./rails_app:/rails_app
+    environment:
+      - POSTGRES_PASSWORD=passw0rd
+      - POSTGRES_USER=postgres
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+volumes:
+  db-store:
