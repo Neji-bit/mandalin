@@ -7,6 +7,7 @@ eval "$(rbenv init -)"
 
 # 
 cd ${_RAILS_DIR}
+rm tmp/pids/server.pid > /dev/null 2>&1
 bin/dev >> log/foreman.log 2>> log/foreman.error.log
 
 exit

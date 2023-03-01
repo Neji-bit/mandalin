@@ -26,20 +26,37 @@ let _$cls = (selector, from = document) => [...from.getElementsByClassName(selec
 let _$q = (selector, from = document) => [...from.querySelectorAll(selector)]
 //  }
 
-class MasterData {
-  static data = null
 
-  //  マスターデータを読み込む。以降は MasterData.data を参照すること。
-  static load = (bookId = Book.bookId) => {
-    try {
-      this.data = JSON.parse(localStorage.getItem(`${STORAGE_NAME}_${bookId}`))
-    } catch(e) {
-      return false
-    }
-    return this.data
+//  非同期版のブックデータ管理
+class BookData {
+  //  メモリ上のブックデータ
+  static data = null
+  static is_synchronizing = false
+
+  //  非同期読み込み。
+  //  読み込み、結果をメモリに反映する。
+  //  処理中、「同期中フラグ」を立てる。
+  static load = (bookId = Book.bookId, callback) => {
+    //  すでに同期中だったら、例外を投げる。
+    if(this.is_synchronizing) throw new Error("Already syncc now.");
+    //  同期が開始したら、同期中フラグを立てる。
+    this.is_synchronizing = true
+    //  APIからデータを読み込む。
+    axios.get(`http://localhost:3000/api/v1/book/${bookId}`)
+    .then((data) => {
+      this.data = JSON.parse(data.data)
+      this.is_synchronizing = false
+      callback()
+    })
+    .catch(() => {
+      //  データがなければ初期データを作成し保存する。
+      this.init(bookId)
+      this.is_synchronizing = false
+      callback()
+    })
   }
 
-  //  マスターデータを初期化する。ストレージへの保存も行う。
+  //  なければ初期化／保存する。
   static init = (bookId = Book.bookId) => {
     let json = {}
     json.pages = []
@@ -47,16 +64,25 @@ class MasterData {
       json.pages.push("")
     })
     json.currentPage = 0
-    localStorage.setItem(`${STORAGE_NAME}_${bookId}`, JSON.stringify(json))
-    this.load(bookId)
+    this.data = json
+    this.save(bookId)
   }
 
-  //  MasterData.data をストレージに保存する。
-  static save = (bookId = Book.bookId) => {
-    localStorage.setItem(`${STORAGE_NAME}_${bookId}`, JSON.stringify(this.data))
+  //  非同期書き込み。
+  //  呼び出しっぱなしでOK。
+  static save = (bookId = Book.bookId, proc = null) => {
+    let json = {}
+    json.text = JSON.stringify(this.data)
+    //  UPDATE でNGだったら INSERT .
+    axios.put(`http://localhost:3000/api/v1/book/${bookId}`, json)
+    .then(() => {
+    })
+    .catch(() => {
+      axios.post(`http://localhost:3000/api/v1/book/${bookId}`, json)
+    })
   }
 
-  //  マスターデータ（＝ページ）を画面に適用。
+  //  メモリ上のブックデータをアプリに反映する。
   static apply = () => {
     this.data.pages.forEach((page, index) => {
       _$("#right").children[index].children[1].innerHTML = page
@@ -66,6 +92,9 @@ class MasterData {
 
 //  ページデータの保存／読み出し機能。
 class PageData {
+  static data = null
+  static is_synchronizing = false
+
   //  ページ用のJSONを生成する。
   static jsonFormat = () => {
     let json = {"notes": [], "title": ""}
@@ -81,16 +110,6 @@ class PageData {
     return json
   }
 
-  //  ストレージからの単純な読み取りだけ。
-  static read = (pageId, bookId = Book.bookId) => {
-    let json = localStorage.getItem(`${STORAGE_NAME}_${bookId}_${pageId}`)
-    try {
-      return JSON.parse(json)
-    } catch(e) {
-      return null
-    }
-  }
-
   //  データをアプリに反映する。
   static apply = (json) => {
     json.notes.forEach(note => {
@@ -104,34 +123,56 @@ class PageData {
       _$(".content--cell--_note", cell)[0].value = note.text || ""
       _$(".content--cell--note", cell)[0].innerHTML = _$(".content--cell--_note", cell)[0].value
     })
-    MasterData.apply()
+    BookData.apply()
     //  セルの表示更新
     _$(".cell").forEach(e => { Cell.refresh(e) })
   }
 
+  //  ストレージからの単純な読み取りだけ。
+  static read = (pageId, bookId = Book.bookId, proc) => {
+    //  すでに同期中だったら、例外を投げる。
+    if(this.is_synchronizing) throw new Error("Already syncc now.");
+    this.is_synchronizing = true
+    axios.get(`http://localhost:3000/api/v1/book/${bookId}/page/${pageId}`)
+    .then((data) => {
+      this.data = JSON.parse(data.data)
+      this.apply(this.data)
+      this.is_synchronizing = false
+      proc()
+    })
+    .catch((data) => {
+      this.data = this.jsonFormat()
+      this.apply(this.data)
+      let payload = {text: JSON.stringify(this.data)}
+      let result = axios.post(`http://localhost:3000/api/v1/book/${bookId}/page/${pageId}`, payload)
+      this.is_synchronizing = false
+    })
+  }
+
   //  データの読み取り＆アプリへの適用をセットで行う。
   static load = (pageId, bookId = Book.bookId) => {
-    let json = this.read(pageId, bookId)
-    if(! json) {
-      this.write(PageData.jsonFormat(), `${STORAGE_NAME}_${bookId}_${pageId}`)
-      json = this.read(pageId, bookId)
-    }
-    this.apply(json)
-    //  アンドゥ履歴に現状を初期値として設定。
-    Undo.init(JSON.stringify(json))
+    PageData.read(pageId, bookId, () => {
+      this.apply(this.data)
+      //  アンドゥ履歴に現状を初期値として設定。
+      Undo.init(JSON.stringify(PageData.data))
+    })
     return true
   }
 
   //  ストレージへの書き込み。
-  static write = (json, storageName = STORAGE_NAME) => {
-    localStorage.setItem(storageName, JSON.stringify(json))
+  static write = (json, pageId, bookId) => {
+    let payload = {text: JSON.stringify(json)}
+    axios.put(`http://localhost:3000/api/v1/book/${bookId}/page/${pageId}`, payload)
+    .catch(() => {
+      axios.post(`http://localhost:3000/api/v1/book/${bookId}/page/${pageId}`, payload)
+    })
     Undo.push(JSON.stringify(json))
   }
 
   //  アプリ情報を保存する。
   static save = (pageId, bookId = Book.bookId) => {
     let json = this.#toJson()
-    PageData.write(json, `${STORAGE_NAME}_${bookId}_${pageId}`)
+    PageData.write(json, pageId, bookId)
   }
 
   static #toJson = () => {
@@ -146,6 +187,335 @@ class PageData {
       })
     })
     return page
+  }
+}
+
+//  ブック
+class Book {
+  static bookId = ""
+  static init = () => {
+    this.bookId = this.#urlParams()["book"] || ""
+  }
+  static #urlParams = () => {
+    let params = {}
+    let _params = (document.location.search || "").substring(1)
+    if(!_params) return params
+    _params.split("&").forEach( p => {
+       var set = p.split('=');
+       params[decodeURIComponent(set[0])] = decodeURIComponent(set[1] || null)
+      }
+    )
+    return params
+  }
+}
+
+//  ページ
+class Page {
+  list = []
+
+  //  現在開いているページのID（0-f）を返す
+  static currentId = () => {
+    return (/.$/.exec(this.current().id)[0])
+  }
+  //  現在開いているページのDoMを返す
+  static current = () => {
+    return _$q(".page.current")[0]
+  }
+
+  //  指定されたページにフォーカスを当てる
+  static focus = (dom) => {
+    this.unfocus()
+    dom.classList.add("current")
+  }
+  //  現在指定されているページのカレントを外す
+  static unfocus = () => {
+    let current = this.current()
+    if(current) current.classList.remove("current")
+  }
+
+  //  ページDoMを生成し画面に追加する
+  static add = (address = "0", title = null) => {
+    let page = document.createElement("div")
+    page.id = `page_${address}`
+    page.className = "page shadow"
+    _$("#right").appendChild(page)
+    let _address = document.createElement("div")
+    _address.className = "page--address"
+    _address.innerHTML = `${address}:`
+    _address.addEventListener("click", (e) => {
+      let id = /.?/.exec((e.currentTarget.innerHTML))[0]
+      Page.specify(id)
+      BookData.data.currentPage = id
+      BookData.save()
+    })
+    page.appendChild(_address)
+    let _title = document.createElement("div")
+    _title.setAttribute("contenteditable", true)
+    _title.className = "page--title"
+    _title.innerHTML = title
+    _title.addEventListener("blur", (e) => {
+      //  ページ名を更新したら、ブックデータを更新する（後回し）
+    })
+    page.appendChild(_title)
+  }
+
+  //  指定されたページを開く（カレントにする、データ読む、なければ作る）
+  static specify = (page_num) => {
+    this.focus(_$(`#page_${page_num}`))
+    PageData.load(page_num, Book.bookId, () => {
+      //  セルのカーソル状態をデフォルトに戻す
+      Cell.defaultCursor()
+    })
+  }
+}
+
+//  マップ
+class Map {
+  static current = () => {
+    return _$q(".map.current")[0]
+  }
+  static focus = (dom) => {
+    this.unfocus()
+    dom.classList.add("current")
+    dom.classList.remove("_hidden")
+  }
+  static unfocus = () => {
+    let current = this.current()
+    if(current) {
+      current.classList.remove("current")
+      current.classList.add("_hidden")
+    }
+  }
+  //  大マップを表示する
+  static large = () => {
+    this.unfocus()
+    this.focus(_$("#map_large"))
+    this.refresh()
+  }
+  //  小マップを表示する
+  static small = () => {
+    this.unfocus()
+    this.focus(_$("#map_small"))
+    this.refresh()
+  }
+  //  大マップ／小マップを切り替える
+  static toggle = () => {
+    let map = this.current()
+    map && map.id == "map_large" ? this.small() : this.large()
+  }
+  //  画面上のマップを再描画
+  static refresh = () => {
+    if(this.current().id == "map_large") {
+      let small = _$("#map_small")
+      let large = _$("#map_large")
+      let area = small.firstChild
+      if(! area) return
+      this.removeKeeper(area)
+    }
+    if(this.current().id == "map_small") {
+      let large = _$("#map_large")
+      let small = _$("#map_small")
+      let small_area = small.firstChild
+      let area = Area.current()
+      if(! area) return
+      //  小マップ状態から小マップを開く時は、一度大マップのキーパーを解除する
+      if(small_area) this.removeKeeper(small_area)
+      //  大マップにあるエリアを小マップに移す
+      this.setKeeper(area)
+      small.appendChild(area)
+    }
+  }
+  // 指定されたエリアのDOMを抽出し、代わりにキーパーをセットする
+  static setKeeper = (area) => {
+    let keeper = document.createElement("div")
+    keeper.id = "area_keeper"
+    area.after(keeper)
+    return area
+  }
+  // キーパーの位置に指定されたDOMを挿入し、キーパーを削除する
+  static removeKeeper = (area) => {
+    let keeper = _$("#area_keeper")
+    if(! keeper) return
+    keeper.after(area)
+    keeper.remove()
+  }
+}
+
+//  エリア
+class Area {
+  static current = () => {
+    return _$q(".area.current")[0]
+  }
+  static focus = (dom) => {
+    this.unfocus()
+    dom.classList.add("current")
+  }
+  static unfocus = () => {
+    let current = this.current()
+    if(current) current.classList.remove("current")
+  }
+
+  static swap = (left, right) => {
+    if(!(left && right)) return false
+    let _l = /.$/.exec(left.id)[0]
+    let _r = /.$/.exec(right.id)[0]
+    ADDRESS.split("").forEach(a => {
+      let l_cell = _$(`#cell-${_l}${a}`)
+      let r_cell = _$(`#cell-${_r}${a}`)
+      Cell.swap(l_cell, r_cell)
+    })
+    return true
+  }
+}
+
+//  セル
+class Cell {
+  static current = () => {
+    return _$q(".cell.current")[0]
+  }
+  static defaultCursor = () => {
+    _$q(".current.cell").forEach((e) => e.classList.remove("current"))
+    Cell.focus(_$("#cell-dd"))
+  }
+  static focus = (dom) => {
+    this.unfocus()
+    dom.classList.add("current")
+  }
+  static unfocus = () => {
+    let current = this.current()
+    if(current) current.classList.remove("current")
+  }
+
+  static clear = (dom) => {
+    let subjectData = _$(".content--cell--_subject", dom)[0]
+    let noteData = _$(".content--cell--_note", dom)[0]
+    subjectData.value = null
+    noteData.value = null
+    Cell.refresh(dom)
+  }
+
+  static copy = (f_dom, t_dom) => {
+    if(!(f_dom && t_dom)) return false
+    //  要素を持つ
+    let fromSubjectData = _$(".content--cell--_subject", f_dom)[0]
+    let toSubjectData = _$(".content--cell--_subject", t_dom)[0]
+    let fromNoteData = _$(".content--cell--_note", f_dom)[0]
+    let toNoteData = _$(".content--cell--_note", t_dom)[0]
+
+    //  値を交換
+    toSubjectData.value = fromSubjectData.value
+    toNoteData.value = fromNoteData.value
+
+    //  表示更新
+    Cell.refresh(t_dom)
+    return true
+  }
+
+  static swap = (l_dom, r_dom) => {
+    if(!(l_dom && r_dom)) return false
+    //  要素を持つ
+    let leftSubjectData = _$(".content--cell--_subject", l_dom)[0]
+    let rightSubjectData = _$(".content--cell--_subject", r_dom)[0]
+    let leftNoteData = _$(".content--cell--_note", l_dom)[0]
+    let rightNoteData = _$(".content--cell--_note", r_dom)[0]
+
+    //  値を交換
+    let _SubjectData = leftSubjectData.value
+    let _NoteData = leftNoteData.value
+    leftSubjectData.value = rightSubjectData.value
+    leftNoteData.value = rightNoteData.value
+    rightSubjectData.value = _SubjectData
+    rightNoteData.value = _NoteData
+
+    //  表示更新
+    Cell.refresh(l_dom)
+    Cell.refresh(r_dom)
+    return true
+  }
+
+  //  表示更新
+  static refresh = (dom) => {
+    let subject = _$(".content--cell--subject", dom)[0]
+    let _subject = _$(".content--cell--_subject", dom)[0]
+    let note = _$(".content--cell--note", dom)[0]
+    let _note = _$(".content--cell--_note", dom)[0]
+    subject.innerHTML = _subject.value
+    note.innerHTML = _note.value
+    //  アイコン表示状態の更新
+    if(_note.value) {
+      dom.classList.add("status--with--note")
+    } else {
+      dom.classList.remove("status--with--note")
+    }
+  }
+
+  static focusSubject = (dom) => {
+    let wrap = dom
+    let subject = _$(".content--cell--subject", wrap)[0]
+    let _subject = _$(".content--cell--_subject", wrap)[0]
+    subject.classList.add("_hidden")
+    _subject.classList.remove("_hidden")
+    _subject.focus()
+    wrap.classList.add("status--overwrite")
+  }
+  static blurSubject = (dom) => {
+    let _subject = dom
+    let subject = _$(".content--cell--subject", _subject.parentNode)[0]
+    subject.innerHTML = _subject.value
+    subject.classList.remove("_hidden")
+    _subject.classList.add("_hidden")
+    Cell.refresh(subject.closest(".cell"))
+    _subject.closest(".content--cell--wrap--subject").classList.remove("status--overwrite")
+  }
+  static changeSubject = (dom) => {
+    PageData.save(Page.currentId())
+  }
+  static focusNote = (dom) => {
+    let wrap = dom
+    let note = _$(".content--cell--note", wrap)[0]
+    let _note = _$(".content--cell--_note", wrap)[0]
+    note.classList.add("_hidden")
+    _note.classList.remove("_hidden")
+    _note.focus()
+    wrap.classList.add("status--overwrite")
+  }
+  static blurNote = (dom) => {
+    let _note = dom
+    let note = _$(".content--cell--note", _note.parentNode)[0]
+    note.innerHTML = _note.value
+    note.classList.remove("_hidden")
+    _note.classList.add("_hidden")
+    Cell.refresh(note.closest(".cell"))
+    _note.closest(".content--cell--wrap--note").classList.remove("status--overwrite")
+  }
+  static changeNote = (dom) => {
+    PageData.save(Page.currentId())
+  }
+}
+
+//  セルのIDタグ管理（画面初期化／表示／非表示）。
+class CellIdTag {
+  static init = () => {
+    _$(".tag--cell--id").forEach( t => {
+      let value = /..$/.exec(t.parentNode.id)[0]
+      t.innerHTML = value
+      if((BookData.data.cell_id_tag_enable || false) == false) t.classList.add("_hidden")
+    })
+  }
+  static enable = () => {
+    _$(".tag--cell--id").forEach(t => t.classList.remove("_hidden"))
+    BookData.data.cell_id_tag_enable = true
+    BookData.save()
+  }
+  static disable = () => {
+    _$(".tag--cell--id").forEach(t => t.classList.add("_hidden"))
+    BookData.data.cell_id_tag_enable = false
+    BookData.save()
+  }
+  static toggle = () => {
+    _$(".tag--cell--id").forEach(t => t.classList.toggle("_hidden"))
+    BookData.data.cell_id_tag_enable = !(BookData.data.cell_id_tag_enable)
+    BookData.save()
   }
 }
 
@@ -214,16 +584,16 @@ class Command {
           //  丁寧なカーソル当て
           _$("#import_export").value = null
           _$("#import_export").focus()
-          let strings = JSON.stringify(PageData.read(MasterData.data.currentPage), null, "  ")
+          let strings = JSON.stringify(PageData.read(BookData.data.currentPage), null, "  ")
           _$("#import_export").value = strings
         } else {
           let json
           try {
             json = JSON.parse(_$("#import_export").value)
             _$("#import_export").classList.add("_hidden")
-            PageData.write(json, `${STORAGE_NAME}_${Book.bookId}_${MasterData.data.currentPage}`)
+            PageData.write(json, BookData.data.currentPage, Book.bookId)
             PageData.load(Page.currentId())
-            MasterData.apply()
+            BookData.apply()
           } catch(e) {
             console.log("JSON.parseに失敗しました")
           }
@@ -263,6 +633,12 @@ class Command {
         Detail.toggle(_$("#map_detail"))
         return
       }
+      //  テスト用
+      if(code == "KeyR" && onCtrl) {
+        console.log(BookData.is_synchronizing)
+        console.log(BookData.data)
+        return
+      }
     })
   }
 
@@ -291,8 +667,8 @@ class Command {
           let subcmd = line[1]
           if(PAGE_ADDRESS.includes(subcmd)) {
             Page.specify(subcmd)
-            MasterData.data.currentPage = subcmd
-            MasterData.save()
+            BookData.data.currentPage = subcmd
+            BookData.save()
             e.currentTarget.value = null
           }
         } else {
@@ -332,11 +708,6 @@ class Command {
         _$(".content--cell--subject").forEach(c => c.innerHTML = null)
         is_correct = true
       }
-      if(tmp = /backup(.*)/.exec(command)) {
-        let backupName = tmp[1].trim()
-        localStorage.setItem(`${STORAGE_NAME}_${backupName}`, localStorage.getItem(STORAGE_NAME))
-        is_correct = true
-      }
     }
     //  ページ系
     if(action == '/') {
@@ -345,9 +716,9 @@ class Command {
       if(subcmd == '/') {
         let page = ary.shift()
         if(PAGE_ADDRESS.includes(page)) {
-          MasterData.data.pages[parseInt(page, 16)] = ary.join("")
-          MasterData.save()
-          MasterData.apply()
+          BookData.data.pages[parseInt(page, 16)] = ary.join("")
+          BookData.save()
+          BookData.apply()
           is_correct = true
         }
       }
@@ -360,15 +731,15 @@ class Command {
           let _right = parseInt(right, 16)
           let leftPage = PageData.read(left)
           let rightPage = PageData.read(right)
-          let leftName = MasterData.data.pages[_left]
-          let rightName = MasterData.data.pages[_right]
-          MasterData.data.pages[_right] = leftName
-          MasterData.data.pages[_left] = rightName
-          MasterData.save()
-          PageData.write(leftPage, `${STORAGE_NAME}_${right}`)
-          PageData.write(rightPage, `${STORAGE_NAME}_${left}`)
+          let leftName = BookData.data.pages[_left]
+          let rightName = BookData.data.pages[_right]
+          BookData.data.pages[_right] = leftName
+          BookData.data.pages[_left] = rightName
+          BookData.save()
+//          PageData.write(leftPage, `${STORAGE_NAME}_${right}`)
+//          PageData.write(rightPage, `${STORAGE_NAME}_${left}`)
           PageData.load(Page.currentId())
-          MasterData.apply()
+          BookData.apply()
           is_correct = true
         }
       }
@@ -381,13 +752,13 @@ class Command {
           let rightPage = PageData.read(right)
           let _left = parseInt(left, 16)
           let _right = parseInt(right, 16)
-          let leftName = MasterData.data.pages[_left]
-          let rightName = MasterData.data.pages[_right]
-          MasterData.data.pages[_right] = leftName
-          MasterData.save()
-          PageData.write(leftPage, `${STORAGE_NAME}_${right}`)
+          let leftName = BookData.data.pages[_left]
+          let rightName = BookData.data.pages[_right]
+          BookData.data.pages[_right] = leftName
+          BookData.save()
+//          PageData.write(leftPage, `${STORAGE_NAME}_${right}`)
           PageData.load(Page.currentId())
-          MasterData.apply()
+          BookData.apply()
           is_correct = true
         }
       }
@@ -395,11 +766,11 @@ class Command {
       if(subcmd == '-') {
         ary.forEach(p => {
           if(PAGE_ADDRESS.includes(p)) {
-            PageData.write(PageData.jsonFormat(), `${STORAGE_NAME}_${p}`)
-            MasterData.data.pages[parseInt(p, 16)] = ""
-            MasterData.save()
+//            PageData.write(PageData.jsonFormat(), `${STORAGE_NAME}_${p}`)
+            BookData.data.pages[parseInt(p, 16)] = ""
+            BookData.save()
             PageData.load(Page.currentId())
-            MasterData.apply()
+            BookData.apply()
             is_correct = true
           }
         })
@@ -756,366 +1127,8 @@ class Undo {
   }
 }
 
-//  ブック
-class Book {
-  static bookId = ""
-  static init = () => {
-    this.bookId = this.#urlParams()["book"] || ""
-  }
-  static #urlParams = () => {
-    let params = {}
-    let _params = (document.location.search || "").substring(1)
-    if(!_params) return params
-    _params.split("&").forEach( p => {
-       var set = p.split('=');
-       params[decodeURIComponent(set[0])] = decodeURIComponent(set[1] || null)
-      }
-    )
-    return params
-  }
-}
-
-//  ページ
-class Page {
-  list = []
-
-  //  現在開いているページのID（0-f）を返す
-  static currentId = () => {
-    return (/.$/.exec(this.current().id)[0])
-  }
-  //  現在開いているページのDoMを返す
-  static current = () => {
-    return _$q(".page.current")[0]
-  }
-
-  //  指定されたページにフォーカスを当てる
-  static focus = (dom) => {
-    this.unfocus()
-    dom.classList.add("current")
-  }
-  //  現在指定されているページのカレントを外す
-  static unfocus = () => {
-    let current = this.current()
-    if(current) current.classList.remove("current")
-  }
-
-  //  ページDoMを生成し画面に追加する
-  static add = (address = "0", title = null) => {
-    let page = document.createElement("div")
-    page.id = `page_${address}`
-    page.className = "page shadow"
-    _$("#right").appendChild(page)
-    let _address = document.createElement("div")
-    _address.className = "page--address"
-    _address.innerHTML = `${address}:`
-    _address.addEventListener("click", (e) => {
-      let id = /.?/.exec((e.currentTarget.innerHTML))[0]
-      Page.specify(id)
-    })
-    page.appendChild(_address)
-    let _title = document.createElement("div")
-    _title.setAttribute("contenteditable", true)
-    _title.className = "page--title"
-    _title.innerHTML = title
-    page.appendChild(_title)
-  }
-
-  //  指定されたページを開く（カレントにする、データ読む、なければ作る）
-  static specify = (page_num) => {
-    this.focus(_$(`#page_${page_num}`))
-    PageData.load(page_num)
-    //  セルのカーソル状態をデフォルトに戻す
-    Cell.defaultCursor()
-  }
-}
-
-//  マップ
-class Map {
-  static current = () => {
-    return _$q(".map.current")[0]
-  }
-  static focus = (dom) => {
-    this.unfocus()
-    dom.classList.add("current")
-    dom.classList.remove("_hidden")
-  }
-  static unfocus = () => {
-    let current = this.current()
-    if(current) {
-      current.classList.remove("current")
-      current.classList.add("_hidden")
-    }
-  }
-  //  大マップを表示する
-  static large = () => {
-    this.unfocus()
-    this.focus(_$("#map_large"))
-    this.refresh()
-  }
-  //  小マップを表示する
-  static small = () => {
-    this.unfocus()
-    this.focus(_$("#map_small"))
-    this.refresh()
-  }
-  //  大マップ／小マップを切り替える
-  static toggle = () => {
-    let map = this.current()
-    map && map.id == "map_large" ? this.small() : this.large()
-  }
-  //  画面上のマップを再描画
-  static refresh = () => {
-    if(this.current().id == "map_large") {
-      let small = _$("#map_small")
-      let large = _$("#map_large")
-      let area = small.firstChild
-      if(! area) return
-      this.removeKeeper(area)
-    }
-    if(this.current().id == "map_small") {
-      let large = _$("#map_large")
-      let small = _$("#map_small")
-      let small_area = small.firstChild
-      let area = Area.current()
-      if(! area) return
-      //  小マップ状態から小マップを開く時は、一度大マップのキーパーを解除する
-      if(small_area) this.removeKeeper(small_area)
-      //  大マップにあるエリアを小マップに移す
-      this.setKeeper(area)
-      small.appendChild(area)
-    }
-  }
-  // 指定されたエリアのDOMを抽出し、代わりにキーパーをセットする
-  static setKeeper = (area) => {
-    let keeper = document.createElement("div")
-    keeper.id = "area_keeper"
-    area.after(keeper)
-    return area
-  }
-  // キーパーの位置に指定されたDOMを挿入し、キーパーを削除する
-  static removeKeeper = (area) => {
-    let keeper = _$("#area_keeper")
-    if(! keeper) return
-    keeper.after(area)
-    keeper.remove()
-  }
-}
-
-//  エリア
-class Area {
-  static current = () => {
-    return _$q(".area.current")[0]
-  }
-  static focus = (dom) => {
-    this.unfocus()
-    dom.classList.add("current")
-  }
-  static unfocus = () => {
-    let current = this.current()
-    if(current) current.classList.remove("current")
-  }
-
-  static swap = (left, right) => {
-    if(!(left && right)) return false
-    let _l = /.$/.exec(left.id)[0]
-    let _r = /.$/.exec(right.id)[0]
-    ADDRESS.split("").forEach(a => {
-      let l_cell = _$(`#cell-${_l}${a}`)
-      let r_cell = _$(`#cell-${_r}${a}`)
-      Cell.swap(l_cell, r_cell)
-    })
-    return true
-  }
-}
-
-//  セル
-class Cell {
-  static current = () => {
-    return _$q(".cell.current")[0]
-  }
-  static defaultCursor = () => {
-    _$q(".current.cell").forEach((e) => e.classList.remove("current"))
-    Cell.focus(_$("#cell-dd"))
-  }
-  static focus = (dom) => {
-    this.unfocus()
-    dom.classList.add("current")
-  }
-  static unfocus = () => {
-    let current = this.current()
-    if(current) current.classList.remove("current")
-  }
-
-  static clear = (dom) => {
-    let subjectData = _$(".content--cell--_subject", dom)[0]
-    let noteData = _$(".content--cell--_note", dom)[0]
-    subjectData.value = null
-    noteData.value = null
-    Cell.refresh(dom)
-  }
-
-  static copy = (f_dom, t_dom) => {
-    if(!(f_dom && t_dom)) return false
-    //  要素を持つ
-    let fromSubjectData = _$(".content--cell--_subject", f_dom)[0]
-    let toSubjectData = _$(".content--cell--_subject", t_dom)[0]
-    let fromNoteData = _$(".content--cell--_note", f_dom)[0]
-    let toNoteData = _$(".content--cell--_note", t_dom)[0]
-
-    //  値を交換
-    toSubjectData.value = fromSubjectData.value
-    toNoteData.value = fromNoteData.value
-
-    //  表示更新
-    Cell.refresh(t_dom)
-    return true
-  }
-
-  static swap = (l_dom, r_dom) => {
-    if(!(l_dom && r_dom)) return false
-    //  要素を持つ
-    let leftSubjectData = _$(".content--cell--_subject", l_dom)[0]
-    let rightSubjectData = _$(".content--cell--_subject", r_dom)[0]
-    let leftNoteData = _$(".content--cell--_note", l_dom)[0]
-    let rightNoteData = _$(".content--cell--_note", r_dom)[0]
-
-    //  値を交換
-    let _SubjectData = leftSubjectData.value
-    let _NoteData = leftNoteData.value
-    leftSubjectData.value = rightSubjectData.value
-    leftNoteData.value = rightNoteData.value
-    rightSubjectData.value = _SubjectData
-    rightNoteData.value = _NoteData
-
-    //  表示更新
-    Cell.refresh(l_dom)
-    Cell.refresh(r_dom)
-    return true
-  }
-
-  //  表示更新
-  static refresh = (dom) => {
-    let subject = _$(".content--cell--subject", dom)[0]
-    let _subject = _$(".content--cell--_subject", dom)[0]
-    let note = _$(".content--cell--note", dom)[0]
-    let _note = _$(".content--cell--_note", dom)[0]
-    subject.innerHTML = _subject.value
-    note.innerHTML = _note.value
-    //  アイコン表示状態の更新
-    if(_note.value) {
-      dom.classList.add("status--with--note")
-    } else {
-      dom.classList.remove("status--with--note")
-    }
-  }
-
-  static focusSubject = (dom) => {
-    let wrap = dom
-    let subject = _$(".content--cell--subject", wrap)[0]
-    let _subject = _$(".content--cell--_subject", wrap)[0]
-    subject.classList.add("_hidden")
-    _subject.classList.remove("_hidden")
-    _subject.focus()
-    wrap.classList.add("status--overwrite")
-  }
-  static blurSubject = (dom) => {
-    let _subject = dom
-    let subject = _$(".content--cell--subject", _subject.parentNode)[0]
-    subject.innerHTML = _subject.value
-    subject.classList.remove("_hidden")
-    _subject.classList.add("_hidden")
-    Cell.refresh(subject.closest(".cell"))
-    _subject.closest(".content--cell--wrap--subject").classList.remove("status--overwrite")
-  }
-  static changeSubject = (dom) => {
-    PageData.save(Page.currentId())
-  }
-  static focusNote = (dom) => {
-    let wrap = dom
-    let note = _$(".content--cell--note", wrap)[0]
-    let _note = _$(".content--cell--_note", wrap)[0]
-    note.classList.add("_hidden")
-    _note.classList.remove("_hidden")
-    _note.focus()
-    wrap.classList.add("status--overwrite")
-  }
-  static blurNote = (dom) => {
-    let _note = dom
-    let note = _$(".content--cell--note", _note.parentNode)[0]
-    note.innerHTML = _note.value
-    note.classList.remove("_hidden")
-    _note.classList.add("_hidden")
-    Cell.refresh(note.closest(".cell"))
-    _note.closest(".content--cell--wrap--note").classList.remove("status--overwrite")
-  }
-  static changeNote = (dom) => {
-    PageData.save(Page.currentId())
-  }
-}
-
-//  セルのIDタグ管理（画面初期化／表示／非表示）。
-class CellIdTag {
-  static init = () => {
-    _$(".tag--cell--id").forEach( t => {
-      let value = /..$/.exec(t.parentNode.id)[0]
-      t.innerHTML = value
-      if((MasterData.data.cell_id_tag_enable || false) == false) t.classList.add("_hidden")
-    })
-  }
-  static enable = () => {
-    _$(".tag--cell--id").forEach(t => t.classList.remove("_hidden"))
-    MasterData.data.cell_id_tag_enable = true
-    MasterData.save()
-  }
-  static disable = () => {
-    _$(".tag--cell--id").forEach(t => t.classList.add("_hidden"))
-    MasterData.data.cell_id_tag_enable = false
-    MasterData.save()
-  }
-  static toggle = () => {
-    _$(".tag--cell--id").forEach(t => t.classList.toggle("_hidden"))
-    MasterData.data.cell_id_tag_enable = !(MasterData.data.cell_id_tag_enable)
-    MasterData.save()
-  }
-}
-
-
-//  初期化関数。
-function init() {
-  //  画面上に枠だけ作る
-  Display.init()
-  Display.fixedPanelSize()
-  window.addEventListener("resize", Display.resizeWindow)
-
-  //  これは余計な処理
-  _$(".cell").forEach(cell => cell.addEventListener("click", cell_action))
-
-  //  ブックの初期化
-  Book.init()
-
-  //  データ読み込み。ここで「主データ」をまずは読み、次に現在ページを読むようにする。
-  if(! MasterData.load()) MasterData.init()
-  let currentPage = MasterData.data.currentPage || 0
-  Page.specify(currentPage)
-
-  //  セルタグの値を設定する
-  CellIdTag.init()
-
-  //  コマンド枠を初期化する。
-  Command.init()
-  command.focus()
-}
-window.onload = init;
 
 //  その他、整理ついていないもの。  {
-
-//  セルクリック時の処理。あとでいい。
-function cell_action(e) {
-//    e.currentTarget.classList.toggle("cell--theme")
-//    PageData.save()
-//  _$("#notepad").classList.remove("_hidden")
-}
-
 
 function textareaAdjustment(e) {
   // textarea要素のpaddingのY軸(高さ)
@@ -1212,4 +1225,38 @@ class Detail {
     }
   }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+
+//  初期化関数。
+//  ブックデータを読み込んだ後に実行。
+function init() {
+
+  //  画面上に枠だけ作る
+  Display.init()
+  Display.fixedPanelSize()
+  window.addEventListener("resize", Display.resizeWindow)
+
+  //  ブックの初期化
+  Book.init()
+  Book.bookId = "FIRST"
+
+  //  セルタグの値を設定する
+  CellIdTag.init()
+
+  //  コマンド枠を初期化する。
+  Command.init()
+  command.focus()
+
+  let currentPage = BookData.data.currentPage || 0
+  Page.specify(currentPage)
+
+  //  ブックデータを画面に反映。
+  BookData.apply()
+}
+
+//  処理の始まり。
+//  最初にブックデータを読み込むところから始まる。
+//  その後、通常のinit処理を実行。
+window.onload = () => {BookData.load("FIRST", init)};
 

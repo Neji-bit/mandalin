@@ -22,7 +22,7 @@ services:
       - POSTGRES_PASSWORD=passw0rd
       - POSTGRES_USER=postgres
     ports:
-      - "3000:3000"
+      - 3000:3000
     depends_on:
       - db
 volumes:

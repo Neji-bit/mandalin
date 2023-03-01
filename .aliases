@@ -32,3 +32,18 @@ alias _ps="docker exec -it -w \${_RAILS_DIR} \${_DOCKER_CONTAINER} bash -c 'ps -
 # browser-sync操作用
 alias _bs_up="docker exec \${_DOCKER_CONTAINER} /share/bin/bs_up.sh"
 alias _bs_down="docker exec \${_DOCKER_CONTAINER} /share/bin/bs_down.sh"
+
+# サイトが立ち上がったかを確認する。
+function _ping() {
+  while ; do
+    curl -m 3 localhost:3000/mandala > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+      echo "Success!"
+      break
+    else
+      echo "Await..."
+      sleep 3
+    fi
+  done
+}
+

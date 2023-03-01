@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
-  get 'mandala', to: "mandala#main"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
   # root "articles#index"
+  mount API => '/'
+  get 'mandala', to: "mandala#main"
 end
