@@ -161,6 +161,17 @@ input {
   s {
     text-decoration: line-through 2px solid red;
   }
+  u {
+    text-decoration: underline 2px solid deepskyblue;
+  }
+  table {
+    border-collapse: collapse;
+  }
+  td {
+    border-color: black;
+    border: 1px solid;
+    padding: 4px 12px 4px 12px;
+  }
 }
 
 .cell--common {
@@ -196,6 +207,7 @@ input {
 	justify-content: center;
 	align-items: center;
 	overflow: hidden;
+  position: relative;
 }
 
 .content--cell--subject {
@@ -291,6 +303,7 @@ input {
     height: calc(100% - 49.56px);
     padding: 0px;
     margin: 0px;
+    position: relative;
   }
   .content--cell--note {
     //  background: pink;
@@ -420,4 +433,47 @@ input {
 #map_detail_right {
 }
 //  }
+
+
+//  ノートにアイコンを貼る
+//  ノート本体にimgタグを貼るのはナンセンス。wrap層に貼りたい。
+.content--cell--subject--sticker {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  .sticker {
+    position: relative;
+    background: transparent;
+    left: 80%;
+    top: 30%;
+    width: 0%;
+    height: 30%;
+    float: left;
+    img {
+      height: 100%;
+      mix-blend-mode: multiply;
+    }
+  }
+}
+
+.content--cell--note--sticker {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+  .sticker {
+    position: relative;
+    background: transparent;
+    left: 80%;
+    top: 30%;
+    width: 0%;
+    height: 30%;
+    float: left;
+    img {
+      mix-blend-mode: multiply;
+      height: 100%;
+    }
+  }
+}
 

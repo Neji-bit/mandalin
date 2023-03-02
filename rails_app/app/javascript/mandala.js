@@ -2,6 +2,7 @@
 const ADDRESS = "wersdfzxc"
 const PAGE_ADDRESS = "0123456789abcdef"
 const STORAGE_NAME = "mandala"
+const DEFAULT_BOOK_NAME = "20230302"
 //  }
 
 // JQueryライクのDOM検索メソッドを自前で実装。  {
@@ -122,7 +123,14 @@ class PageData {
       }
       _$(".content--cell--_note", cell)[0].value = note.text || ""
       _$(".content--cell--note", cell)[0].innerHTML = _$(".content--cell--_note", cell)[0].value
+
+      _$(".content--cell--subject--sticker", cell)[0].innerHTML = note.stickerSubject || ""
+      _$(".content--cell--note--sticker", cell)[0].innerHTML = note.stickerNote || ""
     })
+
+    //  ステッカーにアクションを設定する
+    _$(".sticker").forEach(s => { Sticker.setActions(s) })
+
     BookData.apply()
     //  セルの表示更新
     _$(".cell").forEach(e => { Cell.refresh(e) })
@@ -183,7 +191,9 @@ class PageData {
         "id": cell.id, 
         "showName": _$(".content--cell--_subject", cell)[0].value || "",
         "class": cell.classList.value || "",
-        "text": _$(".content--cell--_note", cell)[0].value || ""
+        "text": _$(".content--cell--_note", cell)[0].value || "",
+        "stickerSubject": _$(".content--cell--subject--sticker", cell)[0].innerHTML || "",
+        "stickerNote": _$(".content--cell--note--sticker", cell)[0].innerHTML || ""
       })
     })
     return page
@@ -639,6 +649,56 @@ class Command {
         console.log(BookData.data)
         return
       }
+      //  ステッカー操作
+      //  拡大
+      if(code == "Period") {
+        if(Sticker.currentSticker) {
+          let h = Sticker.currentSticker.style.height || "20%"
+          h = parseInt(h) + 5
+          Sticker.currentSticker.style.height = h + "%"
+        }
+      }
+      //  縮小
+      if(code == "Comma") {
+        if(Sticker.currentSticker) {
+          let h = Sticker.currentSticker.style.height || "20%"
+          h = parseInt(h) - 5
+          if(h < 10) h = 10
+          Sticker.currentSticker.style.height = h + "%"
+        }
+      }
+      //  左回転
+      if(code == "KeyK") {
+        if(Sticker.currentSticker) {
+          let img = _$q("img", Sticker.currentSticker)[0]
+          let h = img.style.transform || "rotate(0deg)"
+          h = (parseInt(h.match(/-?[0-9]+/)[0]) - 10) % 360
+          img.style.transform = `rotate(${h}deg)`
+        }
+      }
+      //  右回転
+      if(code == "KeyL") {
+        if(Sticker.currentSticker) {
+          let img = _$q("img", Sticker.currentSticker)[0]
+          let h = img.style.transform || "rotate(0deg)"
+          h = (parseInt(h.match(/-?[0-9]+/)[0]) + 10) % 360
+          img.style.transform = `rotate(${h}deg)`
+        }
+      }
+      //  削除
+      if(code == "Backspace") {
+        if(Sticker.currentSticker) { Sticker.currentSticker.remove() }
+      }
+      //  一括表示／非表示
+      if(code == "KeyN" && onCtrl) {
+        if(Sticker.isShow) {
+          _$(".sticker").forEach((s) => {s.classList.add("_hidden")})
+          Sticker.isShow = false
+        } else {
+          _$(".sticker").forEach((s) => {s.classList.remove("_hidden")})
+          Sticker.isShow = true
+        }
+      }
     })
   }
 
@@ -834,6 +894,25 @@ class Command {
         }
       }
     }
+    //  ステッカー系
+    if(action == 'k') {
+      let cellId = ary.shift() + ary.shift()
+      let cell = _$(`#cell-${cellId}`)
+      if(cell) {
+        let noteSticker = _$(".content--cell--note--sticker", cell)[0]
+        Sticker.add(noteSticker, ary.join(""))
+        is_correct = true
+      }
+    }
+    if(action == 'K') {
+      let cellId = ary.shift() + ary.shift()
+      let cell = _$(`#cell-${cellId}`)
+      if(cell) {
+        let subjectSticker = _$(".content--cell--subject--sticker", cell)[0]
+        Sticker.add(subjectSticker, ary.join(""))
+        is_correct = true
+      }
+    }
     //  コマンドが正常に処理されたら、保存＆履歴＆Undoに入れる。
     if(is_correct) {
       PageData.save(Page.currentId())
@@ -866,6 +945,9 @@ class Display {
     let wrapSubject = document.createElement("div")
     wrapSubject.className = "content--cell--wrap--subject"
 
+    let subjectSticker = document.createElement("div")
+    subjectSticker.className = "content--cell--subject--sticker"
+
     let subject = document.createElement("div")
     subject.className = "content--cell--subject"
 
@@ -878,6 +960,9 @@ class Display {
     let wrapNote = document.createElement("div")
     wrapNote.className = "content--cell--wrap--note"
 
+    let noteSticker = document.createElement("div")
+    noteSticker.className = "content--cell--note--sticker"
+
     let note = document.createElement("div")
     note.className = "content--cell--note"
 
@@ -888,13 +973,17 @@ class Display {
     //    Cell            cell cell--common
     //      tag             teg--cell--id
     //      wrapSubject     content--cell--wrap--subject
+    //        subjectSticker  content--cell--subject--sticker
     //        subject         content--cell--subject
     //        _subject        content--cell--_subject
     //      wrapNote        content--cell--wrap--note
+    //        noteSticker     content--cell--note--sticker
     //        note            content--cell--note
     //        _note           content--cell--_note
+    wrapSubject.appendChild(subjectSticker)
     wrapSubject.appendChild(subject)
     wrapSubject.appendChild(_subject)
+    wrapNote.appendChild(noteSticker)
     wrapNote.appendChild(note)
     wrapNote.appendChild(_note)
     cell.appendChild(tag)
@@ -1239,7 +1328,7 @@ function init() {
 
   //  ブックの初期化
   Book.init()
-  Book.bookId = "FIRST"
+  Book.bookId = DEFAULT_BOOK_NAME
 
   //  セルタグの値を設定する
   CellIdTag.init()
@@ -1258,5 +1347,52 @@ function init() {
 //  処理の始まり。
 //  最初にブックデータを読み込むところから始まる。
 //  その後、通常のinit処理を実行。
-window.onload = () => {BookData.load("FIRST", init)};
+window.onload = () => {BookData.load(DEFAULT_BOOK_NAME, init)};
+
+class Sticker {
+  static currentSticker = null
+  static isShow = true
+  //  ステッカーを貼る
+  static add(div, src) {
+    let img = document.createElement('img')
+    //  リソースの読み込みに成功した場合のみ、ステッカーを作成
+    img.onload = () => {
+      let sticker = document.createElement('div')
+      sticker.classList.add("sticker")
+      img.setAttribute("draggable", false)
+      sticker.appendChild(img)
+      div.appendChild(sticker)
+      Sticker.setActions(sticker)
+    }
+    img.setAttribute("src", src)
+  }
+  static setActions = (sticker) => {
+    sticker.addEventListener("mousedown", (e) => {
+      Sticker.currentSticker = e.currentTarget
+    })
+    sticker.addEventListener("mouseup", (e) => {
+      Sticker.currentSticker = null
+    })
+    sticker.addEventListener("mouseleave", (e) => {
+      Sticker.currentSticker = null
+    })
+    sticker.addEventListener("mousemove", (e) => {
+      if(e.buttons) {
+        let ct = e.currentTarget
+        let rc = ct.getBoundingClientRect()
+        let p = ct.closest(".content--cell--subject--sticker") || ct.closest(".content--cell--note--sticker")
+        let rp = p.getBoundingClientRect()
+        let i = _$q("img", ct)[0]
+        let ri = i.getBoundingClientRect()
+
+        let altt = e.clientY - rp.top - (ri.height / 2)
+        let altl = e.clientX - rp.left - (ri.width / 2)
+
+        //  最後にパーセンテージ表記にする
+        ct.style.top = `${(altt / rp.height) * 100}%`
+        ct.style.left = `${(altl / rp.width) * 100}%`
+      }
+    })
+  }
+}
 
