@@ -60,6 +60,7 @@ class BookData {
   //  なければ初期化／保存する。
   static init = (bookId = Book.bookId) => {
     let json = {}
+    json.title = "__blank__"
     json.pages = []
     PAGE_ADDRESS.split("").forEach(a => {
       json.pages.push("")
@@ -85,6 +86,7 @@ class BookData {
 
   //  メモリ上のブックデータをアプリに反映する。
   static apply = () => {
+    _$("#top").innerHTML = this.data.title
     this.data.pages.forEach((page, index) => {
       _$("#right").children[index].children[1].innerHTML = page
     })
@@ -256,7 +258,8 @@ class Page {
       let id = /.?/.exec((e.currentTarget.innerHTML))[0]
       Page.specify(id)
       BookData.data.currentPage = id
-      BookData.save()
+      //  TODO: ここでsaveすると、なぜかBookData.dataの内容が巻き戻る形でDBに保存される。ひとまず保存をやめる。
+      //  BookData.save()
     })
     page.appendChild(_address)
     let _title = document.createElement("div")
@@ -264,7 +267,9 @@ class Page {
     _title.className = "page--title"
     _title.innerHTML = title
     _title.addEventListener("blur", (e) => {
-      //  ページ名を更新したら、ブックデータを更新する（後回し）
+      let page = e.currentTarget.closest(".page").id.match(/.$/)
+      BookData.data.pages[parseInt(page, 16)] = e.currentTarget.innerHTML
+      BookData.save()
     })
     page.appendChild(_title)
   }
@@ -436,6 +441,20 @@ class Cell {
     leftNoteData.value = rightNoteData.value
     rightSubjectData.value = _SubjectData
     rightNoteData.value = _NoteData
+
+    //  ステッカー分
+    let leftSubjectSticker = _$(".content--cell--subject--sticker", l_dom)[0]
+    let rightSubjectSticker = _$(".content--cell--subject--sticker", r_dom)[0]
+    let leftNoteSticker = _$(".content--cell--note--sticker", l_dom)[0]
+    let rightNoteSticker = _$(".content--cell--note--sticker", r_dom)[0]
+
+    let _sticker = null
+    _sticker = leftSubjectSticker.innerHTML
+    leftSubjectSticker.innerHTML = rightSubjectSticker.innerHTML
+    rightSubjectSticker.innerHTML = _sticker
+    _sticker = leftNoteSticker.innerHTML
+    leftNoteSticker.innerHTML = rightNoteSticker.innerHTML
+    rightNoteSticker.innerHTML = _sticker
 
     //  表示更新
     Cell.refresh(l_dom)
@@ -645,7 +664,6 @@ class Command {
       }
       //  テスト用
       if(code == "KeyR" && onCtrl) {
-        console.log(BookData.is_synchronizing)
         console.log(BookData.data)
         return
       }
@@ -1014,7 +1032,8 @@ class Display {
     })
 
     //  エリアの中央セルを装飾する
-    _$("*[id^=cell][id$=d]").forEach(cell => cell.classList.add("cell--theme"))
+    "wersfzxc".split("").forEach((c) => {_$(`#cell-${c}d`).classList.add("cell--silver")})
+    _$("#cell-dd").classList.add("cell--gold")
 
     //  ページ枠を作る
     PAGE_ADDRESS.split("").forEach(address => {
@@ -1031,13 +1050,41 @@ class Display {
 
     //  セルへの入力機能。
     //    表示（div）と入力（textarea）の二重構造。
+    //    wrap をダブルクリックされたら _subject を表示し、wrap のクリック操作を一時受け付けなくする。
+    //    _subject のフォーカスが外れたら、subject を表示し、wrap のクリック操作を受け付けるように戻す。
+    _$(".content--cell--wrap--subject").forEach(s => { s.addEventListener("dblclick", (e) => {
+      Cell.focusSubject(e.currentTarget)
+      let w = e.currentTarget
+      w.style.pointerEvents = "none"
+      }) })
+    _$(".content--cell--_subject").forEach(s => { s.addEventListener("blur", (e) => {
+      Cell.blurSubject(e.currentTarget)
+      e.currentTarget.closest(".content--cell--wrap--subject").style.pointerEvents = "initial"
+      }) })
+    _$(".content--cell--_subject").forEach(s => { s.addEventListener("change", (e) => {
+      Cell.changeSubject(e.currentTarget)
+      }) })
+    _$(".content--cell--_subject").forEach(s => { s.addEventListener("dblclick", (e) => {
+        e.currentTarget.blur()
+        e.stopPropagation()
+      }) })
 
-    _$(".content--cell--wrap--subject").forEach(s => { s.addEventListener("dblclick", (e) => { Cell.focusSubject(e.currentTarget) }) })
-    _$(".content--cell--_subject").forEach(s => { s.addEventListener("blur", (e) => { Cell.blurSubject(e.currentTarget) }) })
-    _$(".content--cell--_subject").forEach(s => { s.addEventListener("change", (e) => { Cell.changeSubject(e.currentTarget) }) })
-    _$(".content--cell--wrap--note").forEach(n => { n.addEventListener("dblclick", (e) => { Cell.focusNote(e.currentTarget) }) })
-    _$(".content--cell--_note").forEach(n => { n.addEventListener("blur", (e) => { Cell.blurNote(e.currentTarget) }) })
-    _$(".content--cell--_note").forEach(n => { n.addEventListener("change", (e) => { Cell.changeNote(e.currentTarget) }) })
+    //  ノートのクリック処理。 セルと同じ。
+    _$(".content--cell--wrap--note").forEach(n => { n.addEventListener("dblclick", (e) => {
+      Cell.focusNote(e.currentTarget)
+      e.currentTarget.style.pointerEvents = "none"
+      }) })
+    _$(".content--cell--_note").forEach(n => { n.addEventListener("blur", (e) => {
+      Cell.blurNote(e.currentTarget)
+      e.currentTarget.closest(".content--cell--wrap--note").style.pointerEvents = "initial"
+      }) })
+    _$(".content--cell--_note").forEach(s => { s.addEventListener("change", (e) => {
+      Cell.changeNote(e.currentTarget)
+      }) })
+    _$(".content--cell--_note").forEach(s => { s.addEventListener("dblclick", (e) => {
+        e.currentTarget.blur()
+        e.stopPropagation()
+      }) })
 
     //- 改行に合わせてテキストエリアのサイズ変更
     _$(".content--cell--_subject").forEach(s => {
@@ -1046,8 +1093,12 @@ class Display {
     })
 
     //  突き抜けてきたクリックイベントは全部コマンドラインへのフォーカスに当てる。
-    _$q("body")[0].addEventListener("click", () => {
+    _$q("body")[0].addEventListener("click", (e) => {
       _$("#command").focus()
+    })
+    //  トップ（＝ブックタイトル）のクリックは、突き抜けさせない。
+    _$("#top").addEventListener("click", (e) => {
+      e.stopPropagation()
     })
   }
 
@@ -1342,6 +1393,13 @@ function init() {
 
   //  ブックデータを画面に反映。
   BookData.apply()
+
+  //  ブックタイトルを保存。
+  _$("#top").setAttribute("contenteditable", true)
+  _$("#top").addEventListener("blur", (e) => {
+    BookData.data.title = e.currentTarget.innerHTML
+    BookData.save()
+  })
 }
 
 //  処理の始まり。

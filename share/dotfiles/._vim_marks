@@ -85,4 +85,5 @@ L	function textareaAdjustment(e) {			/rails_app/app/javascript/mandala.js
 
 # ここからスタイルシート
 M	Sassy	                                /rails_app/app/assets/stylesheets/application.scss
+N	class Util	                          /rails_app/app/helpers/util.rb
 

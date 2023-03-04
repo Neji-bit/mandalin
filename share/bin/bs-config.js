@@ -27,7 +27,7 @@ module.exports = {
         "ignoreInitial": true
     },
     "server": false,
-    "proxy": "localhost:4000",
+    "proxy": "http://localhost:4000",
     "port": 3000,
     "middleware": false,
     "serveStatic": [],
@@ -49,7 +49,7 @@ module.exports = {
     "rewriteRules": [],
     "open": "local",
     "browser": "default",
-    "cors": false,
+    "cors": true,
     "xip": false,
     "hostnameSuffix": false,
     "reloadOnRestart": false,

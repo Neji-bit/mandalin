@@ -41,6 +41,9 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
+  # Add it for Devise.
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
@@ -67,4 +70,11 @@ Rails.application.configure do
 
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
+
+  # browser-sync 使用時に、必要になるかもしれない。HTTP_ORIGIN不一致を回避できる。
+  # config.action_controller.forgery_protection_origin_check = false
+
+  # letter_opener 用設定。
+  config.action_mailer.default_url_options = {  host: 'localhost', port: 3000 }
+  config.action_mailer.delivery_method = :letter_opener
 end

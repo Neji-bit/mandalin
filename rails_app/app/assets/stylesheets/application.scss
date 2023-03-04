@@ -228,19 +228,29 @@ input {
   font-size: 13px;
   font-family: "Lucida Console", Courier, monospace;
   overflow: hidden;
+  //  _subjectフォーカス時「親であるwrapを投下してきたイベントを捕まえる」ための設定
+  pointer-events: auto;
 }
 .content--cell--_note {
   overflow: hidden;
   background: transparent;
+  //  _noteフォーカス時「親であるwrapを投下してきたイベントを捕まえる」ための設定
+  pointer-events: auto;
 }
 :focus {
   outline: none;
 }
 
-.cell--theme {
+.cell--gold {
   background: linear-gradient(160deg, navajowhite, goldenrod);
   .content--cell--subject {
     font-size: 16px;
+  }
+}
+.cell--silver {
+  background: linear-gradient(160deg, whitesmoke, silver);
+  .content--cell--subject {
+    font-size: 14px;
   }
 }
 
@@ -259,11 +269,17 @@ input {
     padding: 10px;
     font-size: 14px;
   }
-  .cell--theme .content--cell--subject {
+  .cell--gold .content--cell--subject {
     font-size: 18px;
   }
-  .cell--theme .content--cell--_subject {
+  .cell--gold .content--cell--_subject {
     font-size: 18px;
+  }
+  .cell--silver .content--cell--subject {
+    font-size: 16px;
+  }
+  .cell--silver .content--cell--_subject {
+    font-size: 16px;
   }
 }
 
@@ -292,11 +308,17 @@ input {
     padding: 10px;
     font-size: 16px;
   }
-  .cell--theme .content--cell--subject {
+  .cell--gold .content--cell--subject {
     font-size: 20px;
   }
-  .cell--theme .content--cell--_subject {
+  .cell--gold .content--cell--_subject {
     font-size: 20px;
+  }
+  .cell--silver .content--cell--subject {
+    font-size: 18px;
+  }
+  .cell--silver .content--cell--_subject {
+    font-size: 18px;
   }
   .content--cell--wrap--note {
     //  background: green;
@@ -314,6 +336,17 @@ input {
     font-size: 14px;
     overflow: scroll;
     font-family: "Lucida Console", Courier, monospace;
+    ul {
+      margin-block: 0px;
+      padding-inline-start: 20px;
+    }
+    ol {
+      margin-block: 0px;
+      padding-inline-start: 32px;
+    }
+    li {
+      padding: 4px 0 4px 0;
+    }
   }
   .content--cell--_note {
     //  background: silver;
@@ -353,7 +386,7 @@ input {
 //  outline: none;
 }
 
-.cell--theme {
+.cell--gold {
   background: linear-gradient(160deg, navajowhite, goldenrod);
   font-size: large;
   font-family: "Lucida Console", Courier, monospace;
@@ -452,7 +485,7 @@ input {
     float: left;
     img {
       height: 100%;
-      mix-blend-mode: multiply;
+//      mix-blend-mode: multiply;
     }
   }
 }
@@ -471,7 +504,7 @@ input {
     height: 30%;
     float: left;
     img {
-      mix-blend-mode: multiply;
+//      mix-blend-mode: multiply;
       height: 100%;
     }
   }

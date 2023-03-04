@@ -23,6 +23,7 @@ alias _logs="docker logs \${_DOCKER_CONTAINER}"
 
 # コンテナ操作用_作業
 alias _bash="docker exec -it -w \${_RAILS_DIR} \${_DOCKER_CONTAINER} bash"
+alias _pg_bash="docker exec -it mandala_postgres bash"
 
 # rails操作用
 alias _rails_up="docker exec \${_DOCKER_CONTAINER} /share/bin/rails_up.sh"
