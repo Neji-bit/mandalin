@@ -510,3 +510,21 @@ input {
   }
 }
 
+#account {
+  position: absolute;
+  right: 100px;
+  padding: 2px 10px 2px 10px;
+  border-radius: 8px;
+  font-weight: normal;
+}
+
+#logout {
+  position: absolute;
+  right: 20px;
+  border: 1px solid black;
+  padding: 2px 10px 2px 10px;
+  border-radius: 8px;
+  background: linear-gradient(160deg, white, silver);
+  font-weight: normal;
+}
+

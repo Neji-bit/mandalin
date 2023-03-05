@@ -87,3 +87,14 @@ L	function textareaAdjustment(e) {			/rails_app/app/javascript/mandala.js
 M	Sassy	                                /rails_app/app/assets/stylesheets/application.scss
 N	class Util	                          /rails_app/app/helpers/util.rb
 
+O	.	/rails_app/app/views/mandala/main.html.slim
+
+P	Rails.application.routes	/rails_app/config/routes.rb
+Q	class ApplicationController	/rails_app/app/controllers/application_controller.rb
+R	class MandalaController	/rails_app/app/controllers/mandala_controller.rb
+S	class API < Grape::API	/rails_app/app/api/api.rb
+T	class Root < Grape::API	/rails_app/app/api/resources/V1/root.rb
+U	class Books < Grape::API	/rails_app/app/api/resources/V1/books.rb
+V	class Pages < Grape::API	/rails_app/app/api/resources/V1/pages.rb
+
+

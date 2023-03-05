@@ -1,7 +1,12 @@
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 #backboard.backboard
   #top.panel.panel--top
-    | マンダラチャート
+    #book_title
+      | マンダラチャート
+    #account
+      = current_user.email
+    #logout
+      | Logout
 
   #middle.panel.panel--middle
     #left.panel.panel--left

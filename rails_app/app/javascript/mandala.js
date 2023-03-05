@@ -86,7 +86,7 @@ class BookData {
 
   //  メモリ上のブックデータをアプリに反映する。
   static apply = () => {
-    _$("#top").innerHTML = this.data.title
+    _$("#book_title").innerHTML = this.data.title
     this.data.pages.forEach((page, index) => {
       _$("#right").children[index].children[1].innerHTML = page
     })
@@ -1395,10 +1395,18 @@ function init() {
   BookData.apply()
 
   //  ブックタイトルを保存。
-  _$("#top").setAttribute("contenteditable", true)
-  _$("#top").addEventListener("blur", (e) => {
+  _$("#book_title").setAttribute("contenteditable", true)
+  _$("#book_title").addEventListener("blur", (e) => {
     BookData.data.title = e.currentTarget.innerHTML
     BookData.save()
+  })
+
+  //  ログアウト機能
+  _$("#logout").addEventListener("click", (e) => {
+    axios.delete(`http://localhost:3000/users/sign_out`)
+    .then(() => {
+      location.reload()
+    })
   })
 }
 
