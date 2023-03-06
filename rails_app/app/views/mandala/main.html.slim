@@ -4,9 +4,10 @@
     #book_title
       | マンダラチャート
     #account
-      = current_user.email
+      = @read_only ? "ReadOnly" : current_user.email
     #logout
       | Logout
+    #app_status._hidden data-mode="#{@read_only ? 'readonly' : 'normal'}"
 
   #middle.panel.panel--middle
     #left.panel.panel--left

@@ -2,8 +2,11 @@ module Resources
   module V1
     class Root < Grape::API
       # Devise認証を通っている時だけ、APIを使える。
+      # 認証が不要なAPIについては 'route_setting :auth, disabled: true' を設定すること。
       before do
-        error!("Unauthorized.", 401) unless current_user
+        unless (route.settings&.[](:auth)&.[](:disabled)) then
+          error!("Unauthorized.", 401) unless current_user
+        end
       end
 
       version 'v1'

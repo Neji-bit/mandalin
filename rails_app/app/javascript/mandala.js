@@ -3,6 +3,18 @@ const ADDRESS = "wersdfzxc"
 const PAGE_ADDRESS = "0123456789abcdef"
 const STORAGE_NAME = "mandala"
 const DEFAULT_BOOK_NAME = "20230302"
+const BOOK_ID = urlParams()["book"]
+const READONLY = document.getElementById("app_status").dataset.mode == "readonly"
+function urlParams(url = location.href) {
+  let params = url.split("?")[1] || ""
+  let array = params.split("&")
+  let result = {}
+  array.forEach((p) => {
+    let kv = p.split("=")
+    if(kv[0]) result[kv[0]] = kv[1] || ""
+  })
+  return result
+}
 //  }
 
 // JQueryライクのDOM検索メソッドを自前で実装。  {
@@ -39,7 +51,7 @@ class BookData {
   //  処理中、「同期中フラグ」を立てる。
   static load = (bookId = Book.bookId, callback) => {
     //  すでに同期中だったら、例外を投げる。
-    if(this.is_synchronizing) throw new Error("Already syncc now.");
+    if(this.is_synchronizing) throw new Error("Already sync now.");
     //  同期が開始したら、同期中フラグを立てる。
     this.is_synchronizing = true
     //  APIからデータを読み込む。
@@ -73,9 +85,11 @@ class BookData {
   //  非同期書き込み。
   //  呼び出しっぱなしでOK。
   static save = (bookId = Book.bookId, proc = null) => {
+    if (READONLY) return
     let json = {}
     json.text = JSON.stringify(this.data)
     //  UPDATE でNGだったら INSERT .
+    //  →いや、ユースケース的にアプリ中にBookを追加することはないはず。後で外そう。
     axios.put(`http://localhost:3000/api/v1/book/${bookId}`, json)
     .then(() => {
     })
@@ -153,8 +167,10 @@ class PageData {
     .catch((data) => {
       this.data = this.jsonFormat()
       this.apply(this.data)
-      let payload = {text: JSON.stringify(this.data)}
-      let result = axios.post(`http://localhost:3000/api/v1/book/${bookId}/page/${pageId}`, payload)
+      if(! READONLY) {
+        let payload = {text: JSON.stringify(this.data)}
+        let result = axios.post(`http://localhost:3000/api/v1/book/${bookId}/page/${pageId}`, payload)
+      }
       this.is_synchronizing = false
     })
   }
@@ -171,6 +187,7 @@ class PageData {
 
   //  ストレージへの書き込み。
   static write = (json, pageId, bookId) => {
+    if (READONLY) return
     let payload = {text: JSON.stringify(json)}
     axios.put(`http://localhost:3000/api/v1/book/${bookId}/page/${pageId}`, payload)
     .catch(() => {
@@ -1052,39 +1069,41 @@ class Display {
     //    表示（div）と入力（textarea）の二重構造。
     //    wrap をダブルクリックされたら _subject を表示し、wrap のクリック操作を一時受け付けなくする。
     //    _subject のフォーカスが外れたら、subject を表示し、wrap のクリック操作を受け付けるように戻す。
-    _$(".content--cell--wrap--subject").forEach(s => { s.addEventListener("dblclick", (e) => {
-      Cell.focusSubject(e.currentTarget)
-      let w = e.currentTarget
-      w.style.pointerEvents = "none"
-      }) })
-    _$(".content--cell--_subject").forEach(s => { s.addEventListener("blur", (e) => {
-      Cell.blurSubject(e.currentTarget)
-      e.currentTarget.closest(".content--cell--wrap--subject").style.pointerEvents = "initial"
-      }) })
-    _$(".content--cell--_subject").forEach(s => { s.addEventListener("change", (e) => {
-      Cell.changeSubject(e.currentTarget)
-      }) })
-    _$(".content--cell--_subject").forEach(s => { s.addEventListener("dblclick", (e) => {
-        e.currentTarget.blur()
-        e.stopPropagation()
-      }) })
+    if(READONLY == false) {
+      _$(".content--cell--wrap--subject").forEach(s => { s.addEventListener("dblclick", (e) => {
+        Cell.focusSubject(e.currentTarget)
+        let w = e.currentTarget
+        w.style.pointerEvents = "none"
+        }) })
+      _$(".content--cell--_subject").forEach(s => { s.addEventListener("blur", (e) => {
+        Cell.blurSubject(e.currentTarget)
+        e.currentTarget.closest(".content--cell--wrap--subject").style.pointerEvents = "initial"
+        }) })
+      _$(".content--cell--_subject").forEach(s => { s.addEventListener("change", (e) => {
+        Cell.changeSubject(e.currentTarget)
+        }) })
+      _$(".content--cell--_subject").forEach(s => { s.addEventListener("dblclick", (e) => {
+          e.currentTarget.blur()
+          e.stopPropagation()
+        }) })
 
-    //  ノートのクリック処理。 セルと同じ。
-    _$(".content--cell--wrap--note").forEach(n => { n.addEventListener("dblclick", (e) => {
-      Cell.focusNote(e.currentTarget)
-      e.currentTarget.style.pointerEvents = "none"
-      }) })
-    _$(".content--cell--_note").forEach(n => { n.addEventListener("blur", (e) => {
-      Cell.blurNote(e.currentTarget)
-      e.currentTarget.closest(".content--cell--wrap--note").style.pointerEvents = "initial"
-      }) })
-    _$(".content--cell--_note").forEach(s => { s.addEventListener("change", (e) => {
-      Cell.changeNote(e.currentTarget)
-      }) })
-    _$(".content--cell--_note").forEach(s => { s.addEventListener("dblclick", (e) => {
-        e.currentTarget.blur()
-        e.stopPropagation()
-      }) })
+      //  ノートのクリック処理。 セルと同じ。
+      _$(".content--cell--wrap--note").forEach(n => { n.addEventListener("dblclick", (e) => {
+        Cell.focusNote(e.currentTarget)
+        e.currentTarget.style.pointerEvents = "none"
+        }) })
+      _$(".content--cell--_note").forEach(n => { n.addEventListener("blur", (e) => {
+        Cell.blurNote(e.currentTarget)
+        e.currentTarget.closest(".content--cell--wrap--note").style.pointerEvents = "initial"
+        }) })
+      _$(".content--cell--_note").forEach(s => { s.addEventListener("change", (e) => {
+        Cell.changeNote(e.currentTarget)
+        }) })
+      _$(".content--cell--_note").forEach(s => { s.addEventListener("dblclick", (e) => {
+          e.currentTarget.blur()
+          e.stopPropagation()
+        }) })
+    }
 
     //- 改行に合わせてテキストエリアのサイズ変更
     _$(".content--cell--_subject").forEach(s => {
@@ -1364,6 +1383,10 @@ class Detail {
       Detail.hidden(map_detail)
     }
   }
+
+  static isShow = (map_detail = _$("#map_detail")) => {
+    return ! map_detail.classList.contains("_hidden")
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1371,7 +1394,6 @@ class Detail {
 //  初期化関数。
 //  ブックデータを読み込んだ後に実行。
 function init() {
-
   //  画面上に枠だけ作る
   Display.init()
   Display.fixedPanelSize()
@@ -1379,7 +1401,7 @@ function init() {
 
   //  ブックの初期化
   Book.init()
-  Book.bookId = DEFAULT_BOOK_NAME
+  Book.bookId = BOOK_ID
 
   //  セルタグの値を設定する
   CellIdTag.init()
@@ -1408,12 +1430,67 @@ function init() {
       location.reload()
     })
   })
+
+  //  ReadOnlyモードだったら、各Elmのイベント処理を上書き。
+  if(_$("#app_status").dataset.mode == "readonly") {
+    ReadOnly.apply()
+  }
 }
 
 //  処理の始まり。
 //  最初にブックデータを読み込むところから始まる。
 //  その後、通常のinit処理を実行。
-window.onload = () => {BookData.load(DEFAULT_BOOK_NAME, init)};
+window.onload = () => {BookData.load(BOOK_ID, init)};
+
+
+//  リードオンリーモードの設定。
+//  リードオンリー時は「ダブルクリックで掘り、Spaceで戻る」しかできない。
+class ReadOnly {
+  static apply = () => {
+    //  コマンドは入力不可にする。
+    _$("#command").setAttribute("disabled", true)
+    //  divの更新設定を外す。
+    _$q("[contenteditable=true]").forEach((c) => {
+      c.setAttribute("contenteditable", false)
+    })
+    //  セルのクリック処理。
+    //  大マップなら小マップに、小マップならセル拡大に移行する。
+    _$(".cell").forEach((c) => {
+      c.addEventListener("dblclick", (e) => {
+        if(Map.current().id == "map_large") {
+          let area_id = /(.).$/.exec(e.currentTarget.id)[1]
+          _$("#command").value = `q${area_id}`
+          _$("#command").dispatchEvent(new Event("input"))
+        } else {
+          let cell_id = /..$/.exec(e.currentTarget.id)[0]
+          Command.exec(`<${cell_id}`)
+        }
+      })
+    })
+    //  ReadOnly専用のホットキーを設定
+    this.#hotKey()
+  }
+  static #hotKey = () => {
+    window.addEventListener("keydown", (e) => {
+      const keycode = e.keyCode;
+      const code  = e.code;
+      const onShift = e.shiftKey;
+      const onCtrl  = e.ctrlKey;
+      const onAlt   = e.altKey;
+      const onMeta  = e.metaKey;
+
+      //  セル拡大なら小マップに、小マップなら大マップに移行する。
+      if(code == "Space" || code == "Escape") {
+        if(Detail.isShow()) {
+          Detail.hidden(_$("#map_detail"))
+        } else {
+          _$("#command").value = "qq"
+          _$("#command").dispatchEvent(new Event("input"))
+        }
+      }
+    })
+  }
+}
 
 class Sticker {
   static currentSticker = null

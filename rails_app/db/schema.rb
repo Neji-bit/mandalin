@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_03_043153) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_06_095134) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -19,6 +19,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_03_043153) do
     t.text "text", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "owner_id"
     t.index ["name"], name: "index_books_on_name", unique: true
   end
 
@@ -53,5 +54,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_03_043153) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
+  add_foreign_key "books", "users", column: "owner_id"
   add_foreign_key "pages", "books"
 end
