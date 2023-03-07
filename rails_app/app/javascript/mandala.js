@@ -3,7 +3,8 @@ const ADDRESS = "wersdfzxc"
 const PAGE_ADDRESS = "0123456789abcdef"
 const STORAGE_NAME = "mandala"
 const DEFAULT_BOOK_NAME = "20230302"
-const BOOK_ID = urlParams()["book"]
+const URL_PARAMS = urlParams()
+const BOOK_ID = URL_PARAMS["book"]
 const READONLY = document.getElementById("app_status").dataset.mode == "readonly"
 function urlParams(url = location.href) {
   let params = url.split("?")[1] || ""
@@ -223,18 +224,7 @@ class PageData {
 class Book {
   static bookId = ""
   static init = () => {
-    this.bookId = this.#urlParams()["book"] || ""
-  }
-  static #urlParams = () => {
-    let params = {}
-    let _params = (document.location.search || "").substring(1)
-    if(!_params) return params
-    _params.split("&").forEach( p => {
-       var set = p.split('=');
-       params[decodeURIComponent(set[0])] = decodeURIComponent(set[1] || null)
-      }
-    )
-    return params
+    this.bookId = URL_PARAMS["book"] || ""
   }
 }
 
@@ -1410,8 +1400,10 @@ function init() {
   Command.init()
   command.focus()
 
-  let currentPage = BookData.data.currentPage || 0
-  Page.specify(currentPage)
+  //  ページを開く。URLで指定されていたら、最初のページはそれ。
+  let openPage = URL_PARAMS["open"] || BookData.data.currentPage || 0
+  if(! PAGE_ADDRESS.includes(openPage)) openPage = 0 
+  Page.specify(openPage)
 
   //  ブックデータを画面に反映。
   BookData.apply()
