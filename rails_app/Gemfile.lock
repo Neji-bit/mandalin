@@ -126,7 +126,7 @@ GEM
       actionpack (>= 6.0.0)
       railties (>= 6.0.0)
     io-console (0.6.0)
-    irb (1.6.2)
+    irb (1.6.3)
       reline (>= 0.3.0)
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
@@ -169,6 +169,8 @@ GEM
       net-protocol
     nio4r (2.5.8)
     nokogiri (1.14.2-aarch64-linux)
+      racc (~> 1.4)
+    nokogiri (1.14.2-x86_64-linux)
       racc (~> 1.4)
     orm_adapter (0.5.0)
     pg (1.4.6)
@@ -221,9 +223,9 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
-    slim (4.1.0)
-      temple (>= 0.7.6, < 0.9)
-      tilt (>= 2.0.6, < 2.1)
+    slim (5.1.0)
+      temple (~> 0.10.0)
+      tilt (>= 2.0.6, < 2.2)
     slim-rails (3.6.1)
       actionpack (>= 3.1)
       railties (>= 3.1)
@@ -236,11 +238,12 @@ GEM
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
     sqlite3 (1.6.1-aarch64-linux)
+    sqlite3 (1.6.1-x86_64-linux)
     stimulus-rails (1.2.1)
       railties (>= 6.0.0)
-    temple (0.8.2)
+    temple (0.10.0)
     thor (1.2.1)
-    tilt (2.0.11)
+    tilt (2.1.0)
     timeout (0.3.2)
     turbo-rails (1.4.0)
       actionpack (>= 6.0.0)
@@ -271,6 +274,7 @@ GEM
 
 PLATFORMS
   aarch64-linux
+  x86_64-linux
 
 DEPENDENCIES
   bootsnap
