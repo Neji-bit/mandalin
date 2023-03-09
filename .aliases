@@ -48,3 +48,15 @@ function _ping() {
   done
 }
 
+# heroku用
+alias _heroku_push="git subtree push --prefix rails_app/ heroku main"
+alias _heroku_bash="heroku run bash"
+alias _heroku_console="heroku run IRB_USE_AUTOCOMPLETE=false bundle exec rails c"
+alias _heroku_db_seeds="heroku run rake db:seed"
+alias _heroku_db_reset="heroku pg:reset -a mandalin"
+alias _heroku_db_migrate="heroku run rake db:migrate"
+alias _heroku_apps="heroku apps"
+alias _heroku_app_create="heroku apps:create mandalin"
+alias _heroku_app_destroy="heroku apps:destroy -app mandalin"
+
+

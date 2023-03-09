@@ -4,4 +4,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :confirmable, :lockable
   has_many :books, foreign_key: :owner_id
+
+  # パスワードのバリデーション。小文字, 大文字, 数字, 記号を一つ以上、８文字
+  VALID_PASSWORD_REGEX = /\A(?=.*?[a-z])(?=.*?[A-Z])(?=.*?\d)(?=.*?[\W_])[!-~]{8,}+\z/
+  validates :password, format: { with: VALID_PASSWORD_REGEX }
 end

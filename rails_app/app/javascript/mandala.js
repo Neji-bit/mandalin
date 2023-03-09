@@ -56,7 +56,7 @@ class BookData {
     //  同期が開始したら、同期中フラグを立てる。
     this.is_synchronizing = true
     //  APIからデータを読み込む。
-    axios.get(`http://localhost:3000/api/v1/book/${bookId}`)
+    axios.get(`/api/v1/book/${bookId}`)
     .then((data) => {
       this.data = JSON.parse(data.data)
       this.is_synchronizing = false
@@ -91,11 +91,11 @@ class BookData {
     json.text = JSON.stringify(this.data)
     //  UPDATE でNGだったら INSERT .
     //  →いや、ユースケース的にアプリ中にBookを追加することはないはず。後で外そう。
-    axios.put(`http://localhost:3000/api/v1/book/${bookId}`, json)
+    axios.put(`/api/v1/book/${bookId}`, json)
     .then(() => {
     })
     .catch(() => {
-      axios.post(`http://localhost:3000/api/v1/book/${bookId}`, json)
+      axios.post(`/api/v1/book/${bookId}`, json)
     })
   }
 
@@ -158,7 +158,7 @@ class PageData {
     //  すでに同期中だったら、例外を投げる。
     if(this.is_synchronizing) throw new Error("Already syncc now.");
     this.is_synchronizing = true
-    axios.get(`http://localhost:3000/api/v1/book/${bookId}/page/${pageId}`)
+    axios.get(`/api/v1/book/${bookId}/page/${pageId}`)
     .then((data) => {
       this.data = JSON.parse(data.data)
       this.apply(this.data)
@@ -170,7 +170,7 @@ class PageData {
       this.apply(this.data)
       if(! READONLY) {
         let payload = {text: JSON.stringify(this.data)}
-        let result = axios.post(`http://localhost:3000/api/v1/book/${bookId}/page/${pageId}`, payload)
+        let result = axios.post(`/api/v1/book/${bookId}/page/${pageId}`, payload)
       }
       this.is_synchronizing = false
     })
@@ -190,9 +190,9 @@ class PageData {
   static write = (json, pageId, bookId) => {
     if (READONLY) return
     let payload = {text: JSON.stringify(json)}
-    axios.put(`http://localhost:3000/api/v1/book/${bookId}/page/${pageId}`, payload)
+    axios.put(`/api/v1/book/${bookId}/page/${pageId}`, payload)
     .catch(() => {
-      axios.post(`http://localhost:3000/api/v1/book/${bookId}/page/${pageId}`, payload)
+      axios.post(`/api/v1/book/${bookId}/page/${pageId}`, payload)
     })
     Undo.push(JSON.stringify(json))
   }
@@ -1417,7 +1417,7 @@ function init() {
 
   //  ログアウト機能
   _$("#logout").addEventListener("click", (e) => {
-    axios.delete(`http://localhost:3000/users/sign_out`)
+    axios.delete(`/users/sign_out`)
     .then(() => {
       location.reload()
     })
