@@ -2,3 +2,4 @@
 
 pin "application", preload: true
 pin "mandala"
+pin "authentication"

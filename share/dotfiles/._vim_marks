@@ -97,4 +97,8 @@ T	class Root < Grape::API	/rails_app/app/api/resources/V1/root.rb
 U	class Books < Grape::API	/rails_app/app/api/resources/V1/books.rb
 V	class Pages < Grape::API	/rails_app/app/api/resources/V1/pages.rb
 
+W	const	/rails_app/app/javascript/mandala/mandala.js
+X	pin	/rails_app/config/importmap.rb
+Y	html	/rails_app/app/views/layouts/mandala.html.slim
+
 
