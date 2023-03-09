@@ -100,5 +100,5 @@ V	class Pages < Grape::API	/rails_app/app/api/resources/V1/pages.rb
 W	const	/rails_app/app/javascript/mandala/mandala.js
 X	pin	/rails_app/config/importmap.rb
 Y	html	/rails_app/app/views/layouts/mandala.html.slim
-
+Z	Rails	/rails_app/config/initializers/assets.rb
 
