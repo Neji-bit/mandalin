@@ -11,6 +11,7 @@ bundle install --path vendor/bundle
 bundle exec rails new -f .
 rm ./Gemfile.lock
 bundle install --path vendor/bundle
+bundle lock --add-platform x86_64-linux
 # bundle exec bin/rails importmap:install # 二度目以降は不要な作業のためコメントアウト
 
 # DB作成
