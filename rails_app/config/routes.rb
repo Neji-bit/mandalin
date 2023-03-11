@@ -1,7 +1,4 @@
 Rails.application.routes.draw do
-  devise_for :users, controllers: {
-    sessions: 'users/sessions'
-  }
 
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
 
@@ -10,5 +7,14 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "articles#index"
   mount API => '/'
-  get 'mandala', to: "mandala#main"
+
+  get '/' => "mandalin#main"
+  devise_for :users, controllers: {
+    sessions: 'users/sessions',
+    confirmations: 'users/confirmations',
+    passwords: 'users/passwords',
+    registrations: 'users/registrations',
+    sessions: 'users/sessions',
+    unlocks: 'users/unlocks',
+  }
 end

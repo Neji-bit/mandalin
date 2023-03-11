@@ -1,0 +1,8 @@
+/ session[:_flash] をtoastrライクに表示する。
+/ 一度表示したflash情報はセッションから消す。
+- session[:_flash]&.compact_blank!
+- if session[:_flash].present? then
+  div.flash
+    - while session[:_flash].present? do
+      div 
+        = session[:_flash].shift

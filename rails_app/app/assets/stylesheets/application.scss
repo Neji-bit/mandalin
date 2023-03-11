@@ -140,8 +140,8 @@ input {
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-rows: (100% / 3) (100% / 3) (100% / 3);
-  grid-template-columns: (100% / 3) (100% / 3) (100% / 3);
+  grid-template-rows: calc(100% / 3) calc(100% / 3) calc(100% / 3);
+  grid-template-columns: calc(100% / 3) calc(100% / 3) calc(100% / 3);
 }
 //  }
 

@@ -45,7 +45,6 @@ input {
 
 //  画面の大部品  {
 .backboard {
-  background-color: navy;
   height: 98%;
   width: 98%;
   position: absolute;
@@ -55,10 +54,11 @@ input {
   justify-content: space-between;
   align-items: stretch;
   flex-direction: column;
+  background: linear-gradient(160deg, gold, sandybrown);
+  border-radius: 15px 15px 15px 15px;
 }
 
 .panel {
-  background-color: gray;
   border-color: black;
   z-index: 1;
   display: flex;
@@ -69,7 +69,8 @@ input {
 .panel--top {
   min-height: 3em;
   max-height: 3em;
-  background: linear-gradient(160deg, mistyrose, pink);
+  //  background: linear-gradient(160deg, mistyrose, pink);
+  //  background: linear-gradient(160deg, gold, sandybrown);
   border-radius: 15px 15px 0 0;
   border-bottom: 1px solid black;
   font-weight: bold;
@@ -87,7 +88,8 @@ input {
   color: blue;
   min-height: 3em;
   max-height: 3em;
-  background: linear-gradient(160deg, mistyrose, pink);
+  //  background: linear-gradient(160deg, mistyrose, pink);
+  //  background: linear-gradient(160deg, gold, sandybrown);
   border-radius: 0 0 15px 15px;
   border-top: 1px solid black;
 }
@@ -140,8 +142,8 @@ input {
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-rows: (100% / 3) (100% / 3) (100% / 3);
-  grid-template-columns: (100% / 3) (100% / 3) (100% / 3);
+  grid-template-rows: calc(100% / 3) calc(100% / 3) calc(100% / 3);
+  grid-template-columns: calc(100% / 3) calc(100% / 3) calc(100% / 3);
 }
 //  }
 
@@ -528,3 +530,41 @@ input {
   font-weight: normal;
 }
 
+//  フラッシュメッセージの表示。
+.flash {
+  position: absolute;
+  z-index: 100;
+  background: white;
+  animation: 7s flashMsg;
+  animation-fill-mode: forwards;
+  left: 50%;
+  padding: 10px 10px 10px 10px;
+  transform: translate(-50%, 0%);
+  border-radius: 15px;
+  width: 50%;
+  text-align: center;
+  border: 3px solid blue;
+}
+@keyframes flashMsg {
+  0% {
+    opacity: 0;
+    display: block;
+  }
+  5% {
+    opacity: 0;
+    top: -100px;
+  }
+  25% {
+    opacity: 1;
+    top: 10px;
+  }
+  80% {
+    opacity: 1;
+    top: 10px;
+  }
+  100% {
+    top: -100px;
+    opacity: 0;
+    display: none;
+  }
+}

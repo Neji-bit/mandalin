@@ -10,9 +10,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   # POST /resource
-  # def create
-  #   super
-  # end
+  def create
+    session[:_flash] = ["登録の申込、ありがとうございます！（まだ完了していません）", "登録メールを送りましたので、ご確認ください。"]
+    super
+  end
 
   # GET /resource/edit
   # def edit

@@ -9,5 +9,6 @@ html
     = stylesheet_link_tag "mandala", "data-turbo-track": "reload"
     = javascript_importmap_tags
     = javascript_import_module_tag "mandala"
+  = render partial: "layouts/share/flash"
   body
     = yield

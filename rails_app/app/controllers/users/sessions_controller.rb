@@ -10,9 +10,10 @@ class Users::SessionsController < Devise::SessionsController
   # end
 
   # POST /resource/sign_in
-  # def create
-  #   super
-  # end
+  def create
+    session[:_flash] = (session[:_flash] || []).push("I'm Login.")
+    super
+  end
 
   # DELETE /resource/sign_out
   # def destroy

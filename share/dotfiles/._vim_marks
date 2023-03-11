@@ -8,84 +8,32 @@
 
 0	^mandala コマンドリスト								/rails_app/commandlist.readme
 A	^class Selector												/rails_app/app/javascript/mandala.js
-B	^class MasterData											/rails_app/app/javascript/mandala.js
-#   static data
-#   static load
-#   static init
-#   static save
-#   static apply
-C	^class PageData												/rails_app/app/javascript/mandala.js
-#   static jsonFormat
-#   static read
-#   static apply
-#   static load
-#   static write
-#   static save
-#   static #toJson
-D	^class Command												/rails_app/app/javascript/mandala.js
-#   static init = () => {
-#   static #initCommandLine = () => {
-#   static #initListenKey = () => {
-#   static exec = (line) => {
-E	^class Display												/rails_app/app/javascript/mandala.js
-#   static init = () => {
-#   static fixedPanelSize = () => {
-#   static resizeWindow = () => {
-#   static full = () => {
-#   static normal = () => {
-#   static toggle = () => {
-#   static isNormal = () => {
-F	^class History	                      /rails_app/app/javascript/mandala.js
-#   static push = (command) => {
-#   static prev = () => {
-#   static next = () => {
-#   static toJson = () => {
-F	^class Book {	                       /rails_app/app/javascript/mandala.js
-#   static init = () => {
-F	^class Page {													/rails_app/app/javascript/mandala.js
-#   static currentId = () => {
-#   static current = () => {
-#   static focus = (dom) => {
-#   static unfocus = () => {
-#   static add = (address = "0", title = null) => {
-#   static specify = (page_num) => {
-G	^class Map														/rails_app/app/javascript/mandala.js
-#   static current = () => {
-#   static focus = (dom) => {
-#   static unfocus = () => {
-#   static large = () => {
-#   static small = () => {
-#   static toggle = () => {
-#   static refresh = () => {
-#   static setKeeper = (area) => {
-#   static removeKeeper = (area) => {
-H	^class Area														/rails_app/app/javascript/mandala.js
-#   static current = () => {
-#   static focus = (dom) => {
-#   static unfocus = () => {
-#   static swap = (left, right) => {
-I	^class Cell														/rails_app/app/javascript/mandala.js
-# 	static current
-#   static defaultCursor
-# 	static focus
-# 	static unfocus
-# 	static swap
-#   static refresh = (dom) => {
-#   static clickSubject = (e) => {
-#   static blurSubject = (e) => {
-#   static clickNote = (e) => {
-#   static blurNote = (e) => {
-J	^class CellIdTag											/rails_app/app/javascript/mandala.js
-#   static init = () => {
-#   static enable = () => {
-#   static disable = () => {
-#   static toggle = () => {
-K	function init() {											/rails_app/app/javascript/mandala.js
-L	function textareaAdjustment(e) {			/rails_app/app/javascript/mandala.js
+
+# 開発ユーティリティ
+B	class Util	                          /rails_app/app/helpers/util.rb
 
 # ここからスタイルシート
-M	Sassy	                                /rails_app/app/assets/stylesheets/application.scss
-N	class Util	                          /rails_app/app/helpers/util.rb
+C	Sassy	                                /rails_app/app/assets/stylesheets/mandala/mandala.scss
+
+# Devise用デザイン
+D	Sassy	                                /rails_app/app/assets/stylesheets/authentication/authentication.scss
+
+# Deviseレイアウト
+E	doctype html	                         /rails_app/app/views/layouts/devise.html.slim
+# ログイン
+F	.	/rails_app/app/views/users/registrations/new.html.erb
+# サインイン
+G	.	/rails_app/app/views/users/sessions/new.html.erb
+# パスワード忘れ
+H	.	/rails_app/app/views/users/passwords/new.html.erb
+# ロック解除
+I	.	/rails_app/app/views/users/unlocks/new.html.erb
+# アカウント確認メール
+J	.	/rails_app/app/views/users/confirmations/new.html.erb
+# i18n
+L	.	/rails_app/config/locales/devise.views.ja.yml
+
+
 
 O	.	/rails_app/app/views/mandala/main.html.slim
 

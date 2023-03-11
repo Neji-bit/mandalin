@@ -1,0 +1,96 @@
+// Sassy
+body {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  user-select: none;
+  margin: 0 0 0 0;
+  #body_contents {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(160deg, gold, sandybrown);
+    font-family: "Lucida Console", Courier, monospace;
+  }
+}
+
+#contents_wrapper {
+  padding: 30px 20% 5% 20%;
+  #service_name_wrap {
+    padding: 10px 10px 20px 10px;
+    border-bottom: 1px solid black;
+    #service_name {
+      font-size: 36px;
+      font-weight: bold;
+      text-align: center;
+      padding: 4% 0 4% 0;
+      background: linear-gradient(160deg, mistyrose, pink);
+      border-radius: 10px;
+    }
+  }
+
+  #authenticate_item_wrap {
+    padding: 20px 10px 10px 10px;
+    #authenticate_item {
+      padding: 2% 0 5% 0;
+      text-align: center;
+      background: linear-gradient(160deg, mistyrose, pink);
+      border-radius: 10px;
+      .field {
+        padding: 10px 0 10px 0;
+      }
+
+      .error_items {
+        text-align: left;
+        display: inline-block;
+        padding: 0 0 10px 0;
+        ul {
+          margin-block-start: 0;
+          margin-block-end: 0;
+        }
+      }
+
+      form {
+        border-bottom: 1px solid black;
+        padding: 0 0 10px 0;
+      }
+      .actions {
+        padding: 20px 0 20px 0;
+        input {
+          padding: 10px 26px 10px 26px;
+          border-radius: 16px;
+          border: none;
+        }
+      }
+      #links {
+        padding: 10px 0 0 0;
+        a {
+          display: block;
+          padding: 8px 0 0 0;
+          font-size: small;
+        }
+      }
+      #user_email {
+        height: 2em;
+        width: 280px;
+        text-align: center;
+        border-radius: 10px;
+        border: none;
+      }
+      #user_password {
+        height: 2em;
+        width: 200px;
+        text-align: center;
+        border-radius: 10px;
+        border: none;
+      }
+      #user_password_confirmation {
+        height: 2em;
+        width: 200px;
+        text-align: center;
+        border-radius: 10px;
+        border: none;
+      }
+    }
+  }
+}
+

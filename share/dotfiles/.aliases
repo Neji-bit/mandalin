@@ -1,3 +1,6 @@
 alias _ps="ps -ef f"
 alias vim_marks="vim_marks.rb > ~/._viminfo_marks"
 alias _puma_restart="bundle exec pumactl restart"
+alias _aseets_precompile="bundle exec rails assets:precompile"
+alias _rc="bundle exec rails c"
+alias _routes="bundle exec rails routes"
