@@ -1,4 +1,12 @@
 // Sassy
+@import "share/common";
+
+//  from _common.scss.
+.service {
+  height: 2em;
+  right: 18px;
+}
+
 body {
   background-color: black;
 }
@@ -530,41 +538,3 @@ input {
   font-weight: normal;
 }
 
-//  フラッシュメッセージの表示。
-.flash {
-  position: absolute;
-  z-index: 100;
-  background: white;
-  animation: 7s flashMsg;
-  animation-fill-mode: forwards;
-  left: 50%;
-  padding: 10px 10px 10px 10px;
-  transform: translate(-50%, 0%);
-  border-radius: 15px;
-  width: 50%;
-  text-align: center;
-  border: 3px solid blue;
-}
-@keyframes flashMsg {
-  0% {
-    opacity: 0;
-    display: block;
-  }
-  5% {
-    opacity: 0;
-    top: -100px;
-  }
-  25% {
-    opacity: 1;
-    top: 10px;
-  }
-  80% {
-    opacity: 1;
-    top: 10px;
-  }
-  100% {
-    top: -100px;
-    opacity: 0;
-    display: none;
-  }
-}

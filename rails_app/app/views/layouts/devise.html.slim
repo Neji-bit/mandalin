@@ -9,12 +9,17 @@ html
     = stylesheet_link_tag "authentication", "data-turbo-track": "reload"
     = javascript_importmap_tags
     = javascript_import_module_tag "authentication"
+    = favicon_link_tag "mandalin_icon.svg"
   body
     #body_contents
       #contents_wrapper
         #service_name_wrap
           #service_name
-            | Mandalin
+            .service
+              .service--icon
+                = image_tag("mandalin_icon.svg")
+              .service--logo
+                = image_tag("mandalin_logo.svg")
         #authenticate_item_wrap
           #authenticate_item
             = yield

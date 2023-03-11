@@ -1,4 +1,12 @@
 // Sassy
+@import "share/common";
+
+//  from _common.scss.
+.service {
+  position: relative;
+  height: 2em;
+}
+
 body {
   position: absolute;
   height: 100%;
