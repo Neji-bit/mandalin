@@ -10,7 +10,6 @@ Rails.application.routes.draw do
 
   get '/' => "mandalin#main"
   devise_for :users, controllers: {
-    sessions: 'users/sessions',
     confirmations: 'users/confirmations',
     passwords: 'users/passwords',
     registrations: 'users/registrations',

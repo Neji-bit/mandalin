@@ -146,7 +146,9 @@ class PageData {
     })
 
     //  ステッカーにアクションを設定する
-    _$(".sticker").forEach(s => { Sticker.setActions(s) })
+    if(! READONLY) {
+      _$(".sticker").forEach(s => { Sticker.setActions(s) })
+    }
 
     BookData.apply()
     //  セルの表示更新
@@ -261,8 +263,8 @@ class Page {
     let _address = document.createElement("div")
     _address.className = "page--address"
     _address.innerHTML = `${address}:`
-    _address.addEventListener("click", (e) => {
-      let id = /.?/.exec((e.currentTarget.innerHTML))[0]
+    page.addEventListener("dblclick", (e) => {
+      let id = /.?/.exec((_$(".page--address", e.currentTarget)[0].innerHTML))[0]
       Page.specify(id)
       BookData.data.currentPage = id
       //  TODO: ここでsaveすると、なぜかBookData.dataの内容が巻き戻る形でDBに保存される。ひとまず保存をやめる。
@@ -1043,6 +1045,7 @@ class Display {
     _$("#cell-dd").classList.add("cell--gold")
 
     //  ページ枠を作る
+    _$("#right").innerHTML = "ページリスト"
     PAGE_ADDRESS.split("").forEach(address => {
       Page.add(address)
     })
