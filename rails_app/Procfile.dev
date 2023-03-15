@@ -1,3 +1,6 @@
 web: bin/rails server -p 3000 -b 0.0.0.0
 css: bin/rails dartsass:watch
+js: yarn build --watch=forever
+
+# BrowserSync、他の設定との噛み合わせが悪い（SameOriginポリシー）ため、ひとまずオフにした。
 # bs: browser-sync start --config /share/bin/bs-config.js >> $_RAILS_DIR/log/browser-sync.log 2>> $_RAILS_DIR/log/browser-sync.error.log

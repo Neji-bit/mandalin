@@ -239,13 +239,13 @@ input {
   font-size: 13px;
   font-family: "Lucida Console", Courier, monospace;
   overflow: hidden;
-  //  _subjectフォーカス時「親であるwrapを投下してきたイベントを捕まえる」ための設定
+  //  _subjectフォーカス時「親であるwrapを透過してきたイベントを捕まえる」ための設定
   pointer-events: auto;
 }
 .content--cell--_note {
   overflow: hidden;
   background: transparent;
-  //  _noteフォーカス時「親であるwrapを投下してきたイベントを捕まえる」ための設定
+  //  _noteフォーカス時「親であるwrapを透過してきたイベントを捕まえる」ための設定
   pointer-events: auto;
 }
 :focus {
@@ -483,6 +483,7 @@ input {
 //  ノートにアイコンを貼る
 //  ノート本体にimgタグを貼るのはナンセンス。wrap層に貼りたい。
 .content--cell--subject--sticker {
+  display: none;  //  いったん、ステッカー機能をOFFにする。サブジェクト／ノートとイベント食い合ってしまっているため。
   position: absolute;
   width: 100%;
   height: 100%;
@@ -503,6 +504,7 @@ input {
 }
 
 .content--cell--note--sticker {
+  display: none;  //  いったん、ステッカー機能をOFFにする。サブジェクト／ノートとイベント食い合ってしまっているため。
   position: absolute;
   width: 100%;
   height: 100%;

@@ -7,8 +7,7 @@ html
     = csrf_meta_tags
     = csp_meta_tag
     = stylesheet_link_tag "authentication", "data-turbo-track": "reload"
-    = javascript_importmap_tags
-    = javascript_import_module_tag "authentication"
+    = javascript_include_tag "authentication", "data-turbo-track": "reload", defer: true
     = favicon_link_tag "mandalin_icon.svg"
   body
     #body_contents
