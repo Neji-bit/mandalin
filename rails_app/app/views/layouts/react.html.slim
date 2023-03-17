@@ -1,0 +1,15 @@
+doctype html
+html
+  head
+    title
+      | React
+    meta[name="viewport" content="width=device-width,initial-scale=1"]
+    = csrf_meta_tags
+    = csp_meta_tag
+    = stylesheet_link_tag "react", "data-turbo-track": "reload"
+    = javascript_include_tag "mandalin", "data-turbo-track": "reload", defer: true
+    = favicon_link_tag "mandalin_icon.svg"
+  = render partial: "layouts/share/flash"
+  body
+    #root
+    = yield

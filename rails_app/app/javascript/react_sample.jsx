@@ -1,4 +1,3 @@
-// Configure your import map in config/importmap.rb. Read more: https://github.com/rails/importmap-rails
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 
@@ -15,6 +14,7 @@ if (!root) {
 createRoot(root).render(
   <React.StrictMode>
     <App />
+    <MyClass text="Call from main."/>
   </React.StrictMode>
 );
 

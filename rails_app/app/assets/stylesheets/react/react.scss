@@ -1,0 +1,192 @@
+// Sassy
+@import "../share/common";
+
+* {
+  box-sizing: border-box;
+  font-family: "Lucida Console", Courier, monospace;
+  --toppanel--height: 3em;
+  --bottompanel--height: 3em;
+  --leftpanel--width: 12em;
+  --rightpanel--width: 12em;
+}
+
+.panel {
+  overflow: hidden;
+}
+
+body {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: black;
+  margin: 0;
+  padding: 0;
+}
+
+//  アプリ全体のレイアウト系
+#root {
+  display: block;
+  position: absolute;
+  background-color: transparent;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  border: 2px solid red;
+
+  #layout--backboard {
+    --margin: 5px;
+    display: grid;
+    grid-template-rows: 3em auto 3em;
+    grid-template-columns: 12em auto 12em;
+    position: absolute;
+    background: linear-gradient(160deg, gold, sandybrown);
+    width: calc(100% - var(--margin) * 2);
+    height: calc(100% - var(--margin) * 2);
+    margin: var(--margin);
+    box-sizing: border-box;
+    border-radius: 15px;
+
+    #layout--top {
+      background: transparent;
+      grid-column: 1/4;
+      border-radius: 15px 15px 0 0;
+      border-bottom: 1px solid black;
+    }
+    #layout--left {
+      background: linear-gradient(160deg, white, silver);
+      border-right: 1px solid black;
+    }
+    #layout--center {
+      background: silver;
+      position: relative;
+    }
+    #layout--right {
+      background: linear-gradient(160deg, white, silver);
+      border-left: 1px solid black;
+    }
+    #layout--bottom {
+      background: transparent;
+      grid-column: 1/4;
+      border-radius: 0 0 15px 15px;
+      border-top: 1px solid black;
+    }
+  }
+}
+
+#map {
+  .map--large {
+    --grid-gap-ver: 6px;
+    --grid-gap-hor: 6px;
+    display: grid;
+    position: absolute;
+    background: transparent;
+    margin: var(--grid-gap-ver) var(--grid-gap-hor) var(--grid-gap-ver) var(--grid-gap-hor);
+    height: calc(100% - var(--grid-gap-ver) * 2);
+    width: calc(100% - var(--grid-gap-hor) * 2);
+    grid-template-rows: repeat(3, calc((100% - var(--grid-gap-ver) * 2) / 3));
+    grid-template-columns: repeat(3, calc((100% - var(--grid-gap-hor) * 2) / 3));
+    column-gap: var(--grid-gap-hor);
+    row-gap: var(--grid-gap-ver);
+
+    .cell {
+      grid-template-rows: 100%;
+    }
+  }
+  .map--middle {
+    //  「内容物１のグリッド」として定義。
+    --grid-gap-ver: 6px;
+    --grid-gap-hor: 6px;
+    display: grid;
+    position: absolute;
+    background: transparent;
+    margin: var(--grid-gap-ver) var(--grid-gap-hor) var(--grid-gap-ver) var(--grid-gap-hor);
+    height: calc(100% - var(--grid-gap-ver) * 2);
+    width: calc(100% - var(--grid-gap-hor) * 2);
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr;
+  }
+  .map--small {
+    --grid-gap-ver: 6px;
+    --grid-gap-hor: 6px;
+    display: grid;
+    position: absolute;
+    background: transparent;
+    margin: var(--grid-gap-ver) var(--grid-gap-hor) var(--grid-gap-ver) var(--grid-gap-hor);
+    height: calc(100% - var(--grid-gap-ver) * 2);
+    width: calc(100% - var(--grid-gap-hor) * 2);
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr;
+  }
+  .area {
+    background: transparent;
+    --grid-gap-ver: 2px;
+    --grid-gap-hor: 2px;
+    display: grid;
+    height: 100%;
+    width: 100%;
+    grid-template-rows: repeat(3, calc((100% - var(--grid-gap-ver) * 2) / 3));
+    grid-template-columns: repeat(3, calc((100% - var(--grid-gap-hor) * 2) / 3));
+    column-gap: var(--grid-gap-hor);
+    row-gap: var(--grid-gap-ver);
+  }
+
+  .cell {
+    display: grid;
+    grid-template-rows: 3em auto;
+    grid-template-columns: 100%;
+
+    background: gray;
+    border-radius: 5px;
+    overflow: hidden;
+
+    .editor {
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        height: 100%;
+        border-bottom: 1px solid black;
+
+        &.editable {
+          background: rgba(255, 105, 212, 0.1);
+        }
+
+      .display {
+        text-align: center;
+      }
+      .data {
+        height: auto;
+        font-size: 1em;
+        background: transparent;
+        border: none;
+        outline: none;
+        text-align: center;
+        resize: none;
+        overflow: hidden;
+      }
+    }
+    .editor.subject {
+    }
+    .editor.note {
+        display: block;
+      .display {
+        --padding-ver: 5px;
+        --padding-hor: 5px;
+        text-align: initial;
+        padding: var(--padding-ver) var(--padding-hor) var(--padding-ver) var(--padding-hor);
+        background: transparent;
+      }
+      .data {
+        --padding-ver: 5px;
+        --padding-hor: 5px;
+        width: 100%;
+        text-align: initial;
+        padding: var(--padding-ver) var(--padding-hor) var(--padding-ver) var(--padding-hor);
+        background: transparent;
+      }
+    }
+  }
+}
+
