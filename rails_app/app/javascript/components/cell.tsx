@@ -36,7 +36,10 @@ class Cell extends React.Component {
         id={`cell_${this.props.area_id}${this.props.cell_id || ""}`}
         className="cell"
       >
-        {contents}
+        <CellEffect parent={this} />
+        <div className="wrapper">
+          {contents}
+        </div>
       </div>
     )
   }
@@ -46,6 +49,24 @@ class Cell extends React.Component {
     Util.toAbs(this.ref.current)
   }
   componentWillUnmount() {
+  }
+}
+
+class CellEffect extends React.Component {
+  constructor(props) {
+    super(props)
+    this.parent = props.parent
+    this.ref = React.createRef()
+  }
+  render() {
+    return (
+      <div
+        ref={this.ref}
+        className="effect"
+      >
+        x
+      </div>
+    )
   }
 }
 
@@ -93,13 +114,20 @@ class EditorDisplay extends React.Component {
   }
   render() {
     return (
-      <ReactMarkdown className="display"
-        rehypePlugins={[rehypeRaw, rehypeSanitize]}
-        remarkPlugins={[remarkGfm]}
-        linkTarget={"_blank"}
-      >
-        {window.data.text}
-      </ReactMarkdown>
+      <div className="wrapper">
+        <div
+          className="effect"
+        >
+          y
+        </div>
+        <ReactMarkdown className="display"
+          rehypePlugins={[rehypeRaw, rehypeSanitize]}
+          remarkPlugins={[remarkGfm]}
+          linkTarget={"_blank"}
+        >
+          {window.data.text}
+        </ReactMarkdown>
+      </div>
     )
   }
 }
@@ -127,17 +155,24 @@ class EditorData extends React.Component {
   }
   render() {
     return (
-      <textarea
-        ref={this.ref}
-        className="data"
-        rows="1"
-        spellCheck="false"
-        wrap="off"
-        value={this.state.data}
-        onChange={this.change}
-        onBlur={this.blur}
-        onFocus={this.focus}
-      />
+      <div className="wrapper middle">
+        <div
+          className="effect"
+        >
+          y
+        </div>
+        <textarea
+          ref={this.ref}
+          className="data"
+          rows="1"
+          spellCheck="false"
+          wrap="off"
+          value={this.state.data}
+          onChange={this.change}
+          onBlur={this.blur}
+          onFocus={this.focus}
+        />
+      </div>
     )
   }
 }

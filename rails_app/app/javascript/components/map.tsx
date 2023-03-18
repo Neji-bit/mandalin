@@ -6,7 +6,6 @@ class Map extends React.Component {
     super(props)
     this.parent = props.parent
     this.state = {mode: "large"}
-    this.state = {mode: "middle"}
   }
   zoom = () => {
     let modes = ["large", "middle", "small"]

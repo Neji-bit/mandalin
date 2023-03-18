@@ -137,8 +137,16 @@ body {
     column-gap: var(--grid-gap-hor);
     row-gap: var(--grid-gap-ver);
 
+    //  大マップ時のセル指定。
+    //  後から読んでも絶対わからなくなっているので、後で書き直す。
     .cell {
       grid-template-rows: 100%;
+
+      .wrapper {
+        grid-template-rows: 100%;
+        grid-template-columns: 100%;
+        height: 100%;
+      }
     }
   }
   .map--middle {
@@ -179,22 +187,87 @@ body {
     row-gap: var(--grid-gap-ver);
   }
 
+  //  中／小マップ時のセル指定。
+  //  後から読んでも絶対わからなくなっているので、後で書き直す。
   .cell {
     display: grid;
-    grid-template-rows: 3em auto;
+    grid-template-rows: 100%;
     grid-template-columns: 100%;
-
     background: gray;
     border-radius: 5px;
     overflow: hidden;
+    //  グリッド配下要素に対していろいろ重ねたい時は、やっぱりgridを使う。
+    //  自身の領域を1/1のグリッドと見立てて、その単一領域に配下を描画させる。
 
+    .effect {
+      grid-area: 1 / 1;
+      background: transparent;
+      z-index: 4;
+      pointer-events: none;
+    }
+    .wrapper {
+      grid-area: 1 / 1;
+      background: transparent;
+      display: grid;
+      grid-template-rows: 3em auto;
+      grid-template-columns: 100%;
+
+      .subject {
+        .middle {
+          align-items: center;
+
+          .effect {
+            height: 100%;
+          }
+        }
+      }
+      .note {
+        .wrapper {
+          height: 100%;
+          display: grid;
+          grid-template-rows: 100%;
+          grid-template-columns: 100%;
+
+          .display {
+            grid-area: 1 / 1;
+          }
+          .data {
+            grid-area: 1 / 1;
+          }
+        }
+      }
+    }
     .editor {
+      display: grid;
+      grid-template-rows: 100%;
+      grid-template-columns: 100%;
+      z-index: 3;
+
       &.subject {
+        grid-area: 1 / 1;
         border-bottom: 1px solid black;
+        .effect {
+          position: relative;
+          z-index: 2;
+        }
+        .display {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+          overflow: hidden;
+          grid-area: 1 / 1;
+          z-index: 1;
+        }
+        .data {
+          position: relative;
+          grid-area: 1 / 1;
+          z-index: 1;
+        }
       }
 
       &.note {
-          display: block;
+        display: block;
         .display {
           --padding-ver: 5px;
           --padding-hor: 5px;
