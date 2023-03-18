@@ -1,5 +1,7 @@
 import React from 'react'
 import {Map, LargeMap, MiddleMap, SmallMap, Area} from './map'
+import {Page} from './page'
+import {IconLogo} from './common'
 
 class Backboard extends React.Component {
   render() {
@@ -47,9 +49,13 @@ class CenterPanel extends React.Component {
 
 class RightPanel extends React.Component {
   render() {
+    let contents = []
+    for(let i = 0; i < 16; i++) {
+      contents.push(<Page parent={this} className="page" key={i} />)
+    }
     return(
       <div id="layout--right" className="panel">
-        RightPanel
+        {contents}
       </div>
     )
   }
@@ -60,6 +66,7 @@ class BottomPanel extends React.Component {
     return(
       <div id="layout--bottom" className="panel">
         BottomPanel
+        <IconLogo parent={this}/>
       </div>
     )
   }

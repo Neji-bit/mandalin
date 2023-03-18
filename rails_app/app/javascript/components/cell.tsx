@@ -3,6 +3,11 @@ import Command from '../logic/command'
 import Util from '../logic/util'
 import {Map, LargeMap, MiddleMap, SmallMap, Area} from './map'
 
+import ReactMarkdown from 'react-markdown';
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import remarkGfm from "remark-gfm";
+
 ////////////////////////////////////////////////////////////////////////////////
 //  セル
 class Cell extends React.Component {
@@ -88,11 +93,13 @@ class EditorDisplay extends React.Component {
   }
   render() {
     return (
-      <div
-        className="display"
+      <ReactMarkdown className="display"
+        rehypePlugins={[rehypeRaw, rehypeSanitize]}
+        remarkPlugins={[remarkGfm]}
+        linkTarget={"_blank"}
       >
-      {window.data.text}
-      </div>
+        {window.data.text}
+      </ReactMarkdown>
     )
   }
 }
@@ -137,4 +144,4 @@ class EditorData extends React.Component {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-export default Cell
+export {Cell, Editor}

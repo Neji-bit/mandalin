@@ -5,7 +5,7 @@
 eval "$(rbenv init -)"
 
 # reactインストール
-yarn add react react-dom html-react-parser
+yarn add react react-dom html-react-parser react-markdown remark-gfm rehype-raw rehype-sanitize
 
 # Bundler経由でのrailsインストール
 cd $_RAILS_DIR

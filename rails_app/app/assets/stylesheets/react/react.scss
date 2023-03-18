@@ -64,12 +64,60 @@ body {
     #layout--right {
       background: linear-gradient(160deg, white, silver);
       border-left: 1px solid black;
+
+      .page {
+        display: grid;
+        grid-template-rows: 2em;
+        grid-template-columns: 2em auto;
+        background: skyblue;
+
+        .page--index {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          &::after {
+            content: ":";
+          }
+        }
+        .editor {
+          justify-content: initial;
+
+          * {
+            margin-block-start: 0;
+            margin-block-end: 0;
+          }
+          .display {
+            text-align: initial;
+          }
+          .data {
+            text-align: initial;
+          }
+        }
+      }
     }
     #layout--bottom {
       background: transparent;
       grid-column: 1/4;
       border-radius: 0 0 15px 15px;
       border-top: 1px solid black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .iconlogo {
+        height: 2em;
+        display: grid;
+        grid-template-rows: 100%;
+        grid-template-columns: auto auto;
+        position: absolute;
+        right: 16px;
+
+        img {
+          display: inline;
+          height: 100%;
+        }
+      }
     }
   }
 }
@@ -141,52 +189,57 @@ body {
     overflow: hidden;
 
     .editor {
-        background: transparent;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        height: 100%;
+      &.subject {
         border-bottom: 1px solid black;
+      }
 
-        &.editable {
-          background: rgba(255, 105, 212, 0.1);
+      &.note {
+          display: block;
+        .display {
+          --padding-ver: 5px;
+          --padding-hor: 5px;
+          text-align: initial;
+          padding: var(--padding-ver) var(--padding-hor) var(--padding-ver) var(--padding-hor);
+          background: transparent;
         }
-
-      .display {
-        text-align: center;
-      }
-      .data {
-        height: auto;
-        font-size: 1em;
-        background: transparent;
-        border: none;
-        outline: none;
-        text-align: center;
-        resize: none;
-        overflow: hidden;
-      }
-    }
-    .editor.subject {
-    }
-    .editor.note {
-        display: block;
-      .display {
-        --padding-ver: 5px;
-        --padding-hor: 5px;
-        text-align: initial;
-        padding: var(--padding-ver) var(--padding-hor) var(--padding-ver) var(--padding-hor);
-        background: transparent;
-      }
-      .data {
-        --padding-ver: 5px;
-        --padding-hor: 5px;
-        width: 100%;
-        text-align: initial;
-        padding: var(--padding-ver) var(--padding-hor) var(--padding-ver) var(--padding-hor);
-        background: transparent;
+        .data {
+          --padding-ver: 5px;
+          --padding-hor: 5px;
+          width: 100%;
+          text-align: initial;
+          padding: var(--padding-ver) var(--padding-hor) var(--padding-ver) var(--padding-hor);
+          background: transparent;
+        }
       }
     }
   }
+}
+
+.editor {
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: scroll;
+    height: 100%;
+
+    &.editable {
+      background: rgba(255, 105, 212, 0.1);
+    }
+
+  .display {
+    text-align: center;
+  }
+  .data {
+    height: auto;
+    font-size: 1em;
+    background: transparent;
+    border: none;
+    outline: none;
+    text-align: center;
+    resize: none;
+    overflow: hidden;
+  }
+
 }
 

@@ -50,7 +50,6 @@ class Util {
   }
   //  描画されたHTML要素に、現在の描画位置／サイズを固定にするスタイルを適用する。
   static toAbs = (elm) => {
-    console.log(elm)
     let rect = Util.abs(elm)
     Object.keys(rect).forEach((key) => {
       elm.style[key] = `${rect[key]}px`
