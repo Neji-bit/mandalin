@@ -30,7 +30,7 @@ class Page extends React.Component {
         />
         <Editor
           parent={this}
-          source={window.data.book.pages[this.id].title}
+          source={_data[this.id].title}
           key="2"
         />
       </div>

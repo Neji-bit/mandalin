@@ -19,7 +19,7 @@ class Cell extends React.Component {
     this.id = `cell_${this.props.area_id}${this.props.cell_id || ""}`
   }
   doubleClicked = (e) => {
-    window.data.book.state.currentCell = this.id
+    _data.state.currentCell = this.id
   }
   render() {
     let map = Util.closest(this, Map)
@@ -30,7 +30,7 @@ class Cell extends React.Component {
         contents.push(<Editor
           parent={this}
           role="subject"
-          source={window.data.page.areas[area_id].cells[this.id].subject}
+          source={_data[area_id].cells[this.id].subject}
           key="1"
         />)
         break
@@ -39,13 +39,13 @@ class Cell extends React.Component {
         contents.push(<Editor
           parent={this}
           role="subject"
-          source={window.data.page.areas[area_id].cells[this.id].subject}
+          source={_data[area_id].cells[this.id].subject}
           key="1"
         />)
         contents.push(<Editor
           parent={this}
           role="note"
-          source={window.data.page.areas[area_id].cells[this.id].note}
+          source={_data[area_id].cells[this.id].note}
           key="2"
         />)
         break

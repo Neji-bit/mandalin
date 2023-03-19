@@ -69,7 +69,7 @@ class MiddleMap extends React.Component {
       <div className="map--middle">
         <Area
           parent={this}
-          area_id={window.data.book.state.currentArea.match(/.$/)}
+          area_id={_data.state.currentArea.match(/.$/)}
         />
       </div>
     )
@@ -86,8 +86,8 @@ class SmallMap extends React.Component {
       <div className="map--small">
         <Cell
           parent={this}
-          area_id={window.data.book.state.currentArea.match(/.$/)}
-          cell_id={window.data.book.state.currentCell.match(/.$/)}
+          area_id={_data.state.currentArea.match(/.$/)}
+          cell_id={_data.state.currentCell.match(/.$/)}
         />
       </div>
     )
@@ -102,7 +102,7 @@ class Area extends React.Component {
     this.id = `area_${this.props.area_id}`
   }
   doubleClicked = (e) => {
-    window.data.book.state.currentArea = this.id
+    _data.state.currentArea = this.id
   }
   render() {
     let cells = []
