@@ -50,9 +50,15 @@ class CenterPanel extends React.Component {
 class RightPanel extends React.Component {
   render() {
     let contents = []
-    for(let i = 0; i < 16; i++) {
-      contents.push(<Page parent={this} className="page" key={i} />)
-    }
+    Page.page_ids.split("").forEach((i, n) => {
+      contents.push(
+        <Page
+          page_id={`page_${i}`}
+          parent={this}
+          className="page"
+          key={n}
+        />)
+    })
     return(
       <div id="layout--right" className="panel">
         {contents}

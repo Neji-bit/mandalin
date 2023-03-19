@@ -16,25 +16,46 @@ class Cell extends React.Component {
     super(props)
     this.parent = props.parent
     this.ref = React.createRef()
+    this.id = `cell_${this.props.area_id}${this.props.cell_id || ""}`
+  }
+  doubleClicked = (e) => {
+    window.data.book.state.currentCell = this.id
   }
   render() {
     let map = Util.closest(this, Map)
     let contents = []
+    let area_id = `area_${this.id.match(/(.).$/)[1]}`
     switch(map.state.mode) {
       case "large":
-        contents.push(<Editor parent={this} role="subject" key="1" />)
+        contents.push(<Editor
+          parent={this}
+          role="subject"
+          source={window.data.page.areas[area_id].cells[this.id].subject}
+          key="1"
+        />)
         break
       case "middle":
       case "small":
-        contents.push(<Editor parent={this} role="subject" key="1" />)
-        contents.push(<Editor parent={this} role="note" key="2" />)
+        contents.push(<Editor
+          parent={this}
+          role="subject"
+          source={window.data.page.areas[area_id].cells[this.id].subject}
+          key="1"
+        />)
+        contents.push(<Editor
+          parent={this}
+          role="note"
+          source={window.data.page.areas[area_id].cells[this.id].note}
+          key="2"
+        />)
         break
     }
     return (
       <div
         ref={this.ref}
-        id={`cell_${this.props.area_id}${this.props.cell_id || ""}`}
+        id={this.id}
         className="cell"
+        onDoubleClick={this.doubleClicked}
       >
         <CellEffect parent={this} />
         <div className="wrapper">
@@ -80,6 +101,7 @@ class Editor extends React.Component {
     this.parent = props.parent
     this.role = props.role
     this.state = {editable: false}
+    this.source = props.source
   }
   click = (e) => {
     this.setState({editable: !this.state.editable})
@@ -100,7 +122,7 @@ class Editor extends React.Component {
     return (
       <div
         className={`editor ${this.role} ${className}`}
-        onClick={this.click.bind(this)}
+        onClick={this.click}
       >
         {content}
     </div>)
@@ -113,6 +135,8 @@ class EditorDisplay extends React.Component {
     this.parent = props.parent
   }
   render() {
+    let content = ""
+    try { content = this.parent.source.data } catch(e) { content = "Now loading..." }
     return (
       <div className="wrapper">
         <div
@@ -129,7 +153,7 @@ class EditorDisplay extends React.Component {
           remarkPlugins={[remarkGfm]}
           linkTarget={"_blank"}
         >
-          {window.data.text}
+          {content}
         </ReactMarkdown>
       </div>
     )
@@ -140,12 +164,13 @@ class EditorData extends React.Component {
   constructor(props) {
     super(props)
     this.parent = props.parent
-    this.state = {data: window.data.text}
+    this.state = {data: ""}
     this.ref = React.createRef()
+    try { this.state.data = this.parent.source.data } catch(e) { this.state.data = "Now loading..." }
   }
   change = (e) => {
     this.setState({data: e.target.value})
-    window.data.text = e.target.value
+    this.parent.source.data = e.target.value
     Util.textHeightAdjustment(e)
   }
   blur = (e) => {

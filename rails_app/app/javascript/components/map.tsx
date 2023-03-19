@@ -28,7 +28,7 @@ class Map extends React.Component {
         break
     }
     return(
-      <div id="map" onDoubleClick={this.zoom.bind(this)}>
+      <div id="map" onDoubleClick={this.zoom}>
         {content}
       </div>
     )
@@ -67,7 +67,10 @@ class MiddleMap extends React.Component {
   render() {
     return(
       <div className="map--middle">
-        <Area parent={this}/>
+        <Area
+          parent={this}
+          area_id={window.data.book.state.currentArea.match(/.$/)}
+        />
       </div>
     )
   }
@@ -83,6 +86,8 @@ class SmallMap extends React.Component {
       <div className="map--small">
         <Cell
           parent={this}
+          area_id={window.data.book.state.currentArea.match(/.$/)}
+          cell_id={window.data.book.state.currentCell.match(/.$/)}
         />
       </div>
     )
@@ -94,6 +99,10 @@ class Area extends React.Component {
   constructor(props) {
     super(props)
     this.parent = props.parent
+    this.id = `area_${this.props.area_id}`
+  }
+  doubleClicked = (e) => {
+    window.data.book.state.currentArea = this.id
   }
   render() {
     let cells = []
@@ -109,8 +118,9 @@ class Area extends React.Component {
     })
     return(
     <div
-      id={`area_${this.props.area_id}`}
+      id={this.id}
       className="area"
+      onDoubleClick={this.doubleClicked}
     >
       {cells}
     </div>)

@@ -10,20 +10,29 @@ import remarkGfm from "remark-gfm";
 ////////////////////////////////////////////////////////////////////////////////
 //  ページ
 class Page extends React.Component {
-  static cell_ids = "wersdfzxc"
+  static page_ids = "0123456789abcdef"
   constructor(props) {
     super(props)
     this.parent = props.parent
     this.ref = React.createRef()
+    this.id = props.page_id
   }
   render() {
     return (
       <div
+        id={this.id}
         ref={this.ref}
         className="page"
       >
-        <PageIndex key="1" />
-        <Editor key="2" />
+        <PageIndex
+          parent={this}
+          key="1"
+        />
+        <Editor
+          parent={this}
+          source={window.data.book.pages[this.id].title}
+          key="2"
+        />
       </div>
     )
   }
@@ -42,10 +51,11 @@ class PageIndex extends React.Component {
   }
   render() {
     return (
-      <div ref={this.ref}
+      <div
+        ref={this.ref}
         className="page--index"
       >
-        0
+        {this.parent.id.match(/.$/)}
       </div>
     )
   }
