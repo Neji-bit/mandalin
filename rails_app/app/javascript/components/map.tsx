@@ -1,5 +1,6 @@
 import React from 'react'
 import {Cell} from './cell'
+import Util from '../logic/util'
 
 class Map extends React.Component {
   constructor(props) {
@@ -107,7 +108,10 @@ class Area extends React.Component {
       )
     })
     return(
-    <div id={`area_${this.props.area_id}`} className="area">
+    <div
+      id={`area_${this.props.area_id}`}
+      className="area"
+    >
       {cells}
     </div>)
   }

@@ -161,6 +161,11 @@ body {
     width: calc(100% - var(--grid-gap-hor) * 2);
     grid-template-rows: 1fr;
     grid-template-columns: 1fr;
+
+    .area {
+      //  不思議対応。とにかく「map--middle時だけareaにposition:absolute;をつける」と、セルが縦に自動で伸びる症状を止められる。
+      position: absolute;
+    }
   }
   .map--small {
     --grid-gap-ver: 6px;
@@ -228,6 +233,11 @@ body {
           grid-template-rows: 100%;
           grid-template-columns: 100%;
 
+          .effect {
+            //  不思議対応。ノート配下のeffectにposition:relative;をつけることで、セルを溢れて「エリアの右端」まで領域が伸びる現象を防げる。
+            position: relative;
+          }
+
           .display {
             grid-area: 1 / 1;
           }
@@ -289,16 +299,16 @@ body {
 }
 
 .editor {
-    background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: scroll;
-    height: 100%;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: scroll;
+  height: 100%;
 
-    &.editable {
-      background: rgba(255, 105, 212, 0.1);
-    }
+  &.editable {
+    background: rgba(255, 105, 212, 0.1);
+  }
 
   .display {
     text-align: center;
@@ -314,5 +324,12 @@ body {
     overflow: hidden;
   }
 
+  .effect {
+    * {
+      //  エフェクトシートに載っているモノは、ポインタイベントを受け取れる。
+      //  （別途、Javascript側で onClick={(e) => { e.stopPropagation() }} すること。）
+      pointer-events: auto;
+    }
+  }
 }
 

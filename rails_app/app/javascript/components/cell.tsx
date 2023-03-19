@@ -118,7 +118,11 @@ class EditorDisplay extends React.Component {
         <div
           className="effect"
         >
-          y
+          <div
+            className="テスト。このdivをクリックした時は、下には透過しない。"
+            style={{position: "absolute", width: "20px", height: "20px", background: "green", right: "5px"}}
+            onClick={(e) => {e.stopPropagation()}}
+          />
         </div>
         <ReactMarkdown className="display"
           rehypePlugins={[rehypeRaw, rehypeSanitize]}
@@ -159,7 +163,11 @@ class EditorData extends React.Component {
         <div
           className="effect"
         >
-          y
+          <div
+            className="テスト。このdivをクリックした時は、下には透過しない。"
+            style={{position: "absolute", width: "20px", height: "20px", background: "green", right: "5px"}}
+            onClick={(e) => {e.stopPropagation()}}
+          />
         </div>
         <textarea
           ref={this.ref}

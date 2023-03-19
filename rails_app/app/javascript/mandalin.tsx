@@ -12,6 +12,7 @@ function App() {
   )
 }
 
+window.data = {text: "H  \nO  \nG  \nE  \nH  \nO  \nG  \nE  \nH  \nO  \nG  \nE  \nH  \nO  \nG  \nE  \n"}
 window.data = {text: "HOGEHOGE"}
 
 const root = document.getElementById('root');
