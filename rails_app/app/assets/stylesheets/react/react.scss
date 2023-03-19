@@ -213,6 +213,7 @@ body {
     //  自身の領域を1/1のグリッドと見立てて、その単一領域に配下を描画させる。
 
     .effect {
+      position: relative;
       grid-area: 1 / 1;
       z-index: 4;
       pointer-events: none;
@@ -353,6 +354,22 @@ body {
   .effect {
     background: transparent;
     padding: 5px;
+  }
+  .tag--cell--id {
+    position: absolute;
+    font-size: small;
+    font-style: italic;
+    background: orange;
+    padding: 1px 4px 1px 4px;
+    border-radius: 4px;
+  }
+  .tag--cell--content {
+    position: absolute;
+    background: green;
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    right: 5px;
   }
 }
 

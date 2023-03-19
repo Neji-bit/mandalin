@@ -79,13 +79,35 @@ class CellEffect extends React.Component {
     this.parent = props.parent
     this.ref = React.createRef()
   }
+  static cellId = (obj) => {
+    return (
+      <div
+        className="tag--cell--id"
+        key="1"
+      >
+        {obj.parent.id.match(/..$/)}
+      </div>
+    )
+  }
+  static contentLamp = () => {
+    return (
+      <div
+        className="tag--cell--content"
+        key="2"
+      >
+      </div>
+    )
+  }
   render() {
+    let contents = []
+    contents.push( CellEffect.cellId(this))
+    contents.push( CellEffect.contentLamp())
     return (
       <div
         ref={this.ref}
         className="effect"
       >
-        x
+        {contents}
       </div>
     )
   }
