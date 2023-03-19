@@ -120,7 +120,7 @@ class EditorDisplay extends React.Component {
         >
           <div
             className="テスト。このdivをクリックした時は、下には透過しない。"
-            style={{position: "absolute", width: "20px", height: "20px", background: "green", right: "5px"}}
+            style={{position: "absolute", width: "10px", height: "10px", background: "green", right: "5px", bottom: "5px"}}
             onClick={(e) => {e.stopPropagation()}}
           />
         </div>
@@ -165,7 +165,7 @@ class EditorData extends React.Component {
         >
           <div
             className="テスト。このdivをクリックした時は、下には透過しない。"
-            style={{position: "absolute", width: "20px", height: "20px", background: "green", right: "5px"}}
+            style={{position: "absolute", width: "10px", height: "10px", background: "green", right: "5px", bottom: "5px"}}
             onClick={(e) => {e.stopPropagation()}}
           />
         </div>
