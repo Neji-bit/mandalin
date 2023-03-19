@@ -69,7 +69,6 @@ body {
         display: grid;
         grid-template-rows: 2em;
         grid-template-columns: 2em auto;
-        background: skyblue;
 
         .page--index {
           display: flex;
@@ -208,7 +207,6 @@ body {
     display: grid;
     grid-template-rows: 100%;
     grid-template-columns: 100%;
-    background: gray;
     border-radius: 5px;
     overflow: hidden;
     //  グリッド配下要素に対していろいろ重ねたい時は、やっぱりgridを使う。
@@ -216,7 +214,6 @@ body {
 
     .effect {
       grid-area: 1 / 1;
-      background: transparent;
       z-index: 4;
       pointer-events: none;
     }
@@ -342,4 +339,31 @@ body {
     }
   }
 }
+
+//  セルの装飾
+.cell {
+  background: linear-gradient(160deg, white, antiquewhite);
+  box-shadow: -3px -3px 8px rgba(0,0,0,0.5) inset,  3px 3px 8px rgba(0,0,0,0.5) inset;
+  .editor.subject {
+    padding: 5px;
+  }
+  .editor.note {
+    padding: 5px;
+  }
+  .effect {
+    background: transparent;
+    padding: 5px;
+  }
+}
+
+.page {
+  background: linear-gradient(160deg, lightcyan, paleturquoise);
+  box-shadow: -3px -3px 8px rgba(0,0,0,0.5) inset,  3px 3px 8px rgba(0,0,0,0.5) inset;
+}
+
+
+.map--large .editor.subject {
+  font-size: small;
+}
+
 
