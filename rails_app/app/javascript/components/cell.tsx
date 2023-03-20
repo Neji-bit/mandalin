@@ -22,10 +22,9 @@ class Cell extends React.Component {
     _data.state.currentCell = this.id
   }
   render() {
-    let map = Util.closest(this, Map)
     let contents = []
     let area_id = `area_${this.id.match(/(.).$/)[1]}`
-    switch(map.state.mode) {
+    switch(_data.state.viewMode) {
       case "large":
         contents.push(<Editor
           parent={this}
@@ -70,7 +69,7 @@ class Cell extends React.Component {
   componentDidMount() {
     //  セルのサイズを固定化。
     //  これをしないと（＝height=auto）、内容物が特大になるとセルの大きさが変動してしまう。
-    Util.toAbs(this.ref.current)
+//    Util.toAbs(this.ref.current)
   }
   componentWillUnmount() {
   }
@@ -85,7 +84,7 @@ class CellEffect extends React.Component {
   static cellId = (obj) => {
     return (
       <div
-        className="tag--cell--id"
+        className={`tag--cell--id ${_data.state.showTag ? "" : "_hidden"}`}
         key="1"
       >
         {obj.parent.id.match(/..$/)}
@@ -175,7 +174,7 @@ class EditorDisplay extends React.Component {
     return (
       <div className="wrapper">
         <div
-          className="effect"
+          className={`effect ${_data.state.showSticker ? "" : "_hidden_sticker"}`}
         >
           <div
             className="テスト。このdivをクリックした時は、下には透過しない。"

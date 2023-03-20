@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import Cell from './components/cell'
 import Command from './logic/command'
 import Backboard from './components/layout'
+import {Key} from './logic/key'
 
 ////////////////////////////////////////////////////////////////////////////////
 //  データ構造の定義。
@@ -35,7 +36,13 @@ window.data = {
       currentPage: "page_0",
       currentArea: "area_w",
       currentCell: "cell_ww",
+      viewMode: "large",
+      showTag: true,
+      fullscreen: false,
+      showSticker: true,
     },
+    toolbox: {
+    }
   },
   page: {
     id: "page_0",
@@ -115,6 +122,8 @@ _data = dataRefresh()
 
 ////////////////////////////////////////////////////////////////////////////////
 
+Key.init()
+
 const root = document.getElementById('root');
 if (!root) {
   throw new Error('No root element');
@@ -122,7 +131,7 @@ if (!root) {
 
 class App extends React.Component {
   componentDidMount() {
-    window.data.react.app = this
+    _data.react.app = this
   }
   render() {
     return (

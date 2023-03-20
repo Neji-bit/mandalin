@@ -1,12 +1,18 @@
 import React from 'react'
 import {Map, LargeMap, MiddleMap, SmallMap, Area} from './map'
 import {Page} from './page'
+import {ToolBox} from './tool'
 import {IconLogo} from './common'
 
 class Backboard extends React.Component {
   render() {
+    let cls = ""
+    if(_data.state.fullscreen) cls="fullscreen"
     return(
-      <div id="layout--backboard" className="panel">
+      <div
+        id="layout_backboard"
+        className={`panel ${cls}`}
+      >
         <TopPanel />
         <LeftPanel />
         <CenterPanel />
@@ -20,7 +26,7 @@ class Backboard extends React.Component {
 class TopPanel extends React.Component {
   render() {
     return(
-      <div id="layout--top" className="panel">
+      <div id="layout_top" className="panel">
         TopPanel
       </div>
     )
@@ -30,8 +36,8 @@ class TopPanel extends React.Component {
 class LeftPanel extends React.Component {
   render() {
     return(
-      <div id="layout--left" className="panel">
-        LeftPanel
+      <div id="layout_left" className="panel">
+        <ToolBox/>
       </div>
     )
   }
@@ -40,7 +46,7 @@ class LeftPanel extends React.Component {
 class CenterPanel extends React.Component {
   render() {
     return(
-      <div id="layout--center" className="panel">
+      <div id="layout_center" className="panel">
         <Map />
       </div>
     )
@@ -60,7 +66,7 @@ class RightPanel extends React.Component {
         />)
     })
     return(
-      <div id="layout--right" className="panel">
+      <div id="layout_right" className="panel">
         {contents}
       </div>
     )
@@ -70,7 +76,7 @@ class RightPanel extends React.Component {
 class BottomPanel extends React.Component {
   render() {
     return(
-      <div id="layout--bottom" className="panel">
+      <div id="layout_bottom" className="panel">
         BottomPanel
         <IconLogo parent={this}/>
       </div>

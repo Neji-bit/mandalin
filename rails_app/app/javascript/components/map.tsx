@@ -5,30 +5,24 @@ import Util from '../logic/util'
 class Map extends React.Component {
   constructor(props) {
     super(props)
+    _data.react.map = this
     this.parent = props.parent
-    this.state = {mode: "large"}
-  }
-  zoom = () => {
-    let modes = ["large", "middle", "small"]
-    let index = modes.indexOf(this.state.mode)
-    index = (index + 1) % modes.length
-    this.setState({mode: modes[index]})
   }
   render() {
     let content = null
-    switch(this.state.mode) {
-      case "large":
-        content = <LargeMap parent={this} />
+    switch(_data.state.viewMode) {
+      case "small":
+        content = <SmallMap parent={this} />
         break
       case "middle":
         content = <MiddleMap parent={this} />
         break
       default:
-        content = <SmallMap parent={this} />
+        content = <LargeMap parent={this} />
         break
     }
     return(
-      <div id="map" onDoubleClick={this.zoom}>
+      <div id="map">
         {content}
       </div>
     )

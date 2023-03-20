@@ -34,7 +34,7 @@ body {
   height: 100%;
   border: 2px solid red;
 
-  #layout--backboard {
+  #layout_backboard {
     --margin: 5px;
     display: grid;
     grid-template-rows: 3em auto 3em;
@@ -47,21 +47,37 @@ body {
     box-sizing: border-box;
     border-radius: 15px;
 
-    #layout--top {
+    &.fullscreen {
+      #layout_top {
+        display: none;
+      }
+      #layout_left {
+        display: none;
+      }
+      #layout_right {
+        display: none;
+      }
+      #layout_center {
+        grid-column: 1 / 4;
+        grid-row: 1 / 3;
+      }
+    }
+
+    #layout_top {
       background: transparent;
       grid-column: 1/4;
       border-radius: 15px 15px 0 0;
       border-bottom: 1px solid black;
     }
-    #layout--left {
+    #layout_left {
       background: linear-gradient(160deg, white, silver);
       border-right: 1px solid black;
     }
-    #layout--center {
+    #layout_center {
       background: silver;
       position: relative;
     }
-    #layout--right {
+    #layout_right {
       background: linear-gradient(160deg, white, silver);
       border-left: 1px solid black;
 
@@ -105,7 +121,7 @@ body {
         }
       }
     }
-    #layout--bottom {
+    #layout_bottom {
       background: transparent;
       grid-column: 1/4;
       border-radius: 0 0 15px 15px;
@@ -226,11 +242,12 @@ body {
       grid-template-columns: 100%;
 
       .subject {
-        .middle {
-          align-items: center;
-
-          .effect {
-            height: 100%;
+        .effect {
+          height: 100%;
+          &._hidden_sticker {
+            * {
+              display: none;
+            }
           }
         }
       }
@@ -244,6 +261,11 @@ body {
           .effect {
             //  不思議対応。ノート配下のeffectにposition:relative;をつけることで、セルを溢れて「エリアの右端」まで領域が伸びる現象を防げる。
             position: relative;
+            &._hidden_sticker {
+              * {
+                display: none;
+              }
+            }
           }
 
           .display {
@@ -341,6 +363,7 @@ body {
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////
 //  セルの装飾
 .cell {
   background: linear-gradient(160deg, white, antiquewhite);
@@ -378,9 +401,35 @@ body {
   box-shadow: -3px -3px 8px rgba(0,0,0,0.5) inset,  3px 3px 8px rgba(0,0,0,0.5) inset;
 }
 
-
 .map--large .editor.subject {
   font-size: small;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+//  ツールボックス系
+
+#toolbox {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  background: gray;
+  column-gap: 5px;
+  row-gap: 5px;
+  padding: 5px;
+
+  .tool {
+    font-size: x-small;
+    height: 4em;
+    background: yellow;
+    border: 1px solid orange;
+
+    &:active {
+      background: green;
+    }
+  }
+}
+
+._hidden {
+  display: none;
+}
 
