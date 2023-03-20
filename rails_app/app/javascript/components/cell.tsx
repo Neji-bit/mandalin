@@ -31,6 +31,7 @@ class Cell extends React.Component {
           parent={this}
           role="subject"
           source={_data[area_id].cells[this.id].subject}
+          updateTarget={this}
           key="1"
         />)
         break
@@ -40,12 +41,14 @@ class Cell extends React.Component {
           parent={this}
           role="subject"
           source={_data[area_id].cells[this.id].subject}
+          updateTarget={this}
           key="1"
         />)
         contents.push(<Editor
           parent={this}
           role="note"
           source={_data[area_id].cells[this.id].note}
+          updateTarget={this}
           key="2"
         />)
         break
@@ -101,7 +104,9 @@ class CellEffect extends React.Component {
   render() {
     let contents = []
     contents.push( CellEffect.cellId(this))
-    contents.push( CellEffect.contentLamp())
+    if(_data[this.parent.id].note.data) {
+      contents.push( CellEffect.contentLamp())
+    }
     return (
       <div
         ref={this.ref}
@@ -124,6 +129,9 @@ class Editor extends React.Component {
     this.role = props.role
     this.state = {editable: false}
     this.source = props.source
+    //  このエディタでデータが更新された際に再描画するコンポーネント。
+    //  実際はEditorDataのblurで参照され、強制的に再描画される。
+    this.updateTarget = props.updateTarget
   }
   click = (e) => {
     this.setState({editable: !this.state.editable})
@@ -133,11 +141,16 @@ class Editor extends React.Component {
     let className = ""
     switch(this.state.editable) {
       case true:
-        content = <EditorData parent={this} />
+        content = <EditorData
+          parent={this}
+          updateTarget={this.updateTarget}
+        />
         className = "editable"
         break
       default:
-        content = <EditorDisplay parent={this} />
+        content = <EditorDisplay
+          parent={this}
+        />
         className = "readable"
         break
     }
@@ -189,6 +202,7 @@ class EditorData extends React.Component {
     this.state = {data: ""}
     this.ref = React.createRef()
     try { this.state.data = this.parent.source.data } catch(e) { this.state.data = "Now loading..." }
+    this.updateTarget = props.updateTarget
   }
   change = (e) => {
     this.setState({data: e.target.value})
@@ -197,6 +211,7 @@ class EditorData extends React.Component {
   }
   blur = (e) => {
     this.parent.setState({editable: false})
+    if(this.updateTarget) this.updateTarget.forceUpdate()
   }
   focus = (e) => {
     Util.textHeightAdjustment(e)
