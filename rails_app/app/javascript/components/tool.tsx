@@ -6,34 +6,35 @@ class ToolBox extends React.Component {
   constructor(props) {
     super(props)
     this.parent = props.parent
+    _data.react.toolbox = this
     this.ref = React.createRef()
   }
   render() {
     return (
       <div id="toolbox"
       >
-        <Tool
+        <ToolButton
           parent={this}
           label="全体表示"
           logic={ToolLogic.viewLarge}
           tool_id="tool_view_large"
           key="1"
         />
-        <Tool
+        <ToolButton
           parent={this}
           label="エリア表示"
           logic={ToolLogic.viewMiddle}
           tool_id="tool_view_middle"
           key="2"
         />
-        <Tool
+        <ToolButton
           parent={this}
           label="セル表示"
           logic={ToolLogic.viewSmall}
           tool_id="tool_view_small"
           key="3"
         />
-        <Tool
+        <ToolButton
           parent={this}
           label="全画面表示"
           logic={ToolLogic.toggleFullscreen}
@@ -41,28 +42,51 @@ class ToolBox extends React.Component {
           key="4"
         />
 
-        <Tool
+        <ToolButton
           parent={this}
           label="タグ表示"
           logic={ToolLogic.toggleTag}
           tool_id="tool_toggle_tag"
           key="5"
         />
-        <Tool
+        <ToolButton
           parent={this}
           label="ステッカー表示"
           logic={ToolLogic.toggleSticker}
           tool_id="tool_toggle_sticker"
           key="6"
         />
-        <div className="tool" key="7"> セル／エリア </div>
-        <div className="tool" key="8"> </div>
+        <ToolToggle
+          parent={this}
+          label="セル選択"
+          logic={ToolLogic.selectModeBind}
+          tool_id="tool_toggle_cell"
+          key="7"
+        />
+        <ToolToggle
+          parent={this}
+          label="エリア選択"
+          logic={ToolLogic.selectModeBind}
+          tool_id="tool_toggle_area"
+          key="8"
+        />
 
-        <div className="tool" key="9"> 選択 </div>
-        <div className="tool" key="10"> 入替 </div>
-        <div className="tool" key="11"> コピー </div>
-        <div className="tool" key="12"> ペースト </div>
-        <div className="tool" key="13"> 削除 </div>
+        <ToolButton
+          parent={this}
+          label="入替"
+          logic={ToolLogic.swap}
+          tool_id="tool_swap"
+          key="9"
+        />
+        <div className="tool" key="10"> コピー </div>
+        <div className="tool" key="11"> ペースト </div>
+        <ToolButton
+          parent={this}
+          label="削除"
+          logic={ToolLogic.erase}
+          tool_id="tool_erase"
+          key="12"
+        />
       </div>
     )
   }
@@ -72,7 +96,7 @@ class ToolBox extends React.Component {
   }
 }
 
-class Tool extends React.Component {
+class ToolButton extends React.Component {
   constructor(props) {
     super(props)
     this.parent = props.parent
@@ -85,6 +109,7 @@ class Tool extends React.Component {
     return (
       <button
         className="tool"
+        id={this.id}
         onClick={this.logic}
       >
         {this.label}
@@ -97,16 +122,43 @@ class Tool extends React.Component {
   }
 }
 
-class Toggle extends React.Component {
+//  ON/OFF状態を持つツール。
+//  HTMLのcheckboxを使って実装したが、微妙かもしれない。
+//    ・状態をHTML要素で持つことになる（コンポーネントのstateで管理するべきでは）
+//    ・HTMLのcheckboxの値をJSで直接更新すると、ReactのonChangeは発火しない。
+//  一周作った後、改めて「checkboxじゃない版」作るか検討。
+class ToolToggle extends React.Component {
   constructor(props) {
     super(props)
     this.parent = props.parent
     this.ref = React.createRef()
-    this.id = props.page_id
+    this.id = props.tool_id
+    this.label = props.label
+    this.logic = props.logic
+    this.checked = props.checked || false
+  }
+  change = (e) => {
+    if(this.logic) this.logic(e)
   }
   render() {
     return (
-      <div> </div>
+      <div
+        id={this.id}
+        className="tool--toggle"
+      >
+        <input
+          type="checkbox"
+          id={`${this.id}_checkbox`}
+          className="tool"
+          defaultChecked={this.checked}
+          onChange={this.change}
+        />
+        <label
+          htmlFor={`${this.id}_checkbox`}
+        >
+          {this.label}
+        </label>
+      </div>
     )
   }
   componentDidMount() {
@@ -115,4 +167,4 @@ class Toggle extends React.Component {
   }
 }
 
-export {ToolBox, Tool, Toggle}
+export {ToolBox, ToolButton, ToolToggle}

@@ -215,6 +215,10 @@ body {
     grid-template-columns: repeat(3, calc((100% - var(--grid-gap-hor) * 2) / 3));
     column-gap: var(--grid-gap-hor);
     row-gap: var(--grid-gap-ver);
+
+    &.selected {
+      border: 2px solid rgba(0, 0, 255, 1.0)
+    }
   }
 
   //  中／小マップ時のセル指定。
@@ -242,6 +246,9 @@ body {
       grid-template-columns: 100%;
 
       .subject {
+        .middle {
+          align-items: center;
+        }
         .effect {
           height: 100%;
           &._hidden_sticker {
@@ -324,6 +331,10 @@ body {
           background: transparent;
         }
       }
+    }
+
+    &.selected {
+      border: 2px solid rgba(0, 0, 255, 1.0)
     }
   }
 }
@@ -427,9 +438,63 @@ body {
       background: green;
     }
   }
+
+  .tool--toggle {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    font-size: x-small;
+    --enable-background: #af975e;
+    --disable-background: #eee;
+    --enable-color: white;
+
+    input {
+      opacity: 0;
+      position: absolute;
+      left: 0;
+      &:focus + label {
+          box-shadow: 0 0 4px var(--enable-background);
+      }
+      &:checked + label {
+          background: var(--enable-background);
+          color: var(--enable-color);
+      }
+    }
+    label {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      border-radius: 5px;
+      background: var(--disable-background);
+      cursor: pointer;
+      transition: .5s;
+      &:hover {
+        background: var(--enable-background);
+        color: var(--enable-color);
+      }
+    }
+  }
 }
 
 ._hidden {
   display: none;
+}
+
+#map {
+  &.selection--areas {
+    .area:hover {
+      border: 2px solid rgba(0, 0, 255, 0.5);
+    }
+  }
+  &.selection--cells {
+    .cell:hover {
+      border: 2px solid rgba(0, 0, 255, 0.5);
+    }
+  }
 }
 

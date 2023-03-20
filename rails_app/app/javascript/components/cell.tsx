@@ -17,6 +17,13 @@ class Cell extends React.Component {
     this.parent = props.parent
     this.ref = React.createRef()
     this.id = `cell_${this.props.area_id}${this.props.cell_id || ""}`
+    _data.react[this.id] = this
+    this.state = {selected: false}
+  }
+  clicked = (e) => {
+    if(_data.state.selectionMode == "selection--cells") {
+      this.setState({selected: !this.state.selected})
+    }
   }
   doubleClicked = (e) => {
     _data.state.currentCell = this.id
@@ -56,7 +63,8 @@ class Cell extends React.Component {
       <div
         ref={this.ref}
         id={this.id}
-        className="cell"
+        className={`cell ${this.state.selected ? "selected" : ""}`}
+        onClick={this.clicked}
         onDoubleClick={this.doubleClicked}
       >
         <CellEffect parent={this} />
@@ -156,7 +164,7 @@ class Editor extends React.Component {
     return (
       <div
         className={`editor ${this.role} ${className}`}
-        onClick={this.click}
+        onDoubleClick={this.click}
       >
         {content}
     </div>)

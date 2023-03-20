@@ -22,7 +22,10 @@ class Map extends React.Component {
         break
     }
     return(
-      <div id="map">
+      <div
+        id="map"
+        className={_data.state.selectionMode}
+      >
         {content}
       </div>
     )
@@ -94,6 +97,14 @@ class Area extends React.Component {
     super(props)
     this.parent = props.parent
     this.id = `area_${this.props.area_id}`
+    this.state = {selected: false}
+    _data.react[this.id] = this
+  }
+  clicked = (e) => {
+    console.log("Area")
+    if(_data.state.selectionMode == "selection--areas") {
+      this.setState({selected: !this.state.selected})
+    }
   }
   doubleClicked = (e) => {
     _data.state.currentArea = this.id
@@ -113,7 +124,8 @@ class Area extends React.Component {
     return(
     <div
       id={this.id}
-      className="area"
+      className={`area ${this.state.selected ? "selected" : ""}`}
+      onClick={this.clicked}
       onDoubleClick={this.doubleClicked}
     >
       {cells}
