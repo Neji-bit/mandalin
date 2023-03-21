@@ -127,41 +127,51 @@ body {
       background: linear-gradient(160deg, white, silver);
       border-left: 1px solid black;
 
-      .page {
+      .page--list {
+        padding: 4px;
         display: grid;
-        grid-template-rows: 2em;
-        grid-template-columns: 2em auto;
+        grid-template-rows: 16;
+        row-gap: 1px;
+        font-size: smaller;
 
-        .page--index {
-          display: flex;
-          justify-content: center;
-          align-items: center;
+        .page {
+          display: grid;
+          grid-template-rows: 2em;
+          grid-template-columns: 2em auto;
+          border-radius: 5px;
 
-          &::after {
-            content: ":";
-          }
-        }
-        .editor {
-          .wrapper {
+          .page--index {
             display: flex;
-            align-items: center;
-            position: relative;
-            width: 100%;
             height: 100%;
-            * {
-              margin-block-start: 0;
-              margin-block-end: 0;
+            justify-content: center;
+            align-items: center;
+
+            &::after {
+              content: ":";
             }
-            .display {
+          }
+          .editor {
+            .wrapper {
               display: flex;
-              width: 100%;
-              height: 100%;
               align-items: center;
-            }
-            .data {
+              position: relative;
               width: 100%;
               height: 100%;
-              text-align: initial;
+              * {
+                margin-block-start: 0;
+                margin-block-end: 0;
+              }
+              .display {
+                display: flex;
+                width: 100%;
+                height: 100%;
+                align-items: center;
+              }
+              .data {
+                width: 100%;
+                height: 100%;
+                text-align: initial;
+              }
             }
           }
         }
@@ -455,7 +465,7 @@ body {
 
 .page {
   background: linear-gradient(160deg, lightcyan, paleturquoise);
-  box-shadow: -3px -3px 8px rgba(0,0,0,0.5) inset,  3px 3px 8px rgba(0,0,0,0.5) inset;
+//  box-shadow: -3px -3px 8px rgba(0,0,0,0.5) inset,  3px 3px 8px rgba(0,0,0,0.5) inset;
 }
 
 .map--large .editor.subject {

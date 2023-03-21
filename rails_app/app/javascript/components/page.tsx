@@ -19,7 +19,7 @@ class Page extends React.Component {
   }
   render() {
     return (
-      <div
+      <button
         id={this.id}
         ref={this.ref}
         className="page"
@@ -33,11 +33,11 @@ class Page extends React.Component {
           source={_data[this.id].title}
           key="2"
         />
-      </div>
+      </button>
     )
   }
   componentDidMount() {
-    Util.toAbs(this.ref.current)
+//    Util.toAbs(this.ref.current)
   }
   componentWillUnmount() {
   }
