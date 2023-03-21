@@ -10,10 +10,8 @@ import {Key} from './logic/key'
 //  _data で各要素にショートカットアクセスが可能（キーがユニークでないものは除く）。
 
 window.data = {
-  text: "HOGEHOGE",
-  //  text: "H  \nO  \nG  \nE  \nH  \nO  \nG  \nE  \nH  \nO  \nG  \nE  \nH  \nO  \nG  \nE  \n",
   book: {
-    title: "BOOK_TITLE",
+    title: { effect: "", data: "BOOK_TITLE", },
     pages: {
       page_0: { title: { effect: "", data: "PAGE_0", }, },
       page_1: { title: { effect: "", data: "PAGE_1", }, },
