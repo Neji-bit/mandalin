@@ -34,6 +34,7 @@ class TopPanel extends React.Component {
         </div>
         <Editor
           parent={this}
+          role="book--title"
           source={_data.book.title}
           key="2"
         />

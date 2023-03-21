@@ -31,6 +31,7 @@ class Page extends React.Component {
         <Editor
           parent={this}
           source={_data[this.id].title}
+          role="page--title"
           key="2"
         />
       </div>
