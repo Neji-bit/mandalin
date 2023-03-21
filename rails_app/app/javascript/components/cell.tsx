@@ -2,6 +2,7 @@ import React from 'react'
 import Command from '../logic/command'
 import Util from '../logic/util'
 import {Map, LargeMap, MiddleMap, SmallMap, Area} from './map'
+import {ToolLogic} from '../logic/tool_logic'
 
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from "rehype-raw";
@@ -27,6 +28,17 @@ class Cell extends React.Component {
   }
   doubleClicked = (e) => {
     _data.state.currentCell = this.id
+    switch(_data.state.viewMode) {
+      case "large":
+          ToolLogic.viewMiddle()
+        break
+      case "middle":
+          ToolLogic.viewSmall()
+        break
+      case "small":
+          ToolLogic.viewLarge()
+        break
+    }
   }
   render() {
     let contents = []
@@ -35,6 +47,7 @@ class Cell extends React.Component {
       case "large":
         contents.push(<Editor
           parent={this}
+          id={`${this.id}_editor_subject`}
           role="subject"
           source={_data[area_id].cells[this.id].subject}
           updateTarget={this}
@@ -45,6 +58,7 @@ class Cell extends React.Component {
       case "small":
         contents.push(<Editor
           parent={this}
+          id={`${this.id}_editor_subject`}
           role="subject"
           source={_data[area_id].cells[this.id].subject}
           updateTarget={this}
@@ -52,6 +66,7 @@ class Cell extends React.Component {
         />)
         contents.push(<Editor
           parent={this}
+          id={`${this.id}_editor_note`}
           role="note"
           source={_data[area_id].cells[this.id].note}
           updateTarget={this}
@@ -133,6 +148,7 @@ class Editor extends React.Component {
   constructor(props) {
     super(props)
     this.parent = props.parent
+    this.id = props.id
     this.role = props.role
     this.state = {editable: false}
     this.source = props.source
@@ -141,7 +157,9 @@ class Editor extends React.Component {
     this.updateTarget = props.updateTarget
   }
   click = (e) => {
-    this.setState({editable: !this.state.editable})
+    if(_data.state.selectionMode == "selection--edit") {
+      this.setState({editable: !this.state.editable})
+    }
   }
   render() {
     let content = null
@@ -163,8 +181,9 @@ class Editor extends React.Component {
     }
     return (
       <div
+        id={this.id}
         className={`editor ${this.role} ${className}`}
-        onDoubleClick={this.click}
+        onClick={this.click}
       >
         {content}
     </div>)
@@ -230,7 +249,7 @@ class EditorData extends React.Component {
     return (
       <div className="wrapper middle">
         <div
-          className="effect"
+          className={`effect ${_data.state.showSticker ? "" : "_hidden_sticker"}`}
         >
           <div
             className="テスト。このdivをクリックした時は、下には透過しない。"

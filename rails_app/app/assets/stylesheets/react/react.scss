@@ -460,6 +460,7 @@ body {
     background: orange;
     padding: 1px 4px 1px 4px;
     border-radius: 4px;
+    user-select: none;
   }
   .tag--cell--content {
     position: absolute;
@@ -566,6 +567,12 @@ body {
   &.selection--cells {
     .cell:hover {
       border: 2px solid rgba(0, 0, 255, 0.5);
+    }
+  }
+  &.selection--edit {
+    cursor: url("cursor_pen.svg"), auto;
+    .cell:hover {
+      border: 2px solid rgba(255, 0, 0, 0.5);
     }
   }
 }

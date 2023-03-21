@@ -85,7 +85,7 @@ class ToolBox extends React.Component {
         <ToolToggle
           parent={this}
           label="編集"
-          logic={null}
+          logic={ToolLogic.selectModeBind}
           tool_id="tool_toggle_edit"
           key="14"
         />

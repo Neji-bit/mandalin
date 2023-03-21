@@ -30,12 +30,12 @@ class ToolLogic {
   static selectModeBind = (e) => {
     if(e.currentTarget.checked) {
       //  いま変化したチェックボックスがONだったら、他のチェックボックスをOFFにする。
-      let binds = [tool_toggle_area_checkbox, tool_toggle_cell_checkbox]
+      let binds = [tool_toggle_area_checkbox, tool_toggle_cell_checkbox, tool_toggle_edit_checkbox]
       binds.forEach((b) => {
         if(b != e.currentTarget) b.checked = false
       })
     }
-    //  現時点のOFFのものについて、選択モードを解除（＝選択していたものを解放）する。
+    //  選択モードのうち、現在OFFのものについて、選択モードを解除（＝選択していたものを解放）する。
     if(!tool_toggle_cell_checkbox.checked) {
       ToolLogic._releaseSelected("cell")
     }
@@ -46,6 +46,7 @@ class ToolLogic {
     let mode = "selection--none"
     if(tool_toggle_cell_checkbox.checked) mode = "selection--cells"
     if(tool_toggle_area_checkbox.checked) mode = "selection--areas"
+    if(tool_toggle_edit_checkbox.checked) mode = "selection--edit"
     _data.state.selectionMode = mode
     _data.react.map.forceUpdate()
   }

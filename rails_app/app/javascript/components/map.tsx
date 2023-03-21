@@ -37,6 +37,10 @@ class LargeMap extends React.Component {
     super(props)
     this.parent = props.parent
   }
+  componentDidMount() {
+    //  意図せず付いてしまうテキスト選択を解除する。
+    window.getSelection().removeAllRanges()
+  }
   render() {
     let areas = []
     Area.area_ids.split("").forEach((id, i) => {
