@@ -9,7 +9,7 @@
   --leftpanel--width: 12em;
   --rightpanel--width: 12em;
 
-  cursor: url("cursor_pen.svg"), auto;
+//  cursor: url("cursor_pen.svg"), auto;
 }
 
 .panel {
@@ -130,10 +130,17 @@ body {
       .page--list {
         padding: 4px;
         display: grid;
-        grid-template-rows: 16;
-        row-gap: 1px;
+        row-gap: 2px;
         font-size: smaller;
 
+        .label {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: initial;
+          height: 1.6em;
+          user-select: none;
+        }
         .page {
           display: grid;
           grid-template-rows: 2em;
@@ -466,6 +473,14 @@ body {
 .page {
   background: linear-gradient(160deg, lightcyan, paleturquoise);
 //  box-shadow: -3px -3px 8px rgba(0,0,0,0.5) inset,  3px 3px 8px rgba(0,0,0,0.5) inset;
+  cursor: pointer;
+  border: 1px solid black;
+  &:hover {
+    background: silver;
+  }
+  &:active {
+    background: white;
+  }
 }
 
 .map--large .editor.subject {

@@ -99,6 +99,11 @@ class RightPanel extends React.Component {
     return(
       <div id="layout_right" className="panel">
         <div className="page--list">
+          <div
+            className="label"
+          >
+            PageList
+          </div>
           {contents}
         </div>
       </div>
