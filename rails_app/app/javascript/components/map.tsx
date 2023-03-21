@@ -101,7 +101,6 @@ class Area extends React.Component {
     _data.react[this.id] = this
   }
   clicked = (e) => {
-    console.log("Area")
     if(_data.state.selectionMode == "selection--areas") {
       this.setState({selected: !this.state.selected})
     }

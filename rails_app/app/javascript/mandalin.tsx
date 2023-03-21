@@ -3,7 +3,8 @@ import { createRoot } from 'react-dom/client'
 import Cell from './components/cell'
 import Command from './logic/command'
 import Backboard from './components/layout'
-import {Key} from './logic/key'
+import {Keyboard} from './logic/keyboard'
+import {Api} from './logic/api'
 
 ////////////////////////////////////////////////////////////////////////////////
 //  データ構造の定義。
@@ -125,7 +126,13 @@ _data = dataRefresh()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Key.init()
+Api.test()
+Api.loadBook(1, () => {
+  Api.loadPage(1, 0, () => {
+    console.log("Load Complete.")
+  })
+})
+Keyboard.init()
 
 const root = document.getElementById('root');
 if (!root) {

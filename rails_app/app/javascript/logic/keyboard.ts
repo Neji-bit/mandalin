@@ -1,4 +1,5 @@
-class Key {
+//  キー入力処理
+class Keyboard {
   static init = () => {
     window.addEventListener("keydown", (e)=>{
       const keycode = e.keyCode
@@ -20,4 +21,4 @@ class Key {
   }
 }
 
-export {Key}
+export {Keyboard}
