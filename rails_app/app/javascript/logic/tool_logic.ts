@@ -37,6 +37,7 @@ class ToolLogic {
         tool_toggle_edit_checkbox,
         tool_toggle_erase_checkbox,
         tool_toggle_swap_checkbox,
+        tool_toggle_copy_checkbox,
         ]
       binds.forEach((b) => {
         if(b != e.currentTarget) b.checked = false
@@ -56,6 +57,7 @@ class ToolLogic {
     if(tool_toggle_edit_checkbox.checked) mode = "selection--edit"
     if(tool_toggle_erase_checkbox.checked) mode = "selection--erase"
     if(tool_toggle_swap_checkbox.checked) mode = "selection--swap"
+    if(tool_toggle_copy_checkbox.checked) mode = "selection--copy"
     _data.state.selectionMode = mode
     _data.react.map.forceUpdate()
   }
@@ -77,6 +79,13 @@ class ToolLogic {
         ToolLogic.swap()
         //  入替の場合は、選択を解除しない。
         tool_toggle_swap_checkbox.checked = false
+      }
+    }
+    //  コピー：選択されたものをただコピーするだけ。
+    if("tool_toggle_copy_checkbox" == e.currentTarget.id) {
+      if(0 < [...document.getElementsByClassName("selected")].length) {
+        ToolLogic.copy()
+        tool_toggle_copy_checkbox.checked = false
       }
     }
   }
@@ -116,10 +125,8 @@ class ToolLogic {
 
   //  セル／エリアの削除。
   static erase = () => {
-    let cells = [...document.getElementsByClassName("cell selected")]
-    cells.forEach((c) => { ToolLogic.eraseCell(c.id) })
-    let areas = [...document.getElementsByClassName("area selected")]
-    areas.forEach((a) => {
+    ToolLogic._selectedCells().forEach((c) => { ToolLogic.eraseCell(c.id) })
+    areas = ToolLogic._selectedAreas().forEach((a) => {
       Object.keys(_data[a.id].cells).forEach((c) => { ToolLogic.eraseCell(c) })
     })
   }
@@ -128,6 +135,26 @@ class ToolLogic {
     data.subject.data = ""
     data.note.data = ""
     _data.react[cell_id].forceUpdate()
+  }
+  static _selectedCells = () => {
+    return [...document.getElementsByClassName("cell selected")]
+  }
+  static _selectedAreas = () => {
+    return [...document.getElementsByClassName("area selected")]
+  }
+
+  static copy = () => {
+    //  選択対象をセルのリストにする。
+    let cell_ids = ToolLogic._selectedCells().map((c) => {return c.id})
+    ToolLogic._selectedAreas().forEach((a) => {
+      cell_ids = cell_ids.concat(Object.keys(_data[a.id].cells))
+    })
+
+    //  対応するデータをJSON形式で詰め込む。
+    //  Stringifyしたものをクリップボードに入れる。
+    let json = {}
+    cell_ids.forEach((k) => { json[k] = _data[k] })
+    navigator.clipboard.writeText(JSON.stringify(json))
   }
 
   //  選択中のものを一斉に解放する。

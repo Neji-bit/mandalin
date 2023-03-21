@@ -87,14 +87,14 @@ class ToolBox extends React.Component {
           label="編集"
           logic={ToolLogic.selectModeBind}
           tool_id="tool_toggle_edit"
-          key="14"
+          key="10"
         />
         <ToolToggle
           parent={this}
           label="削除"
           logic={ToolLogic.selectModeBind}
           tool_id="tool_toggle_erase"
-          key="13"
+          key="11"
         />
 
         <ToolToggle
@@ -102,13 +102,19 @@ class ToolBox extends React.Component {
           label="入替"
           logic={ToolLogic.selectModeBind}
           tool_id="tool_toggle_swap"
-          key="10"
+          key="12"
         />
         <div
           key="101"
         />
-        <div className="tool" key="11"> コピー </div>
-        <div className="tool" key="12"> ペースト </div>
+        <ToolToggle
+          parent={this}
+          label="コピー"
+          logic={ToolLogic.selectModeBind}
+          tool_id="tool_toggle_copy"
+          key="13"
+        />
+        <div className="tool" key="14"> ペースト </div>
       </div>
     )
   }

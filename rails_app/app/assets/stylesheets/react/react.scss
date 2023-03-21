@@ -561,11 +561,13 @@ body {
 
 #map {
   &.selection--areas {
+    cursor: pointer;
     .area:hover {
       border: 2px solid rgba(0, 0, 255, 0.5);
     }
   }
   &.selection--cells {
+    cursor: pointer;
     .cell:hover {
       border: 2px solid rgba(0, 0, 255, 0.5);
     }
