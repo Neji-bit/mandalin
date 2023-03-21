@@ -97,11 +97,11 @@ class ToolBox extends React.Component {
           key="13"
         />
 
-        <ToolButton
+        <ToolToggle
           parent={this}
           label="入替"
-          logic={ToolLogic.swap}
-          tool_id="tool_swap"
+          logic={ToolLogic.selectModeBind}
+          tool_id="tool_toggle_swap"
           key="10"
         />
         <div

@@ -22,8 +22,18 @@ class Cell extends React.Component {
     this.state = {selected: false}
   }
   clicked = (e) => {
-    if(_data.state.selectionMode == "selection--cells") {
+    if("selection--cells" == _data.state.selectionMode) {
       this.setState({selected: !this.state.selected})
+    }
+    if("selection--swap" == _data.state.selectionMode) {
+      this.setState({selected: !this.state.selected},
+        () => {
+          if(ToolLogic.swap()) {
+            ([...document.getElementsByClassName("selected")]).forEach((e) => {
+              _data.react[e.id].setState({selected: false})
+            })
+          }
+        })
     }
     //  大マップの時は、eraseでセブジェクトもノートもまとめて削除する
     if(_data.state.viewMode == "large" && _data.state.selectionMode == "selection--erase") {

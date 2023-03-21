@@ -36,6 +36,7 @@ class ToolLogic {
         tool_toggle_cell_checkbox,
         tool_toggle_edit_checkbox,
         tool_toggle_erase_checkbox,
+        tool_toggle_swap_checkbox,
         ]
       binds.forEach((b) => {
         if(b != e.currentTarget) b.checked = false
@@ -54,27 +55,39 @@ class ToolLogic {
     if(tool_toggle_area_checkbox.checked) mode = "selection--areas"
     if(tool_toggle_edit_checkbox.checked) mode = "selection--edit"
     if(tool_toggle_erase_checkbox.checked) mode = "selection--erase"
+    if(tool_toggle_swap_checkbox.checked) mode = "selection--swap"
     _data.state.selectionMode = mode
     _data.react.map.forceUpdate()
   }
   //  前処理。「動詞を選択された時、すでに選択対象があったらそれらを対象に実行する」アクション。
   static selectModeBindPreAction = (e) => {
     //  削除：選択されているものがある場合は、それらを削除し、ツールはOFFにする。
-    if(e.currentTarget.id == "tool_toggle_erase_checkbox") {
+    if("tool_toggle_erase_checkbox" == e.currentTarget.id) {
       if(0 < [...document.getElementsByClassName("selected")].length) {
         ToolLogic.erase()
+        //  削除の場合は、ついでに選択を解除する。
         tool_toggle_cell_checkbox.checked = false
         tool_toggle_area_checkbox.checked = false
         tool_toggle_erase_checkbox.checked = false
       }
     }
+    //  入替：選択されているものがある場合は、入替し、ツールはOFFにする。
+    if("tool_toggle_swap_checkbox" == e.currentTarget.id) {
+      if(2 == [...document.getElementsByClassName("selected")].length) {
+        ToolLogic.swap()
+        //  入替の場合は、選択を解除しない。
+        tool_toggle_swap_checkbox.checked = false
+      }
+    }
   }
 
   //  入れ替え。現在は「選択対象が２つ」の時のみ機能。
+  //  入替が成立した際は true, 不成立だった場合は false を返す。
   static swap = () => {
     let cells = [...document.getElementsByClassName("cell selected")]
     if(2 == cells.length) {
       ToolLogic._swap(cells[0].id, cells[1].id)
+      return true
     }
     let areas = [...document.getElementsByClassName("area selected")]
     if(2 == areas.length) {
@@ -83,7 +96,9 @@ class ToolLogic {
       Cell.cell_ids.split("").forEach((c) => {
         ToolLogic._swap(`${left_cell_id_base}${c}`, `${right_cell_id_base}${c}`)
       })
+      return true
     }
+    return false
   }
   static _swap = (left_cell_id, right_cell_id) => {
     let left = _data[left_cell_id]
