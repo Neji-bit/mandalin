@@ -53,18 +53,20 @@ class ToolBox extends React.Component {
           key="100"
         />
 
-        <ToolButton
+        <ToolToggle
           parent={this}
           label="タグ表示"
           logic={ToolLogic.toggleTag}
-          tool_id="tool_toggle_tag"
+          tool_id="tool_switch_tag"
+          checked={true}
           key="6"
         />
-        <ToolButton
+        <ToolToggle
           parent={this}
           label="ステッカー表示"
           logic={ToolLogic.toggleSticker}
-          tool_id="tool_toggle_sticker"
+          tool_id="tool_switch_sticker"
+          checked={true}
           key="7"
         />
 

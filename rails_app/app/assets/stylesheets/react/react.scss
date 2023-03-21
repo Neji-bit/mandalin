@@ -512,6 +512,7 @@ body {
     }
   }
 
+  //  押し込み／解除形式のチェックボックス
   .tool--toggle {
     display: flex;
     width: 100%;
@@ -535,6 +536,9 @@ body {
           background: var(--enable-background);
           color: var(--enable-color);
       }
+      &:checked + label:before {
+        background: lime;
+      }
     }
     label {
       display: flex;
@@ -550,6 +554,22 @@ body {
       &:hover {
         background: var(--enable-background);
         color: var(--enable-color);
+      }
+      //  左上にON/OFFランプをつけた
+      &:before {
+        content: "";
+        display: block;
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        border: 0.5px solid black;
+        border-radius: 3px;
+        box-sizing: border-box;
+        color: black;
+        left: 3px;
+        top: 3px;
+        background: gray;
+        transition: .5s;
       }
     }
   }
