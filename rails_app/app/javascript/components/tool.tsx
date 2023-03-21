@@ -34,12 +34,23 @@ class ToolBox extends React.Component {
           tool_id="tool_view_small"
           key="3"
         />
+        <ToolToggle
+          parent={this}
+          label="２in１"
+          logic={null}
+          tool_id="tool_toggle_2in1"
+          key="4"
+        />
+
         <ToolButton
           parent={this}
           label="全画面表示"
           logic={ToolLogic.toggleFullscreen}
           tool_id="tool_toggle_fullscreen"
-          key="4"
+          key="5"
+        />
+        <div
+          key="100"
         />
 
         <ToolButton
@@ -47,28 +58,39 @@ class ToolBox extends React.Component {
           label="タグ表示"
           logic={ToolLogic.toggleTag}
           tool_id="tool_toggle_tag"
-          key="5"
+          key="6"
         />
         <ToolButton
           parent={this}
           label="ステッカー表示"
           logic={ToolLogic.toggleSticker}
           tool_id="tool_toggle_sticker"
-          key="6"
+          key="7"
         />
+
         <ToolToggle
           parent={this}
           label="セル選択"
           logic={ToolLogic.selectModeBind}
           tool_id="tool_toggle_cell"
-          key="7"
+          key="8"
         />
         <ToolToggle
           parent={this}
           label="エリア選択"
           logic={ToolLogic.selectModeBind}
           tool_id="tool_toggle_area"
-          key="8"
+          key="9"
+        />
+        <ToolToggle
+          parent={this}
+          label="編集"
+          logic={null}
+          tool_id="tool_toggle_edit"
+          key="14"
+        />
+        <div
+          key="101"
         />
 
         <ToolButton
@@ -76,17 +98,17 @@ class ToolBox extends React.Component {
           label="入替"
           logic={ToolLogic.swap}
           tool_id="tool_swap"
-          key="9"
+          key="10"
         />
-        <div className="tool" key="10"> コピー </div>
-        <div className="tool" key="11"> ペースト </div>
         <ToolButton
           parent={this}
           label="削除"
           logic={ToolLogic.erase}
           tool_id="tool_erase"
-          key="12"
+          key="13"
         />
+        <div className="tool" key="11"> コピー </div>
+        <div className="tool" key="12"> ペースト </div>
       </div>
     )
   }

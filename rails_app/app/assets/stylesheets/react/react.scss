@@ -8,6 +8,8 @@
   --bottompanel--height: 3em;
   --leftpanel--width: 12em;
   --rightpanel--width: 12em;
+
+  cursor: url("cursor_pen.svg"), auto;
 }
 
 .panel {
@@ -422,7 +424,7 @@ body {
 #toolbox {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(6, 1fr);
+  grid-template-rows: repeat(7, 1fr);
   background: gray;
   column-gap: 5px;
   row-gap: 5px;
@@ -452,7 +454,7 @@ body {
     --enable-color: white;
 
     input {
-      opacity: 0;
+      visibility: hidden;
       position: absolute;
       left: 0;
       &:focus + label {
