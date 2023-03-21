@@ -25,6 +25,10 @@ class Cell extends React.Component {
     if(_data.state.selectionMode == "selection--cells") {
       this.setState({selected: !this.state.selected})
     }
+    //  大マップの時は、eraseでセブジェクトもノートもまとめて削除する
+    if(_data.state.viewMode == "large" && _data.state.selectionMode == "selection--erase") {
+      ToolLogic.eraseCell(this.id)
+    }
   }
   doubleClicked = (e) => {
     _data.state.currentCell = this.id
@@ -159,6 +163,16 @@ class Editor extends React.Component {
   click = (e) => {
     if(_data.state.selectionMode == "selection--edit") {
       this.setState({editable: !this.state.editable})
+    }
+    //  削除モードの場合、サブジェクトとノートが表示されている場合は個々に削除する。
+    if(
+        ["middle", "small"].includes(_data.state.viewMode) &&
+        _data.state.selectionMode == "selection--erase"
+    ) {
+      if(["subject", "note"].includes(this.role)) {
+        _data[this.parent.id][this.role].data = ""
+        this.forceUpdate()
+      }
     }
   }
   render() {

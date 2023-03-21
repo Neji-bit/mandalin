@@ -575,5 +575,11 @@ body {
       border: 2px solid rgba(255, 0, 0, 0.5);
     }
   }
+  &.selection--erase {
+    cursor: url("cursor_eraser.svg"), auto;
+    .cell:hover {
+      border: 2px solid rgba(255, 0, 0, 0.5);
+    }
+  }
 }
 

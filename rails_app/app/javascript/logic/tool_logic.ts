@@ -28,9 +28,15 @@ class ToolLogic {
 
   //  「選択モード（＝ 択一 or なし）」の連動を管理。
   static selectModeBind = (e) => {
+    ToolLogic.selectModeBindPreAction(e)
     if(e.currentTarget.checked) {
       //  いま変化したチェックボックスがONだったら、他のチェックボックスをOFFにする。
-      let binds = [tool_toggle_area_checkbox, tool_toggle_cell_checkbox, tool_toggle_edit_checkbox]
+      let binds = [
+        tool_toggle_area_checkbox,
+        tool_toggle_cell_checkbox,
+        tool_toggle_edit_checkbox,
+        tool_toggle_erase_checkbox,
+        ]
       binds.forEach((b) => {
         if(b != e.currentTarget) b.checked = false
       })
@@ -47,8 +53,21 @@ class ToolLogic {
     if(tool_toggle_cell_checkbox.checked) mode = "selection--cells"
     if(tool_toggle_area_checkbox.checked) mode = "selection--areas"
     if(tool_toggle_edit_checkbox.checked) mode = "selection--edit"
+    if(tool_toggle_erase_checkbox.checked) mode = "selection--erase"
     _data.state.selectionMode = mode
     _data.react.map.forceUpdate()
+  }
+  //  前処理。「動詞を選択された時、すでに選択対象があったらそれらを対象に実行する」アクション。
+  static selectModeBindPreAction = (e) => {
+    //  削除：選択されているものがある場合は、それらを削除し、ツールはOFFにする。
+    if(e.currentTarget.id == "tool_toggle_erase_checkbox") {
+      if(0 < [...document.getElementsByClassName("selected")].length) {
+        ToolLogic.erase()
+        tool_toggle_cell_checkbox.checked = false
+        tool_toggle_area_checkbox.checked = false
+        tool_toggle_erase_checkbox.checked = false
+      }
+    }
   }
 
   //  入れ替え。現在は「選択対象が２つ」の時のみ機能。
@@ -80,16 +99,16 @@ class ToolLogic {
     _data.react[right_cell_id].forceUpdate()
   }
 
-  //  要素の削除。
+  //  セル／エリアの削除。
   static erase = () => {
     let cells = [...document.getElementsByClassName("cell selected")]
-    cells.forEach((c) => { ToolLogic._erase(c.id) })
+    cells.forEach((c) => { ToolLogic.eraseCell(c.id) })
     let areas = [...document.getElementsByClassName("area selected")]
     areas.forEach((a) => {
-      Object.keys(_data[a.id].cells).forEach((c) => { ToolLogic._erase(c) })
+      Object.keys(_data[a.id].cells).forEach((c) => { ToolLogic.eraseCell(c) })
     })
   }
-  static _erase = (cell_id) => {
+  static eraseCell = (cell_id) => {
     let data = _data[cell_id]
     data.subject.data = ""
     data.note.data = ""

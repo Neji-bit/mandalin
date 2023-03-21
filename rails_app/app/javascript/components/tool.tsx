@@ -89,8 +89,12 @@ class ToolBox extends React.Component {
           tool_id="tool_toggle_edit"
           key="14"
         />
-        <div
-          key="101"
+        <ToolToggle
+          parent={this}
+          label="削除"
+          logic={ToolLogic.selectModeBind}
+          tool_id="tool_toggle_erase"
+          key="13"
         />
 
         <ToolButton
@@ -100,12 +104,8 @@ class ToolBox extends React.Component {
           tool_id="tool_swap"
           key="10"
         />
-        <ToolButton
-          parent={this}
-          label="削除"
-          logic={ToolLogic.erase}
-          tool_id="tool_erase"
-          key="13"
+        <div
+          key="101"
         />
         <div className="tool" key="11"> コピー </div>
         <div className="tool" key="12"> ペースト </div>
