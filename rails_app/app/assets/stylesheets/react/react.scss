@@ -483,6 +483,10 @@ body {
   &:active {
     background: white;
   }
+
+  &.current--page {
+    background: linear-gradient(160deg, pink, coral);
+  }
 }
 
 .map--large .editor.subject {

@@ -22,6 +22,7 @@ class Api {
     axios.get(`/api/v1/book/${book_id}`)
     .then((data) => {
       window.data.book = JSON.parse(data.data).book
+      _data = dataRefresh()
     })
     .finally(() => {
       this.is_synchronizing = false
@@ -35,6 +36,7 @@ class Api {
     axios.get(`/api/v1/book/${book_id}/page/${page_id}`)
     .then((data) => {
       window.data.page = JSON.parse(data.data).page
+      _data = dataRefresh()
     })
     .finally(() => {
       this.is_synchronizing = false
@@ -55,9 +57,8 @@ class Api {
   }
 
   static savePage = (callback = null) => {
-    //  page_id は仮設定
     let book_id = Util.urlParams().book
-    let page_id = "0"
+    let page_id = (_data.state.currentPage || "0").match(/.$/)
     let payload = {text: JSON.stringify({page: _data.page})}
     axios.put(`/api/v1/book/${book_id}/page/${page_id}`, payload)
     .finally(() => {

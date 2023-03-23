@@ -14,20 +14,26 @@ class Backboard extends React.Component {
         id="layout_backboard"
         className={`panel ${cls}`}
       >
-        <TopPanel />
-        <LeftPanel />
-        <CenterPanel />
-        <RightPanel />
-        <BottomPanel />
+        <TopPanel parent={this}/>
+        <LeftPanel parent={this}/>
+        <CenterPanel parent={this}/>
+        <RightPanel parent={this}/>
+        <BottomPanel parent={this}/>
       </div>
     )
   }
 }
 
 class TopPanel extends React.Component {
+  constructor(props) {
+    super(props)
+    this.parent = props.parent
+    this.id = "layout_top"
+    _data.react[this.id] = this
+  }
   render() {
     return(
-      <div id="layout_top" className="panel">
+      <div id={this.id} className="panel">
         <div
           key="1"
         >
@@ -66,9 +72,15 @@ class TopPanel extends React.Component {
 }
 
 class LeftPanel extends React.Component {
+  constructor(props) {
+    super(props)
+    this.parent = props.parent
+    this.id = "layout_left"
+    _data.react[this.id] = this
+  }
   render() {
     return(
-      <div id="layout_left" className="panel">
+      <div id={this.id} className="panel">
         <ToolBox/>
       </div>
     )
@@ -76,9 +88,15 @@ class LeftPanel extends React.Component {
 }
 
 class CenterPanel extends React.Component {
+  constructor(props) {
+    super(props)
+    this.parent = props.parent
+    this.id = "layout_center"
+    _data.react[this.id] = this
+  }
   render() {
     return(
-      <div id="layout_center" className="panel">
+      <div id={this.id} className="panel">
         <Map />
       </div>
     )
@@ -86,6 +104,12 @@ class CenterPanel extends React.Component {
 }
 
 class RightPanel extends React.Component {
+  constructor(props) {
+    super(props)
+    this.parent = props.parent
+    this.id = "layout_right"
+    _data.react[this.id] = this
+  }
   render() {
     let contents = []
     Page.page_ids.split("").forEach((i, n) => {
@@ -98,8 +122,10 @@ class RightPanel extends React.Component {
         />)
     })
     return(
-      <div id="layout_right" className="panel">
-        <div className="page--list">
+      <div id={this.id} className="panel">
+        <div
+          className="page--list"
+        >
           <div
             className="label"
           >
@@ -113,9 +139,15 @@ class RightPanel extends React.Component {
 }
 
 class BottomPanel extends React.Component {
+  constructor(props) {
+    super(props)
+    this.parent = props.parent
+    this.id = "layout_bottom"
+    _data.react[this.id] = this
+  }
   render() {
     return(
-      <div id="layout_bottom" className="panel">
+      <div id={this.id} className="panel">
         <IconLogo parent={this}/>
       </div>
     )

@@ -1,6 +1,7 @@
 import React from 'react'
-import Util from '../logic/util'
+import {Util} from '../logic/util'
 import {Editor} from './cell'
+import {Api} from '../logic/api'
 
 import ReactMarkdown from 'react-markdown';
 import rehypeRaw from "rehype-raw";
@@ -17,12 +18,25 @@ class Page extends React.Component {
     this.ref = React.createRef()
     this.id = props.page_id
   }
+  click = () => {
+    if(_data.state.currentPage != this.id) {
+      _data.state.currentPage = this.id
+      _data.react.layout_right.forceUpdate()
+      Api.loadPage(Util.urlParams().book, _data.state.currentPage.match(/.$/),
+        () => {
+          _data = dataRefresh()
+          _data.react.app.forceUpdate()
+        }
+      )
+    }
+  }
   render() {
     return (
       <div
         id={this.id}
         ref={this.ref}
-        className="page"
+        className={`page ${_data.state.currentPage == this.id ? "current--page" : ""}`}
+        onClick={this.click}
       >
         <PageIndex
           parent={this}
