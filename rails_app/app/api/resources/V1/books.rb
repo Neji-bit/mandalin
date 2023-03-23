@@ -9,6 +9,9 @@ module Resources
       end
 
       resources 'book/:id' do
+        # GETでの処理：
+        #   find_or_initialize_by の動きをする。 
+        #   あえて、外部からの明示的なPOSTは作らない。
         desc 'Return a book data.'
         route_setting :auth, disabled: true
         params do
@@ -19,24 +22,6 @@ module Resources
             present Book.find(params[:id]).text
           rescue
             error!("Not found!", 404)
-          end
-        end
-
-        desc 'Create a book data.'
-        params do
-          requires :name, type: String, desc: 'name of book'
-          requires :text, type: String, desc: 'json of book'
-        end
-        post do
-          begin
-            Book.create({
-              name: params[:name],
-              text: params[:text],
-              owner: current_user
-            })
-            present true
-          rescue
-            error!("Duplicate!", 500)
           end
         end
 

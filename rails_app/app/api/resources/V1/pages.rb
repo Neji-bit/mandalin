@@ -1,6 +1,7 @@
 module Resources
   module V1
     class Pages < Grape::API
+
       resource 'book/:book_id/pages' do
         desc 'Return pages data.'
         params do
@@ -11,7 +12,18 @@ module Resources
         end
       end
 
+      helpers do
+        # パラメータから「正常なID」を抽出する。
+        def legal_params()
+          _params = {}
+          _params[:book_id] = params[:book_id]
+          _params[:page_name] = params[:page_name] if params[:page_name]&.match?(/^[0-9a-f]$/)
+          _params
+        end
+      end
+
       resources 'book/:book_id/page/:page_name' do
+        # ページの find_or_create_by 挙動はここで行う。
         desc 'Return a page data.'
         route_setting :auth, disabled: true
         params do
@@ -20,9 +32,27 @@ module Resources
         end
         get do
           begin
-            present Book.find(params[:book_id]).pages.where(name: params[:page_name]).take.text
+            _legal_params = legal_params
+            # そもそもブックがない場合、エラー。
+            # ページがない場合、ブックへの書き込み権限がある場合、新規作成。
+            # ブック／ページがある場合、権限を判断。
+            #   ブック／ページへのRead権限がない場合は、エラー。
+
+            # 以下は仮コード。
+            book = Book.find(_legal_params[:book_id])
+            page = nil
+            if(book.owner == current_user) then
+              page = Page.find_or_create_by(book: book, name: _legal_params[:page_name]) do |c|
+                c.book = book
+                c.name = _legal_params[:page_name]
+              end
+            else
+              page = book.pages.where(name: _legal_params[:page_name])&.first
+            end
+            raise unless page
+            present page.text
           rescue
-            error!("Not found!", 404)
+            error!("Not found", 404)
           end
         end
 

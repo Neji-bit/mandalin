@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+  <style type="text/css">
+    .eraser {
+      stroke-width: 1px;
+      stroke: black;
+      fill: white;
+      stroke-linejoin: round;
+      transform: translate(-2px, -2px);
+    }
+  </style>
+
+  <path class="eraser" d="
+    m 10 4
+    l -6 6
+    l 7 7
+    l 6 -6
+    z
+  " />
+  <path class="eraser" d="
+    m 10 4
+    c -4 -4 -10 2 -6 6
+    z
+  " />
+
+</svg>
