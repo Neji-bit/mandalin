@@ -25,24 +25,6 @@ module Resources
           end
         end
 
-        desc 'Create a book data.'
-        params do
-          requires :name, type: String, desc: 'name of book'
-          requires :text, type: String, desc: 'json of book'
-        end
-        post do
-          begin
-            Book.create({
-              name: params[:name],
-              text: params[:text],
-              owner: current_user
-            })
-            present true
-          rescue
-            error!("Duplicate!", 500)
-          end
-        end
-
         desc 'Update a book data.'
         params do
           requires :id, type: Integer, desc: 'book id.'

@@ -16,7 +16,7 @@ class Api {
   }
 
   static loadBook = (book_id, callback = null) => {
-    if(this.is_synchronizing) throw new Error("Already sync now.");
+    if(this.is_synchronizing) throw new Error("Already sync now. (Book)");
     this.is_synchronizing = true
     axios.get(`/api/v1/book/${book_id}`)
     .then((data) => {
@@ -29,11 +29,11 @@ class Api {
   }
 
   static loadPage = (book_id, page_id, callback = null) => {
-    if(this.is_synchronizing) throw new Error("Already sync now.");
+    if(this.is_synchronizing) throw new Error("Already sync now. (Page)");
     this.is_synchronizing = true
     axios.get(`/api/v1/book/${book_id}/page/${page_id}`)
     .then((data) => {
-      console.log(JSON.parse(data.data))
+      window.data.page = JSON.parse(data.data).page
     })
     .finally(() => {
       this.is_synchronizing = false

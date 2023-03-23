@@ -145,6 +145,10 @@ function init() {
   //  アプリデータ（＝window.data）の各要素へのショートカットを作る。
   _data = dataRefresh()
 
+  _data.state.viewMode ||= "large"
+  _data.state.showTag ||= true
+  _data.state.showSticker ||= true
+
   const root = document.getElementById('root');
   if (!root) {
     throw new Error('No root element');

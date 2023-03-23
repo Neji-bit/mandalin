@@ -213,7 +213,7 @@ class Editor extends React.Component {
         onClick={this.click}
       >
         {content}
-    </div>)
+      </div>)
   }
 }
 
