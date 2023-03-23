@@ -1,6 +1,6 @@
 import React from 'react'
 import Command from '../logic/command'
-import Util from '../logic/util'
+import {Util} from '../logic/util'
 import {Map, LargeMap, MiddleMap, SmallMap, Area} from './map'
 import {ToolLogic} from '../logic/tool_logic'
 

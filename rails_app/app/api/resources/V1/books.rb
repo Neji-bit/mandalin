@@ -9,6 +9,9 @@ module Resources
       end
 
       resources 'book/:id' do
+        # GETでの処理：
+        #   find_or_initialize_by の動きをする。 
+        #   あえて、外部からの明示的なPOSTは作らない。
         desc 'Return a book data.'
         route_setting :auth, disabled: true
         params do

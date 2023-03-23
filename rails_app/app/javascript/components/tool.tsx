@@ -117,6 +117,13 @@ class ToolBox extends React.Component {
           key="13"
         />
         <div className="tool" key="14"> ペースト </div>
+        <ToolButton
+          parent={this}
+          label="ブック"
+          logic={null}
+          tool_id="tool_button_books"
+          key="15"
+        />
       </div>
     )
   }

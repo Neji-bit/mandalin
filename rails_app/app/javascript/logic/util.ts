@@ -56,6 +56,17 @@ class Util {
     });
     return elm
   }
+
+  static urlParams = (url = location.href) => {
+    let params = url.split("?")[1] || ""
+    let array = params.split("&")
+    let result = {}
+    array.forEach((p) => {
+      let kv = p.split("=")
+      if(kv[0]) result[kv[0]] = kv[1] || ""
+    })
+    return result
+  }
 }
 
-export default Util
+export {Util}
