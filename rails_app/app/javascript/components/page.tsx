@@ -25,7 +25,7 @@ class Page extends React.Component {
       Api.loadPage(Util.urlParams().book, _data.state.currentPage.match(/.$/),
         () => {
           _data = dataRefresh()
-          _data.react.app.forceUpdate()
+          _data.react.map.refresh()
         }
       )
     }

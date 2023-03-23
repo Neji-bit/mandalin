@@ -7,6 +7,18 @@ class Map extends React.Component {
     super(props)
     _data.react.map = this
     this.parent = props.parent
+    this.state = {refresh: false}
+  }
+  //  配下のコンポーネントを強制的に再生成する。
+  //  配下コンポーネントが_dataを参照しており、_dataを作り直したらコンポーネントも作り直す必要あったため、作った。
+  //  仕組みとしては、一瞬だけ「蓋絵」を表示し、すぐに本来のコンテンツを書き直すことで、コンポーネントを作り直している。
+  //  （ちょっとウラ技じみてる。どんな環境でも上手く動く方法かは、気がかり。）
+  refresh() {
+    this.setState({refresh: true},
+      () => {
+        this.setState({refresh: false})
+      }
+    )
   }
   render() {
     let content = null
@@ -20,6 +32,9 @@ class Map extends React.Component {
       default:
         content = <LargeMap parent={this} />
         break
+    }
+    if(this.state.refresh) {
+      content = "Loading..."
     }
     return(
       <div
