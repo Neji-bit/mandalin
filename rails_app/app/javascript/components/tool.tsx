@@ -13,21 +13,21 @@ class ToolBox extends React.Component {
     return (
       <div id="toolbox"
       >
-        <ToolButton
+        <ToolToggle
           parent={this}
           label="全体表示"
           logic={ToolLogic.viewLarge}
           tool_id="tool_view_large"
           key="1"
         />
-        <ToolButton
+        <ToolToggle
           parent={this}
           label="エリア表示"
           logic={ToolLogic.viewMiddle}
           tool_id="tool_view_middle"
           key="2"
         />
-        <ToolButton
+        <ToolToggle
           parent={this}
           label="セル表示"
           logic={ToolLogic.viewSmall}
@@ -135,6 +135,7 @@ class ToolBox extends React.Component {
     )
   }
   componentDidMount() {
+    ToolLogic.viewModeBind()
   }
   componentWillUnmount() {
   }

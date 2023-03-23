@@ -5,15 +5,24 @@ class ToolLogic {
   static viewLarge = (e) => {
     _data.state.viewMode = "large"
     _data.react.map.forceUpdate()
+    this.viewModeBind()
   }
   static viewMiddle = (e) => {
     _data.state.viewMode = "middle"
     _data.react.map.forceUpdate()
+    this.viewModeBind()
   }
   static viewSmall = (e) => {
     _data.state.viewMode = "small"
     _data.react.map.forceUpdate()
+    this.viewModeBind()
   }
+  static viewModeBind = () => {
+    tool_view_large_checkbox.checked = _data.state.viewMode == "large"
+    tool_view_middle_checkbox.checked = _data.state.viewMode == "middle"
+    tool_view_small_checkbox.checked = _data.state.viewMode == "small"
+  }
+
   static toggleTag = (e) => {
     _data.state.showTag = !_data.state.showTag
     _data.react.map.forceUpdate()
