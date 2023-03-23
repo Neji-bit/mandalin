@@ -1,3 +1,4 @@
+import {Util} from './util'
 import axios from 'axios'
 //  アプリのAPI一式を定義。
 //  データ読み込み／書き込みは _data を直接触る。
@@ -41,16 +42,23 @@ class Api {
     })
   }
 
-  static saveBook = (book_id, callback = null) => {
-    let payload = {text: JSON.stringify(_data.book)}
+  static saveBook = (callback = null) => {
+    let book_id = Util.urlParams().book
+    let payload = {
+      name: _data.book.title.data,
+      text: JSON.stringify({book: _data.book})
+    }
     axios.put(`/api/v1/book/${book_id}`, payload)
     .finally(() => {
       if(callback) callback()
     })
   }
 
-  static savePage = (book_id, page_id, callback = null) => {
-    let payload = {text: JSON.stringify(_data.page)}
+  static savePage = (callback = null) => {
+    //  page_id は仮設定
+    let book_id = Util.urlParams().book
+    let page_id = "0"
+    let payload = {text: JSON.stringify({page: _data.page})}
     axios.put(`/api/v1/book/${book_id}/page/${page_id}`, payload)
     .finally(() => {
       if(callback) callback()

@@ -1,4 +1,5 @@
 import {Cell} from '../components/cell'
+import {Api} from '../logic/api'
 
 class ToolLogic {
   static viewLarge = (e) => {
@@ -155,6 +156,13 @@ class ToolLogic {
     let json = {}
     cell_ids.forEach((k) => { json[k] = _data[k] })
     navigator.clipboard.writeText(JSON.stringify(json))
+  }
+
+  //  仮実装。保存する。
+  //  保存は、最終的に自動化し、ボタンは削除する。
+  static save = () => {
+    Api.saveBook()
+    Api.savePage()
   }
 
   //  選択中のものを一斉に解放する。

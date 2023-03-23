@@ -148,6 +148,8 @@ function init() {
   _data.state.viewMode ||= "large"
   _data.state.showTag ||= true
   _data.state.showSticker ||= true
+  _data.state.selectionMode = "selection--none"
+  _data.state.currentPage = "page_0"
 
   const root = document.getElementById('root');
   if (!root) {

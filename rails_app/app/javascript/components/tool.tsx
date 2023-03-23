@@ -124,6 +124,13 @@ class ToolBox extends React.Component {
           tool_id="tool_button_books"
           key="15"
         />
+        <ToolButton
+          parent={this}
+          label="保存"
+          logic={ToolLogic.save}
+          tool_id="tool_button_save"
+          key="16"
+        />
       </div>
     )
   }

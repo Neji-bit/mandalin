@@ -13,8 +13,8 @@ class IconLogo extends React.Component {
     return (
       <div className="iconlogo" ref={this.ref}>
         <a href="https://github.com/Neji-bit/mandalin" target="_blank">
-          <img src="http://localhost:3000/assets/mandalin_icon-b8307a350ee162dc6500e3ae6224e9889686a0b7608a6e8a9b4688b34e64e35e.svg" />
-          <img src="http://localhost:3000/assets/mandalin_logo-9eea0aef374c3d49951474a74398909171ca4aacfc1153cfdae79db430f4a1e0.svg" />
+          <img src="/mandalin_icon.svg" />
+          <img src="/mandalin_logo.svg" />
         </a>
       </div>
     )
