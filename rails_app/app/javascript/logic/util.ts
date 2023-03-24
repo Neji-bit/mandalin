@@ -67,6 +67,13 @@ class Util {
     })
     return result
   }
+
+  static selectedCells = () => {
+    return [...document.getElementsByClassName("cell selected")]
+  }
+  static selectedAreas = () => {
+    return [...document.getElementsByClassName("area selected")]
+  }
 }
 
 export {Util}

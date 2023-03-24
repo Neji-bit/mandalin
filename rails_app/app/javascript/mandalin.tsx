@@ -147,6 +147,8 @@ function init() {
   _data.state.showSticker ||= true
   _data.state.selectionMode = "selection--none"
   _data.state.currentPage = `page_${Util.urlParams().page || 0}`
+  _data.state.currentLeftCell ||= "cell_ew"
+  _data.state.currentRightCell ||= "cell_ee"
 
   const root = document.getElementById('root');
   if (!root) {

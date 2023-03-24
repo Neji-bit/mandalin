@@ -17,10 +17,16 @@ class ToolLogic {
     _data.react.map.forceUpdate()
     this.viewModeBind()
   }
+  static viewTwoinone = (e) => {
+    _data.state.viewMode = "twoinone"
+    _data.react.map.forceUpdate()
+    this.viewModeBind()
+  }
   static viewModeBind = () => {
     tool_view_large_checkbox.checked = _data.state.viewMode == "large"
     tool_view_middle_checkbox.checked = _data.state.viewMode == "middle"
     tool_view_small_checkbox.checked = _data.state.viewMode == "small"
+    tool_view_twoinone_checkbox.checked = _data.state.viewMode == "twoinone"
   }
 
   static toggleTag = (e) => {
@@ -48,6 +54,7 @@ class ToolLogic {
         tool_toggle_erase_checkbox,
         tool_toggle_swap_checkbox,
         tool_toggle_copy_checkbox,
+        tool_toggle_twoinone_checkbox,
         ]
       binds.forEach((b) => {
         if(b != e.currentTarget) b.checked = false
@@ -68,6 +75,7 @@ class ToolLogic {
     if(tool_toggle_erase_checkbox.checked) mode = "selection--erase"
     if(tool_toggle_swap_checkbox.checked) mode = "selection--swap"
     if(tool_toggle_copy_checkbox.checked) mode = "selection--copy"
+    if(tool_toggle_twoinone_checkbox.checked) mode = "selection--twoinone"
     _data.state.selectionMode = mode
     _data.react.map.forceUpdate()
   }
@@ -91,7 +99,7 @@ class ToolLogic {
         tool_toggle_swap_checkbox.checked = false
       }
     }
-    //  コピー：選択されたものをただコピーするだけ。
+    //  コピー：選択されたものをただクリップボードにコピーするだけ。
     if("tool_toggle_copy_checkbox" == e.currentTarget.id) {
       if(0 < [...document.getElementsByClassName("selected")].length) {
         ToolLogic.copy()
@@ -135,8 +143,8 @@ class ToolLogic {
 
   //  セル／エリアの削除。
   static erase = () => {
-    ToolLogic._selectedCells().forEach((c) => { ToolLogic.eraseCell(c.id) })
-    areas = ToolLogic._selectedAreas().forEach((a) => {
+    Util.selectedCells().forEach((c) => { ToolLogic.eraseCell(c.id) })
+    areas = Util.selectedAreas().forEach((a) => {
       Object.keys(_data[a.id].cells).forEach((c) => { ToolLogic.eraseCell(c) })
     })
   }
@@ -146,17 +154,11 @@ class ToolLogic {
     data.note.data = ""
     _data.react[cell_id].forceUpdate()
   }
-  static _selectedCells = () => {
-    return [...document.getElementsByClassName("cell selected")]
-  }
-  static _selectedAreas = () => {
-    return [...document.getElementsByClassName("area selected")]
-  }
 
   static copy = () => {
     //  選択対象をセルのリストにする。
-    let cell_ids = ToolLogic._selectedCells().map((c) => {return c.id})
-    ToolLogic._selectedAreas().forEach((a) => {
+    let cell_ids = Util.selectedCells().map((c) => {return c.id})
+    Util.selectedAreas().forEach((a) => {
       cell_ids = cell_ids.concat(Object.keys(_data[a.id].cells))
     })
 
@@ -172,6 +174,15 @@ class ToolLogic {
   static save = () => {
     Api.saveBook()
     Api.savePage()
+  }
+
+  //  2in1設定。2つ選ばれたセルに、2in1対象のクラスを付与する。
+  static twoinone = (left_cell_id = null, right_cell_id = null) => {
+    if(!(left_cell_id && right_cell_id)) return false
+    _data.state.currentLeftCell = left_cell_id
+    _data.state.currentRightCell = right_cell_id
+    _data.react.map.refresh()
+    return true
   }
 
   //  選択中のものを一斉に解放する。

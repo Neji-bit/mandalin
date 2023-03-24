@@ -37,9 +37,16 @@ class ToolBox extends React.Component {
         <ToolToggle
           parent={this}
           label="２in１"
-          logic={null}
-          tool_id="tool_toggle_2in1"
+          logic={ToolLogic.viewTwoinone}
+          tool_id="tool_view_twoinone"
           key="4"
+        />
+        <ToolToggle
+          parent={this}
+          label="２in１選択"
+          logic={ToolLogic.selectModeBind}
+          tool_id="tool_toggle_twoinone"
+          key="5"
         />
 
         <ToolButton
@@ -47,10 +54,7 @@ class ToolBox extends React.Component {
           label="全画面表示"
           logic={ToolLogic.toggleFullscreen}
           tool_id="tool_toggle_fullscreen"
-          key="5"
-        />
-        <div
-          key="100"
+          key="6"
         />
 
         <ToolToggle
@@ -59,7 +63,7 @@ class ToolBox extends React.Component {
           logic={ToolLogic.toggleTag}
           tool_id="tool_switch_tag"
           checked={true}
-          key="6"
+          key="7"
         />
         <ToolToggle
           parent={this}
@@ -67,7 +71,7 @@ class ToolBox extends React.Component {
           logic={ToolLogic.toggleSticker}
           tool_id="tool_switch_sticker"
           checked={true}
-          key="7"
+          key="8"
         />
 
         <ToolToggle
@@ -75,28 +79,28 @@ class ToolBox extends React.Component {
           label="セル選択"
           logic={ToolLogic.selectModeBind}
           tool_id="tool_toggle_cell"
-          key="8"
+          key="9"
         />
         <ToolToggle
           parent={this}
           label="エリア選択"
           logic={ToolLogic.selectModeBind}
           tool_id="tool_toggle_area"
-          key="9"
+          key="10"
         />
         <ToolToggle
           parent={this}
           label="編集"
           logic={ToolLogic.selectModeBind}
           tool_id="tool_toggle_edit"
-          key="10"
+          key="11"
         />
         <ToolToggle
           parent={this}
           label="削除"
           logic={ToolLogic.selectModeBind}
           tool_id="tool_toggle_erase"
-          key="11"
+          key="12"
         />
 
         <ToolToggle
@@ -104,32 +108,32 @@ class ToolBox extends React.Component {
           label="入替"
           logic={ToolLogic.selectModeBind}
           tool_id="tool_toggle_swap"
-          key="12"
+          key="13"
         />
         <div
-          key="101"
+          key="14"
         />
         <ToolToggle
           parent={this}
           label="コピー"
           logic={ToolLogic.selectModeBind}
           tool_id="tool_toggle_copy"
-          key="13"
+          key="15"
         />
-        <div className="tool" key="14"> ペースト </div>
+        <div className="tool" key="16"> ペースト </div>
         <ToolButton
           parent={this}
           label="ブック"
           logic={null}
           tool_id="tool_button_books"
-          key="15"
+          key="17"
         />
         <ToolButton
           parent={this}
           label="保存"
           logic={ToolLogic.save}
           tool_id="tool_button_save"
-          key="16"
+          key="18"
         />
       </div>
     )

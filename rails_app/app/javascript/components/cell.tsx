@@ -38,6 +38,28 @@ class Cell extends React.Component {
     if("selection--copy" == mode) {
       this.setState({selected: !this.state.selected}, ToolLogic.copy)
     }
+    if("selection--twoinone" == mode) {
+      this.setState({selected: !this.state.selected}, 
+        () => {
+          let selected = Util.selectedCells().map((c) => {return c.id})
+          if(selected.length != 2) return
+          //  ひとつめ、ふたつめ、の判定。「自分は必ず２番目で、相方が１番目」。
+          let first = null
+          let second = null
+          if(selected[0] == this.id) {
+            second = selected[0]
+            first = selected[1]
+          } else {
+            second = selected[1]
+            first = selected[0]
+          }
+          if(ToolLogic.twoinone(first, second)) {
+            ToolLogic._releaseSelected("cell")
+            _data.state.selectionMode = "selection--none"
+            tool_toggle_twoinone_checkbox.checked = false
+          }
+        })
+    }
     //  大マップの時は、eraseでセブジェクトもノートもまとめて削除する
     if(_data.state.viewMode == "large" && _data.state.selectionMode == "selection--erase") {
       ToolLogic.eraseCell(this.id)
@@ -54,6 +76,9 @@ class Cell extends React.Component {
         break
       case "small":
           ToolLogic.viewLarge()
+        break
+      case "twoinone":
+          ToolLogic.viewSmall()
         break
     }
   }
@@ -73,6 +98,7 @@ class Cell extends React.Component {
         break
       case "middle":
       case "small":
+      case "twoinone":
         contents.push(<Editor
           parent={this}
           id={`${this.id}_editor_subject`}
@@ -91,11 +117,15 @@ class Cell extends React.Component {
         />)
         break
     }
+    let classList = ["cell"]
+    if(this.state.selected) classList.push("selected")
+    if(_data.state.currentLeftCell == this.id) classList.push("twoinone--left")
+    if(_data.state.currentRightCell == this.id) classList.push("twoinone--right")
     return (
       <div
         ref={this.ref}
         id={this.id}
-        className={`cell ${this.state.selected ? "selected" : ""}`}
+        className={classList.join(" ")}
         onClick={this.clicked}
         onDoubleClick={this.doubleClicked}
       >
@@ -140,12 +170,30 @@ class CellEffect extends React.Component {
       </div>
     )
   }
+  static twoinoneLeftLamp = () => {
+    return (
+      <div
+        className="tag--cell--twoinone--left"
+        key="3"
+      >
+      </div>
+    )
+  }
+  static twoinoneRightLamp = () => {
+    return (
+      <div
+        className="tag--cell--twoinone--right"
+        key="4"
+      >
+      </div>
+    )
+  }
   render() {
     let contents = []
     contents.push( CellEffect.cellId(this))
-    if(_data[this.parent.id].note.data) {
-      contents.push( CellEffect.contentLamp())
-    }
+    if(_data[this.parent.id].note.data) contents.push(CellEffect.contentLamp())
+    contents.push(CellEffect.twoinoneLeftLamp())
+    contents.push(CellEffect.twoinoneRightLamp())
     return (
       <div
         ref={this.ref}

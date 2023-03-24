@@ -268,6 +268,18 @@ body {
     grid-template-rows: 1fr;
     grid-template-columns: 1fr;
   }
+  .map--twoinone {
+    --grid-gap-ver: 6px;
+    --grid-gap-hor: 6px;
+    display: grid;
+    position: absolute;
+    background: transparent;
+    margin: var(--grid-gap-ver) var(--grid-gap-hor) var(--grid-gap-ver) var(--grid-gap-hor);
+    height: calc(100% - var(--grid-gap-ver) * 2);
+    width: calc(100% - var(--grid-gap-hor) * 2);
+    grid-template-rows: repeat(1, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+  }
   .area {
     background: transparent;
     --grid-gap-ver: 2px;
@@ -464,11 +476,34 @@ body {
   }
   .tag--cell--content {
     position: absolute;
-    background: green;
+    background: lime;
     width: 6px;
     height: 6px;
     border-radius: 3px;
-    right: 5px;
+    right: 7px;
+    top: 7px;
+    border: 0.5px solid black;
+  }
+
+  &.twoinone--left .tag--cell--twoinone--left {
+    position: absolute;
+    background: pink;
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    right: 14px;
+    top: 7px;
+    border: 0.5px solid black;
+  }
+  &.twoinone--right .tag--cell--twoinone--right {
+    position: absolute;
+    background: pink;
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    right: 14px;
+    top: 7px;
+    border: 0.5px solid black;
   }
 }
 
@@ -612,6 +647,12 @@ body {
     cursor: url("cursor_swap.svg"), auto;
     .cell:hover {
       border: 2px solid rgba(0, 255, 0, 0.5);
+    }
+  }
+  &.selection--twoinone {
+    cursor: pointer;
+    .cell:hover {
+      border: 2px solid rgba(255, 0, 255, 0.5);
     }
   }
 }

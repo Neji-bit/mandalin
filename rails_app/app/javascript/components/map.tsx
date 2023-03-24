@@ -23,6 +23,9 @@ class Map extends React.Component {
   render() {
     let content = null
     switch(_data.state.viewMode) {
+      case "twoinone":
+        content = <TwoinoneMap parent={this} />
+        break
       case "small":
         content = <SmallMap parent={this} />
         break
@@ -104,6 +107,31 @@ class SmallMap extends React.Component {
           parent={this}
           area_id={_data.state.currentArea.match(/.$/)}
           cell_id={_data.state.currentCell.match(/.$/)}
+        />
+      </div>
+    )
+  }
+}
+
+class TwoinoneMap extends React.Component {
+  constructor(props) {
+    super(props)
+    this.parent = props.parent
+  }
+  render() {
+    return(
+      <div className="map--twoinone">
+        <Cell
+          parent={this}
+          area_id={_data.state.currentLeftCell.match(/(.).$/)[1]}
+          cell_id={_data.state.currentLeftCell.match(/.$/)}
+          key="1"
+        />
+        <Cell
+          parent={this}
+          area_id={_data.state.currentRightCell.match(/(.).$/)[1]}
+          cell_id={_data.state.currentRightCell.match(/.$/)}
+          key="2"
         />
       </div>
     )
