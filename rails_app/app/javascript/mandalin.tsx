@@ -143,8 +143,8 @@ class App extends React.Component {
 
 function init() {
   _data.state.viewMode ||= "large"
-  _data.state.showTag ||= true
-  _data.state.showSticker ||= true
+  if(_data.state.showTag != true) _data.state.showTag = false
+  if(_data.state.showSticker != true) _data.state.showSticker = false
   _data.state.selectionMode = "selection--none"
   _data.state.currentPage = `page_${Util.urlParams().page || 0}`
   _data.state.currentLeftCell ||= "cell_ew"

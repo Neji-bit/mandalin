@@ -41,14 +41,6 @@ class ToolBox extends React.Component {
           tool_id="tool_view_twoinone"
           key="4"
         />
-        <ToolToggle
-          parent={this}
-          label="２in１選択"
-          logic={ToolLogic.selectModeBind}
-          tool_id="tool_toggle_twoinone"
-          key="5"
-        />
-
         <ToolButton
           parent={this}
           label="全画面表示"
@@ -57,21 +49,8 @@ class ToolBox extends React.Component {
           key="6"
         />
 
-        <ToolToggle
-          parent={this}
-          label="タグ表示"
-          logic={ToolLogic.toggleTag}
-          tool_id="tool_switch_tag"
-          checked={true}
-          key="7"
-        />
-        <ToolToggle
-          parent={this}
-          label="ステッカー表示"
-          logic={ToolLogic.toggleSticker}
-          tool_id="tool_switch_sticker"
-          checked={true}
-          key="8"
+        <div
+          key="19"
         />
 
         <ToolToggle
@@ -88,6 +67,18 @@ class ToolBox extends React.Component {
           tool_id="tool_toggle_area"
           key="10"
         />
+        <ToolToggle
+          parent={this}
+          label="２in１指定"
+          logic={ToolLogic.selectModeBind}
+          tool_id="tool_toggle_twoinone"
+          key="5"
+        />
+
+        <div
+          key="20"
+        />
+
         <ToolToggle
           parent={this}
           label="編集"
@@ -134,6 +125,23 @@ class ToolBox extends React.Component {
           logic={ToolLogic.save}
           tool_id="tool_button_save"
           key="18"
+        />
+
+        <ToolToggle
+          parent={this}
+          label="タグ表示"
+          logic={ToolLogic.toggleTag}
+          tool_id="tool_switch_tag"
+          checked={_data.state.showTag}
+          key="7"
+        />
+        <ToolToggle
+          parent={this}
+          label="ステッカー表示"
+          logic={ToolLogic.toggleSticker}
+          tool_id="tool_switch_sticker"
+          checked={_data.state.showSticker}
+          key="8"
         />
       </div>
     )

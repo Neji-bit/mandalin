@@ -1,5 +1,6 @@
 import {Cell} from '../components/cell'
 import {Api} from '../logic/api'
+import {Util} from '../logic/util'
 
 class ToolLogic {
   static viewLarge = (e) => {
