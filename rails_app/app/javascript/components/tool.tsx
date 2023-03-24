@@ -104,6 +104,22 @@ class ToolBox extends React.Component {
         <div
           key="14"
         />
+
+        <ToolToggle
+          parent={this}
+          label="装飾"
+          logic={ToolLogic.selectModeBind}
+          tool_id="tool_toggle_design"
+          key="23"
+        />
+        <ToolToggle
+          parent={this}
+          label="ステッカー"
+          logic={ToolLogic.selectModeBind}
+          tool_id="tool_toggle_sticker"
+          key="24"
+        />
+
         <ToolToggle
           parent={this}
           label="コピー"
@@ -142,6 +158,21 @@ class ToolBox extends React.Component {
           tool_id="tool_switch_sticker"
           checked={_data.state.showSticker}
           key="8"
+        />
+
+        <ToolButton
+          parent={this}
+          label="Undo"
+          logic={null}
+          tool_id="tool_button_undo"
+          key="21"
+        />
+        <ToolButton
+          parent={this}
+          label="Redo"
+          logic={null}
+          tool_id="tool_button_redo"
+          key="22"
         />
       </div>
     )

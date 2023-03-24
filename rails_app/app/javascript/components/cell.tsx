@@ -60,6 +60,9 @@ class Cell extends React.Component {
           }
         })
     }
+    if("selection--sticker" == mode) {
+      this.setState({selected: !this.state.selected}, () => {ToolLogic.sticker(this.id)})
+    }
     //  大マップの時は、eraseでセブジェクトもノートもまとめて削除する
     if(_data.state.viewMode == "large" && _data.state.selectionMode == "selection--erase") {
       ToolLogic.eraseCell(this.id)
@@ -273,11 +276,18 @@ class EditorDisplay extends React.Component {
   render() {
     let content = ""
     try { content = this.parent.source.data } catch(e) { content = "Now loading..." }
+    let effect = (
+      <img
+        onClick={() => {console.log("Mandalin.")}}
+        src={this.parent.source.effect}
+      />
+    )
     return (
       <div className="wrapper">
         <div
           className={`effect ${_data.state.showSticker ? "" : "_hidden_sticker"}`}
         >
+          {effect}
           <div
             className="テスト。このdivをクリックした時は、下には透過しない。"
             style={{position: "absolute", width: "10px", height: "10px", background: "green", right: "5px", bottom: "5px"}}

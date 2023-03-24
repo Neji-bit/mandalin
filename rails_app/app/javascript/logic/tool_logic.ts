@@ -56,6 +56,8 @@ class ToolLogic {
         tool_toggle_swap_checkbox,
         tool_toggle_copy_checkbox,
         tool_toggle_twoinone_checkbox,
+        tool_toggle_design_checkbox,
+        tool_toggle_sticker_checkbox,
         ]
       binds.forEach((b) => {
         if(b != e.currentTarget) b.checked = false
@@ -77,6 +79,8 @@ class ToolLogic {
     if(tool_toggle_swap_checkbox.checked) mode = "selection--swap"
     if(tool_toggle_copy_checkbox.checked) mode = "selection--copy"
     if(tool_toggle_twoinone_checkbox.checked) mode = "selection--twoinone"
+    if(tool_toggle_design_checkbox.checked) mode = "selection--design"
+    if(tool_toggle_sticker_checkbox.checked) mode = "selection--sticker"
     _data.state.selectionMode = mode
     _data.react.map.forceUpdate()
   }
@@ -192,6 +196,16 @@ class ToolLogic {
     selected.forEach((e) => {
       _data.react[e.id].setState({selected: false})
     })
+  }
+
+  static sticker = (cell_id) => {
+    console.log(cell_id)
+    console.log("Sticker")
+    let cell = _data.react[cell_id]
+    let subject = _data[cell_id].subject
+    let note = _data[cell_id].note
+    subject.effect = "http://localhost:3000/mandalin_icon.svg"
+    _data.react.map.refresh()
   }
 }
 

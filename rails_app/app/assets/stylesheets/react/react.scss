@@ -534,7 +534,7 @@ body {
 #toolbox {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(10, 1fr);
+  grid-template-rows: repeat(12, 1fr);
   background: gray;
   column-gap: 5px;
   row-gap: 5px;
@@ -653,6 +653,12 @@ body {
     cursor: pointer;
     .cell:hover {
       border: 2px solid rgba(255, 0, 255, 0.5);
+    }
+  }
+  &.selection--sticker {
+    cursor: pointer;
+    .cell:hover {
+      border: 2px solid rgba(255, 255, 0, 0.5);
     }
   }
 }
