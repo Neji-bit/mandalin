@@ -65,10 +65,10 @@ class ToolLogic {
     }
     //  選択モードのうち、現在OFFのものについて、選択モードを解除（＝選択していたものを解放）する。
     if(!tool_toggle_cell_checkbox.checked) {
-      ToolLogic._releaseSelected("cell")
+      Util.releaseSelected("cell")
     }
     if(!tool_toggle_area_checkbox.checked) {
-      ToolLogic._releaseSelected("area")
+      Util.releaseSelected("area")
     }
     //  改めて、現在の「選択モード」を特定する。
     let mode = "selection--none"
@@ -190,14 +190,6 @@ class ToolLogic {
     return true
   }
 
-  //  選択中のものを一斉に解放する。
-  static _releaseSelected = (target = "cell") => {
-    let selected = [...document.getElementsByClassName(`${target} selected`)]
-    selected.forEach((e) => {
-      _data.react[e.id].setState({selected: false})
-    })
-  }
-
   static sticker = (cell_id) => {
     console.log(cell_id)
     console.log("Sticker")
@@ -206,6 +198,20 @@ class ToolLogic {
     let note = _data[cell_id].note
     subject.effect = "http://localhost:3000/mandalin_icon.svg"
     _data.react.map.refresh()
+    _data.state.paletteStickerUrl = cell_id
+    _data.react.palette.forceUpdate()
+  }
+
+  //  パレットを表示する。
+  static paletteSticker = (e) => {
+    _data.state.palettePoint.left = e.clientX
+    _data.state.palettePoint.top = e.clientY
+    _data.react.palette_sheet.setState({enable: true},
+      () => {
+        palette_sticker_url_input.focus()
+        palette_sticker_url_input.value = ""
+      }
+    )
   }
 }
 

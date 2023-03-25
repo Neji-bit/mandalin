@@ -658,8 +658,67 @@ body {
   &.selection--sticker {
     cursor: pointer;
     .cell:hover {
-      border: 2px solid rgba(255, 255, 0, 0.5);
+      border: 2px solid rgba(255, 165, 0, 0.5);
     }
   }
+}
+
+#palette {
+  position: fixed;
+  background: pink;
+  font-size: small;
+  border-radius: 5px;
+  border: 2px solid coral;
+}
+
+#palette_sheet {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  z-index: 20;
+  visibility: hidden;
+}
+
+#palette_sticker_url {
+  position: relative;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 2fr;
+
+  div {
+    font-weight: bold;
+    user-select: none;
+  }
+
+  input {
+    padding: 0.5em 0px 0.5em 1em;
+    margin: 5px 0 0 10px;
+    outline: none;
+    border: 1px solid coral;
+    width: auto;
+  }
+}
+
+.fadeIn {
+  animation-name: fadeInAnime;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+  opacity: 0;
+}
+@keyframes fadeInAnime {
+  from { opacity: 0; visibility: initial; }
+  to { opacity: 1; visibility: initial; }
+}
+
+.fadeOut {
+  animation-name: fadeOutAnime;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+}
+@keyframes fadeOutAnime {
+  from { opacity: 1; visibility: initial; }
+  to { opacity: 0; visibility: hidden; }
 }
 

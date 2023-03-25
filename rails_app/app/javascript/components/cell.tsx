@@ -61,8 +61,9 @@ class Cell extends React.Component {
         })
     }
     if("selection--sticker" == mode) {
-      this.setState({selected: !this.state.selected}, () => {ToolLogic.sticker(this.id)})
+      this.setState({selected: !this.state.selected}, () => { ToolLogic.paletteSticker(e) })
     }
+
     //  大マップの時は、eraseでセブジェクトもノートもまとめて削除する
     if(_data.state.viewMode == "large" && _data.state.selectionMode == "selection--erase") {
       ToolLogic.eraseCell(this.id)

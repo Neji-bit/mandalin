@@ -68,12 +68,34 @@ class Util {
     return result
   }
 
+  //  選択中のものを一斉に解放する。
+  static releaseSelected = (target = "cell") => {
+    let selected = [...document.getElementsByClassName(`${target} selected`)]
+    selected.forEach((e) => {
+      _data.react[e.id].setState({selected: false})
+    })
+  }
+
   static selectedCells = () => {
     return [...document.getElementsByClassName("cell selected")]
   }
   static selectedAreas = () => {
     return [...document.getElementsByClassName("area selected")]
   }
+
+  static remToPx(rem) {
+    return rem * parseFloat(
+      getComputedStyle(document.documentElement).fontSize
+    )
+  }
+
+  static pxToRem(px) {
+    return px / parseFloat(
+      getComputedStyle(document.documentElement).fontSize
+    )
+  }
+
+
 }
 
 export {Util}
