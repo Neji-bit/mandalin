@@ -210,6 +210,7 @@ class ToolLogic {
       () => {
         palette_sticker_url_input.focus()
         palette_sticker_url_input.value = ""
+        palette_sticker_url_input.style.width = null
       }
     )
   }
