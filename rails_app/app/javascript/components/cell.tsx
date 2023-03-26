@@ -371,12 +371,16 @@ class Sticker extends React.Component {
     super(props)
     this.id = props.id
     this.parent = props.parent
-    this.state = {current: false, drag: false}
+    this.state = {
+      current: false,
+      drag: false,
+      scale: false
+    }
     this.style = {}
     this.style.position = "absolute"
     this.style.height = 30
-    this.style.top = 20
-    this.style.left = 20
+    this.style.top = 200
+    this.style.left = 200
     this.style.transform = "rotate(0deg)"
     this.src = this.props.src
     this.ref = React.createRef()
@@ -407,6 +411,13 @@ class Sticker extends React.Component {
     this.style.top = y - pr.top - r.height / 2
     this.forceUpdate()
   }
+  _scale = (e) => {
+    //  ステッカーのサイズ調整
+    //  カーソルが、ステッカーの左上から縦に離れるほど大きくなる
+    let r = this.ref.current.getBoundingClientRect()
+    this.style.height = Math.abs(r.top - e.clientY)
+    this.forceUpdate()
+  }
   clicked = (e) => {
     //  ステッカーパレット
     if("selection--sticker" == _data.state.selectionMode) {
@@ -420,20 +431,22 @@ class Sticker extends React.Component {
     if(_data.state.stickerMode == "move") {
       this.setState({drag: true})
       this._moveCenterToCursor(e)
-      e.preventDefault()
-      e.stopPropagation()
+    }
+    if(_data.state.stickerMode == "scale") {
+      this.setState({scale: true})
     }
   }
   mouseMoved = (e) => {
     if(this.state.drag) this._moveCenterToCursor(e)
+    if(this.state.scale) this._scale(e)
   }
   mouseOuted = (e) => {
     if(this.state.drag) this.setState({drag: false})
+    if(this.state.scale) this.setState({scale: false})
   }
   mouseUped = (e) => {
     if(this.state.drag) this.setState({drag: false})
-    e.preventDefault()
-    e.stopPropagation()
+    if(this.state.scale) this.setState({scale: false})
   }
   render() {
     let classList = []
