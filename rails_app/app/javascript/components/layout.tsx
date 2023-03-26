@@ -171,6 +171,7 @@ class PaletteSheet extends React.Component {
     //  stopPropagation, preventDefault では防げない模様。
     this.setState({enable: false},
       () => {
+        _data.state.paletteTarget = null
         _data.state.paletteStickerUrl = false
         _data.state.paletteStickerMenu = false
         _data.state.paletteDesignMenu = false
@@ -181,6 +182,15 @@ class PaletteSheet extends React.Component {
       }
     )
   }
+  mouseDowned = (e) => {
+    _data.react[_data.state.paletteTarget].mouseDowned(e)
+  }
+  mouseMoved = (e) => {
+    _data.react[_data.state.paletteTarget].mouseMoved(e)
+  }
+  mouseUped = (e) => {
+    _data.react[_data.state.paletteTarget].mouseUped(e)
+  }
   render() {
     let classList = []
     if(this.state.enable != null) {
@@ -190,6 +200,9 @@ class PaletteSheet extends React.Component {
       <div
         id={this.id}
         className={classList.join(" ")}
+        onMouseDown={this.mouseDowned}
+        onMouseMove={this.mouseMoved}
+        onMouseUp={this.mouseUped}
         onClick={this.clicked}
       >
         <Palette parent={this}/>

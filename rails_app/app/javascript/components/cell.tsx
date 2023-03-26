@@ -382,14 +382,29 @@ class Sticker extends React.Component {
     this.ref = React.createRef()
     _data.react[this.id] = this
   }
+  //  ある値を、範囲の中に収まるように調整する
+  _adjustPoint = (point = 0, min = 0, max = 255) => {
+    if(point < min) return min
+    if(max < point) return max
+    return point
+  }
+  //  エディタ上でのステッカー移動用。
+  //  エディタ範囲内で、ステッカーの中心がカーソル位置に当たるように位置調整する。
   _moveCenterToCursor = (e) => {
     let pr = this.ref.current.parentNode.getBoundingClientRect()
     let r = this.ref.current.getBoundingClientRect()
     let x = e.clientX - pr.left - (r.width / 2)
     let y = e.clientY - pr.top - (r.height / 2)
-    let xr = cell_wz.getBoundingClientRect()
-    this.style.left = x
-    this.style.top = y
+    x = this._adjustPoint(
+          e.clientX,
+          pr.left + r.width / 2,
+          pr.right - r.width / 2)
+    y = this._adjustPoint(
+          e.clientY,
+          pr.top + r.height / 2,
+          pr.bottom - r.height / 2)
+    this.style.left = x - pr.left - r.width / 2
+    this.style.top = y - pr.top - r.height / 2
     this.forceUpdate()
   }
   clicked = (e) => {
@@ -402,27 +417,21 @@ class Sticker extends React.Component {
     e.stopPropagation()
   }
   mouseDowned = (e) => {
-    if(_data.state.selectionMode == "selection--sticker") {
+    if(_data.state.stickerMode == "move") {
       this.setState({drag: true})
+      this._moveCenterToCursor(e)
       e.preventDefault()
       e.stopPropagation()
     }
   }
   mouseMoved = (e) => {
-    if(this.state.drag) {
-      this._moveCenterToCursor(e)
-    }
+    if(this.state.drag) this._moveCenterToCursor(e)
   }
   mouseOuted = (e) => {
-    if(this.state.drag) {
-      this.setState({drag: false})
-    }
+    if(this.state.drag) this.setState({drag: false})
   }
   mouseUped = (e) => {
-    if(this.state.drag) {
-      this.setState({drag: false})
-      console.log("SHOW PALETTE!")
-    }
+    if(this.state.drag) this.setState({drag: false})
     e.preventDefault()
     e.stopPropagation()
   }
@@ -440,7 +449,7 @@ class Sticker extends React.Component {
         onMouseUp={this.mouseUped}
         onClick={this.clicked}
         src={this.src}
-        className={classList}
+        className={classList.join(" ")}
         style={Object.assign({}, this.style)}
         draggable="false"
       />
