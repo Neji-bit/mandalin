@@ -725,5 +725,9 @@ body {
 .effect {
   img {
     user-select: none;
+
+    &.sticker--current {
+      border: 2px solid red;
+    }
   }
 }

@@ -147,8 +147,17 @@ function init() {
   _data.state.currentPage = `page_${Util.urlParams().page || 0}`
   _data.state.currentLeftCell ||= "cell_ew"
   _data.state.currentRightCell ||= "cell_ee"
+
+  //  パレットの対象となっている要素のID
   _data.state.paletteTarget = null
+  //  パレットを表示する位置
   _data.state.palettePoint = {left: 0, top: 0}
+  //  現在のパレットの状態
+  _data.state.paletteStickerUrl = false
+  _data.state.paletteStickerMenu = false
+  _data.state.paletteDesignMenu = false
+  //  ステッカーの状態
+  _data.state.stickerMode = "none"
 
   const root = document.getElementById('root');
   if (!root) {

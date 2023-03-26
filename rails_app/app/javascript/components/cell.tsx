@@ -284,6 +284,7 @@ class EditorDisplay extends React.Component {
       effect.push((
         <Sticker
           parent={this}
+          id={`${this.parent.id}_sticker_1`}
           src={this.parent.source.effect}
           key="1"
         />
@@ -368,8 +369,9 @@ class EditorData extends React.Component {
 class Sticker extends React.Component {
   constructor(props) {
     super(props)
+    this.id = props.id
     this.parent = props.parent
-    this.state = {drag: false}
+    this.state = {current: false, drag: false}
     this.style = {}
     this.style.position = "absolute"
     this.style.height = 30
@@ -378,6 +380,7 @@ class Sticker extends React.Component {
     this.style.transform = "rotate(0deg)"
     this.src = this.props.src
     this.ref = React.createRef()
+    _data.react[this.id] = this
   }
   _moveCenterToCursor = (e) => {
     let pr = this.ref.current.parentNode.getBoundingClientRect()
@@ -390,7 +393,11 @@ class Sticker extends React.Component {
     this.forceUpdate()
   }
   clicked = (e) => {
-    console.log("CLIKED STICKER!")
+    //  ステッカーパレット
+    if("selection--sticker" == _data.state.selectionMode) {
+      this.setState({selected: !this.state.selected},
+      () => { ToolLogic.paletteStickerMenu(e) })
+    }
     e.preventDefault()
     e.stopPropagation()
   }
@@ -420,16 +427,20 @@ class Sticker extends React.Component {
     e.stopPropagation()
   }
   render() {
+    let classList = []
+    if(this.state.drag) classList.push("sticker--drag")
+    if(this.state.current) classList.push("sticker--current")
     return (
       <img
-        ref = {this.ref}
+        id={this.id}
+        ref={this.ref}
         onMouseDown={this.mouseDowned}
         onMouseMove={this.mouseMoved}
         onMouseOut={this.mouseOuted}
         onMouseUp={this.mouseUped}
         onClick={this.clicked}
         src={this.src}
-        className={this.state.drag == true ? "sticker--drag" : ""}
+        className={classList}
         style={Object.assign({}, this.style)}
         draggable="false"
       />

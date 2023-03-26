@@ -192,6 +192,7 @@ class ToolLogic {
 
   //  パレットを表示する。
   static paletteSticker = (e) => {
+    _data.state.paletteStickerUrl = true
     _data.state.palettePoint.left = e.clientX
     _data.state.palettePoint.top = e.clientY
     _data.react.palette_sheet.setState({enable: true},
@@ -200,6 +201,19 @@ class ToolLogic {
         palette_sticker_url_input.focus()
         palette_sticker_url_input.value = ""
         palette_sticker_url_input.style.width = null
+      }
+    )
+  }
+  static paletteStickerMenu = (e) => {
+    _data.state.paletteStickerMenu = true
+    _data.state.palettePoint.left = e.clientX
+    _data.state.palettePoint.top = e.clientY
+    _data.react.palette_sheet.setState({enable: true},
+      () => {
+        _data.state.paletteTarget = e.target.id
+//        palette_sticker_url_input.focus()
+//        palette_sticker_url_input.value = ""
+//        palette_sticker_url_input.style.width = null
       }
     )
   }

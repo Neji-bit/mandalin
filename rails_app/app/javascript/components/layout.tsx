@@ -171,10 +171,15 @@ class PaletteSheet extends React.Component {
     //  stopPropagation, preventDefault では防げない模様。
     this.setState({enable: false},
       () => {
+        _data.state.paletteStickerUrl = false
+        _data.state.paletteStickerMenu = false
+        _data.state.paletteDesignMenu = false
+        _data.state.stickerMode = "none"
         Util.releaseSelected("cell")
+        let stickers = [...document.getElementsByClassName("sticker--current")]
+        stickers.forEach((s) => { _data.react[s.id].setState({current: false}) })
       }
     )
-
   }
   render() {
     let classList = []
@@ -210,12 +215,18 @@ class Palette extends React.Component {
   render() {
     let classList = ["palette"]
     let type = "_hidden"
-    if(_data.react.palette_sheet.state.enable) {
+    let palette = null
+    if(_data.state.paletteStickerUrl) {
+      type = "palette--sticker--url"
+      palette = (<PaletteStickerUrl/>)
     }
-    type = ""
-    if(_data.state.paletteStickerUrl) type = "palette--sticker--url"
-    if(_data.state.paletteStickerMenu) type = "palette--sticker--menu"
-    if(_data.state.paletteDesignMenu) type = "palette--design--menu"
+    if(_data.state.paletteStickerMenu) {
+      type = "palette--sticker--menu"
+      palette = (<PaletteStickerMenu/>)
+    }
+    if(_data.state.paletteDesignMenu) {
+      type = "palette--design--menu"
+    }
     classList.push(type)
     let style = Object.assign({}, _data.state.palettePoint)
     return(
@@ -225,7 +236,7 @@ class Palette extends React.Component {
         style={style}
         onClick={this.clicked}
       >
-        <PaletteStickerUrl/>
+        {palette}
       </div>
     )
   }
@@ -259,10 +270,68 @@ class PaletteStickerUrl extends React.Component {
   }
 }
 
-class PaletteStickerMenu {
+class PaletteStickerMenu extends React.Component {
+  _stickerActive = (e) => {
+    let sticker = _data.react[_data.state.paletteTarget]
+    sticker.setState({current: true})
+    _data.state.paletteStickerMenu = false
+    _data.react.palette_sheet.forceUpdate()
+  }
+  move = (e) => {
+    //  移動。
+    //  クリックしたら画像の見た目が変わる。
+    //  ドラッグしたら動く。
+    //  外野をクリックしたら解除。
+    _data.state.stickerMode = "move"
+    this._stickerActive()
+    console.log("Move")
+  }
+  scale = (e) => {
+    _data.state.stickerMode = "scale"
+    this._stickerActive()
+    console.log("Scale")
+  }
+  rotate = (e) => {
+    _data.state.stickerMode = "rotate"
+    this._stickerActive()
+    console.log("Rotate")
+  }
+  remove = (e) => {
+    _data.state.stickerMode = "remove"
+    this._stickerActive()
+    console.log("Remove")
+  }
+  detail = (e) => {
+    _data.state.stickerMode = "detail"
+    this._stickerActive()
+    console.log("Detail")
+  }
+  render() {
+    return (
+      <div
+        id="palette_sticker_menu"
+      >
+        <button
+          onClick={this.move}
+        > 移動 </button>
+        <button
+          onClick={this.scale}
+        > 拡大 </button>
+        <button
+          onClick={this.rotate}
+        > 回転 </button>
+        <button
+          onClick={this.remove}
+        > 削除 </button>
+        <button
+          onClick={this.detail}
+        > 詳細 </button>
+      </div>
+    )
+  }
 }
 
-class PaletteDesignMenu {
+class PaletteDesignMenu extends React.Component {
 }
 
 export default Backboard
