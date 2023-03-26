@@ -147,6 +147,7 @@ function init() {
   _data.state.currentPage = `page_${Util.urlParams().page || 0}`
   _data.state.currentLeftCell ||= "cell_ew"
   _data.state.currentRightCell ||= "cell_ee"
+  _data.state.paletteTarget = null
   _data.state.palettePoint = {left: 0, top: 0}
 
   const root = document.getElementById('root');

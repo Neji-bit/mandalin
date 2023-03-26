@@ -237,6 +237,12 @@ class PaletteStickerUrl extends React.Component {
     let width = i.getBoundingClientRect().width
     let _width = Util.remToPx((i.value.length + 4) / 2)
     i.style.width = `${Math.max(width, _width)}px`
+
+    let target = _data.state.paletteTarget
+    let cell_id = target.match("^.{7}")
+    let type = target.match("[^_]*$")
+    _data[cell_id][type].effect = i.value
+    _data.react[cell_id].forceUpdate()
   }
   render() {
     return (

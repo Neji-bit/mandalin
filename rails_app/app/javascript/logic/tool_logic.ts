@@ -190,24 +190,13 @@ class ToolLogic {
     return true
   }
 
-  static sticker = (cell_id) => {
-    console.log(cell_id)
-    console.log("Sticker")
-    let cell = _data.react[cell_id]
-    let subject = _data[cell_id].subject
-    let note = _data[cell_id].note
-    subject.effect = "http://localhost:3000/mandalin_icon.svg"
-    _data.react.map.refresh()
-    _data.state.paletteStickerUrl = cell_id
-    _data.react.palette.forceUpdate()
-  }
-
   //  パレットを表示する。
   static paletteSticker = (e) => {
     _data.state.palettePoint.left = e.clientX
     _data.state.palettePoint.top = e.clientY
     _data.react.palette_sheet.setState({enable: true},
       () => {
+        _data.state.paletteTarget = e.target.closest(".editor").id
         palette_sticker_url_input.focus()
         palette_sticker_url_input.value = ""
         palette_sticker_url_input.style.width = null

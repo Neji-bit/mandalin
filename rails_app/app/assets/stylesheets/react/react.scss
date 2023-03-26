@@ -722,3 +722,8 @@ body {
   to { opacity: 0; visibility: hidden; }
 }
 
+.effect {
+  img {
+    user-select: none;
+  }
+}

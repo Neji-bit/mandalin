@@ -60,9 +60,6 @@ class Cell extends React.Component {
           }
         })
     }
-    if("selection--sticker" == mode) {
-      this.setState({selected: !this.state.selected}, () => { ToolLogic.paletteSticker(e) })
-    }
 
     //  大マップの時は、eraseでセブジェクトもノートもまとめて削除する
     if(_data.state.viewMode == "large" && _data.state.selectionMode == "selection--erase") {
@@ -226,18 +223,23 @@ class Editor extends React.Component {
     this.updateTarget = props.updateTarget
   }
   click = (e) => {
-    if(_data.state.selectionMode == "selection--edit") {
+    if("selection--edit" == _data.state.selectionMode) {
       this.setState({editable: !this.state.editable})
     }
     //  削除モードの場合、サブジェクトとノートが表示されている場合は個々に削除する。
     if(
         ["middle", "small"].includes(_data.state.viewMode) &&
-        _data.state.selectionMode == "selection--erase"
+        "selection--erase" == _data.state.selectionMode
     ) {
       if(["subject", "note"].includes(this.role)) {
         _data[this.parent.id][this.role].data = ""
         this.forceUpdate()
       }
+    }
+    //  ステッカーパレット
+    if("selection--sticker" == _data.state.selectionMode) {
+      this.setState({selected: !this.state.selected},
+      () => { ToolLogic.paletteSticker(e) })
     }
   }
   render() {
@@ -277,12 +279,16 @@ class EditorDisplay extends React.Component {
   render() {
     let content = ""
     try { content = this.parent.source.data } catch(e) { content = "Now loading..." }
-    let effect = (
-      <img
-        onClick={() => {console.log("Mandalin.")}}
-        src={this.parent.source.effect}
-      />
-    )
+    let effect = []
+    if(this.parent.source.effect) {
+      effect.push((
+        <Sticker
+          parent={this}
+          src={this.parent.source.effect}
+          key="1"
+        />
+      ))
+    }
     return (
       <div className="wrapper">
         <div
@@ -355,6 +361,78 @@ class EditorData extends React.Component {
           onFocus={this.focus}
         />
       </div>
+    )
+  }
+}
+
+class Sticker extends React.Component {
+  constructor(props) {
+    super(props)
+    this.parent = props.parent
+    this.state = {drag: false}
+    this.style = {}
+    this.style.position = "absolute"
+    this.style.height = 30
+    this.style.top = 20
+    this.style.left = 20
+    this.style.transform = "rotate(0deg)"
+    this.src = this.props.src
+    this.ref = React.createRef()
+  }
+  _moveCenterToCursor = (e) => {
+    let pr = this.ref.current.parentNode.getBoundingClientRect()
+    let r = this.ref.current.getBoundingClientRect()
+    let x = e.clientX - pr.left - (r.width / 2)
+    let y = e.clientY - pr.top - (r.height / 2)
+    let xr = cell_wz.getBoundingClientRect()
+    this.style.left = x
+    this.style.top = y
+    this.forceUpdate()
+  }
+  clicked = (e) => {
+    console.log("CLIKED STICKER!")
+    e.preventDefault()
+    e.stopPropagation()
+  }
+  mouseDowned = (e) => {
+    if(_data.state.selectionMode == "selection--sticker") {
+      this.setState({drag: true})
+      e.preventDefault()
+      e.stopPropagation()
+    }
+  }
+  mouseMoved = (e) => {
+    if(this.state.drag) {
+      this._moveCenterToCursor(e)
+    }
+  }
+  mouseOuted = (e) => {
+    if(this.state.drag) {
+      this.setState({drag: false})
+    }
+  }
+  mouseUped = (e) => {
+    if(this.state.drag) {
+      this.setState({drag: false})
+      console.log("SHOW PALETTE!")
+    }
+    e.preventDefault()
+    e.stopPropagation()
+  }
+  render() {
+    return (
+      <img
+        ref = {this.ref}
+        onMouseDown={this.mouseDowned}
+        onMouseMove={this.mouseMoved}
+        onMouseOut={this.mouseOuted}
+        onMouseUp={this.mouseUped}
+        onClick={this.clicked}
+        src={this.src}
+        className={this.state.drag == true ? "sticker--drag" : ""}
+        style={Object.assign({}, this.style)}
+        draggable="false"
+      />
     )
   }
 }
