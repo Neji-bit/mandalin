@@ -276,7 +276,7 @@ class PaletteStickerUrl extends React.Component {
       let cell_id = target.match("^cell_..")
       let type = target.match("[^_]*$")
       let style = Sticker.initialStyle()
-      let pr = eval(_data.state.paletteTarget).getBoundingClientRect()
+      let pr = document.getElementById(_data.state.paletteTarget).getBoundingClientRect()
       let cr = e.currentTarget.closest(".palette").getBoundingClientRect()
       style.left = cr.left - pr.left
       style.top = cr.top - pr.top
@@ -348,7 +348,7 @@ class PaletteStickerMenu extends React.Component {
     //  ステッカーのURLをクリップボードにコピーする。
     //  「URL再設定」のUIを作るのが大変なので簡易版で逃げた。
     let sticker_id = _data.state.paletteTarget
-    navigator.clipboard.writeText(eval(sticker_id).src)
+    navigator.clipboard.writeText(document.getElementById(sticker_id).src)
 
     //  パレットを閉じる
     let cell_id = sticker_id.match(/^cell_../)[0]

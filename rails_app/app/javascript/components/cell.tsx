@@ -30,8 +30,8 @@ class Cell extends React.Component {
       this.setState({selected: !this.state.selected},
         () => {
           if(ToolLogic.swap()) {
-            ToolLogic._releaseSelected("cell")
-            ToolLogic._releaseSelected("area")
+            Util.releaseSelected("cell")
+            Util.releaseSelected("area")
           }
         })
     }
@@ -54,7 +54,7 @@ class Cell extends React.Component {
             first = selected[0]
           }
           if(ToolLogic.twoinone(first, second)) {
-            ToolLogic._releaseSelected("cell")
+            Util.releaseSelected("cell")
             _data.state.selectionMode = "selection--none"
             tool_toggle_twoinone_checkbox.checked = false
           }
@@ -389,9 +389,9 @@ class Sticker extends React.Component {
   static initialStyle = () => {
     let style = {}
     style.position = "absolute"
-    style.height = 45
-    style.top = 0
-    style.left = 0
+    style.height = "10%"
+    style.top = "0%"
+    style.left = "0%"
     style.transform = "rotate(0deg)"
     return style
   }
@@ -416,15 +416,17 @@ class Sticker extends React.Component {
           e.clientY,
           pr.top + r.height / 2,
           pr.bottom - r.height / 2)
-    this.style.left = x - pr.left - r.width / 2
-    this.style.top = y - pr.top - r.height / 2
+    this.style.left = `${Math.floor(((x - pr.left - r.width / 2) * 10000 / pr.width)) / 100}%`
+    this.style.top = `${Math.floor(((y - pr.top - r.height / 2) * 10000 / pr.height)) / 100}%`
     this.forceUpdate()
   }
   _scale = (e) => {
     //  ステッカーのサイズ調整
     //  カーソルが、ステッカーの左上から縦に離れるほど大きくなる
+    let pr = this.ref.current.parentNode.getBoundingClientRect()
     let r = this.ref.current.getBoundingClientRect()
-    this.style.height = Math.abs(r.top - e.clientY)
+    this.style.height = `${(Math.floor(Math.abs(r.top - e.clientY) * 10000 / pr.height)) / 100}%`
+    console.log(this.style.height)
     this.forceUpdate()
   }
   _rotate = (e) => {
