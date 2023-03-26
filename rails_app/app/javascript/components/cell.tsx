@@ -374,7 +374,8 @@ class Sticker extends React.Component {
     this.state = {
       current: false,
       drag: false,
-      scale: false
+      scale: false,
+      rotate: false
     }
     this.style = {}
     this.style.position = "absolute"
@@ -418,6 +419,17 @@ class Sticker extends React.Component {
     this.style.height = Math.abs(r.top - e.clientY)
     this.forceUpdate()
   }
+  _rotate = (e) => {
+    //  ステッカーの回転
+    //  カーソルが、ステッカーの中央から右に離れるほど回転する
+    let r = this.ref.current.getBoundingClientRect()
+    let c = r.left + r.width / 2
+    let d = Math.floor(e.clientX - c)
+    if(d < 0) d = 0
+    console.log(d)
+    this.style.transform = `rotate(${d % 360}deg)`
+    this.forceUpdate()
+  }
   clicked = (e) => {
     //  ステッカーパレット
     if("selection--sticker" == _data.state.selectionMode) {
@@ -435,18 +447,24 @@ class Sticker extends React.Component {
     if(_data.state.stickerMode == "scale") {
       this.setState({scale: true})
     }
+    if(_data.state.stickerMode == "rotate") {
+      this.setState({rotate: true})
+    }
   }
   mouseMoved = (e) => {
     if(this.state.drag) this._moveCenterToCursor(e)
     if(this.state.scale) this._scale(e)
+    if(this.state.rotate) this._rotate(e)
   }
   mouseOuted = (e) => {
     if(this.state.drag) this.setState({drag: false})
     if(this.state.scale) this.setState({scale: false})
+    if(this.state.rotate) this.setState({rotate: false})
   }
   mouseUped = (e) => {
     if(this.state.drag) this.setState({drag: false})
     if(this.state.scale) this.setState({scale: false})
+    if(this.state.rotate) this.setState({rotate: false})
   }
   render() {
     let classList = []
