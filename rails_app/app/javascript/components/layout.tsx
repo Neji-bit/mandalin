@@ -3,7 +3,7 @@ import {Map, LargeMap, MiddleMap, SmallMap, Area} from './map'
 import {Page} from './page'
 import {ToolBox} from './tool'
 import {IconLogo} from './common'
-import {Editor} from './cell'
+import {Editor, Sticker} from './cell'
 import {Util} from '../logic/util'
 
 class Backboard extends React.Component {
@@ -183,13 +183,19 @@ class PaletteSheet extends React.Component {
     )
   }
   mouseDowned = (e) => {
-    _data.react[_data.state.paletteTarget].mouseDowned(e)
+    if(_data.state.paletteTarget)
+      if(_data.state.stickerMode != "none")
+        _data.react[_data.state.paletteTarget].mouseDowned(e)
   }
   mouseMoved = (e) => {
-    _data.react[_data.state.paletteTarget].mouseMoved(e)
+    if(_data.state.paletteTarget)
+      if(_data.state.stickerMode != "none")
+        _data.react[_data.state.paletteTarget].mouseMoved(e)
   }
   mouseUped = (e) => {
-    _data.react[_data.state.paletteTarget].mouseUped(e)
+    if(_data.state.paletteTarget)
+      if(_data.state.stickerMode != "none")
+        _data.react[_data.state.paletteTarget].mouseUped(e)
   }
   render() {
     let classList = []
@@ -257,16 +263,26 @@ class Palette extends React.Component {
 
 class PaletteStickerUrl extends React.Component {
   inputed = (e) => {
+    //  インプット幅の自動調整
     let i = e.currentTarget
     let width = i.getBoundingClientRect().width
     let _width = Util.remToPx((i.value.length + 4) / 2)
     i.style.width = `${Math.max(width, _width)}px`
 
-    let target = _data.state.paletteTarget
-    let cell_id = target.match("^.{7}")
-    let type = target.match("[^_]*$")
-    _data[cell_id][type].effect = i.value
-    _data.react[cell_id].forceUpdate()
+    //  ステッカー作成処理
+    //  「作成タイミングの判定」は、仮で「画像URLが入力されたら」とする（よりよい案に直したい）。
+    if(i.value.match(/\.(png|jpg|svg|bmp)$/i)) {
+      let target = _data.state.paletteTarget
+      let cell_id = target.match("^cell_..")
+      let type = target.match("[^_]*$")
+      let style = Sticker.initialStyle()
+      let pr = eval(_data.state.paletteTarget).getBoundingClientRect()
+      let cr = e.currentTarget.closest(".palette").getBoundingClientRect()
+      style.left = cr.left - pr.left
+      style.top = cr.top - pr.top
+      _data[cell_id][type].effect.push({src: i.value, style: style})
+      _data.react[cell_id].forceUpdate()
+    }
   }
   render() {
     return (
@@ -310,13 +326,37 @@ class PaletteStickerMenu extends React.Component {
     console.log("Rotate")
   }
   remove = (e) => {
-    _data.state.stickerMode = "remove"
-    this._stickerActive()
+    //  ステッカーの削除
+    let sticker_id = _data.state.paletteTarget
+    let cell_id = sticker_id.match(/^cell_../)[0]
+    let type = sticker_id.split("_")[3]
+    let index = parseInt(sticker_id.split("_")[5])
+    //  要素の削除は「データの殻は残し中身を空にする」形をとる。
+    //  spliceで要素を除去してみたが、おそらくreactのkey管理の影響で「登録順の最後のステッカーから消えていく」変な挙動になったので、この形で回避した。
+    _data[cell_id][type].effect[index].src = ""
+    _data[cell_id][type].effect[index].style = ""
+
+    //  パレットを閉じる
+    _data.state.paletteTarget = null
+    _data.state.stickerMode = "none"
+    _data.state.paletteStickerMenu = false
+    _data.react.palette_sheet.setState({enable: false})
+    _data.react[cell_id].forceUpdate()
     console.log("Remove")
   }
   detail = (e) => {
-    _data.state.stickerMode = "detail"
-    this._stickerActive()
+    //  ステッカーのURLをクリップボードにコピーする。
+    //  「URL再設定」のUIを作るのが大変なので簡易版で逃げた。
+    let sticker_id = _data.state.paletteTarget
+    navigator.clipboard.writeText(eval(sticker_id).src)
+
+    //  パレットを閉じる
+    let cell_id = sticker_id.match(/^cell_../)[0]
+    _data.state.paletteTarget = null
+    _data.state.stickerMode = "none"
+    _data.state.paletteStickerMenu = false
+    _data.react.palette_sheet.setState({enable: false})
+    _data.react[cell_id].forceUpdate()
     console.log("Detail")
   }
   render() {
@@ -338,7 +378,7 @@ class PaletteStickerMenu extends React.Component {
         > 削除 </button>
         <button
           onClick={this.detail}
-        > 詳細 </button>
+        > URLをコピー </button>
       </div>
     )
   }

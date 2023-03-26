@@ -724,6 +724,7 @@ body {
 
 .effect {
   img {
+    position: absolute;
     user-select: none;
 
     &.sticker--current {

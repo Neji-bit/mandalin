@@ -280,15 +280,19 @@ class EditorDisplay extends React.Component {
     let content = ""
     try { content = this.parent.source.data } catch(e) { content = "Now loading..." }
     let effect = []
-    if(this.parent.source.effect) {
-      effect.push((
-        <Sticker
-          parent={this}
-          id={`${this.parent.id}_sticker_1`}
-          src={this.parent.source.effect}
-          key="1"
-        />
-      ))
+    if(this.parent.source.effect.length) {
+      this.parent.source.effect.forEach((s, i) => {
+        if(s.src.length == 0) return
+        effect.push(
+          <Sticker
+            parent={this}
+            id={`${this.parent.id}_sticker_${i}`}
+            src={s.src}
+            style={s.style}
+            key={i}
+          />
+        )
+      })
     }
     return (
       <div className="wrapper">
@@ -377,15 +381,19 @@ class Sticker extends React.Component {
       scale: false,
       rotate: false
     }
-    this.style = {}
-    this.style.position = "absolute"
-    this.style.height = 30
-    this.style.top = 200
-    this.style.left = 200
-    this.style.transform = "rotate(0deg)"
     this.src = this.props.src
+    this.style = this.props.style
     this.ref = React.createRef()
     _data.react[this.id] = this
+  }
+  static initialStyle = () => {
+    let style = {}
+    style.position = "absolute"
+    style.height = 45
+    style.top = 0
+    style.left = 0
+    style.transform = "rotate(0deg)"
+    return style
   }
   //  ある値を、範囲の中に収まるように調整する
   _adjustPoint = (point = 0, min = 0, max = 255) => {
@@ -490,4 +498,4 @@ class Sticker extends React.Component {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-export {Cell, Editor}
+export {Cell, Editor, Sticker}
