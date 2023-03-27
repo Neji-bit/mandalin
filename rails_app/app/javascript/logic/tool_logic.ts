@@ -139,9 +139,15 @@ class ToolLogic {
     tmp = right.subject.data
     right.subject.data = left.subject.data
     left.subject.data = tmp
+    tmp = right.subject.effect
+    right.subject.effect = left.subject.effect
+    left.subject.effect = tmp
     tmp = right.note.data
     right.note.data = left.note.data
     left.note.data = tmp
+    tmp = right.note.effect
+    right.note.effect = left.note.effect
+    left.note.effect = tmp
     _data.react[left_cell_id].forceUpdate()
     _data.react[right_cell_id].forceUpdate()
   }
