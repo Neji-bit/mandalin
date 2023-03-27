@@ -201,12 +201,8 @@ class ToolLogic {
     navigator.clipboard.readText()
     .then((text) => {
       let json = JSON.parse(text)
-      Object.keys(json).forEach((k) => {
-        ["subject", "note"].forEach((t) => {
-          ["data", "effect", "design"].forEach((d) => {
-            _data[k][t][d] = json[k][t][d]
-          })
-        })
+      Object.keys(json).forEach((c) => {
+        ToolLogic._copyCell(c, json[c])
       })
       _data.react.map.forceUpdate()
     })
@@ -245,6 +241,35 @@ class ToolLogic {
         _data.state.paletteTarget = e.target.closest(".editor").id
       }
     )
+  }
+  static undo = (e) => {
+    console.log("Undo Rollback.")
+    let string = _undo.pop()
+    let json = JSON.parse(string)
+    ToolLogic._copyCells(json)
+    _data.react.map.forceUpdate()
+  }
+  static redo = (e) => {
+    let string = JSON.stringify(_data.page.areas)
+    _undo.push(string)
+  }
+
+  //  JSONを指定されたセルのデータに上書きする。
+  static _copyCell = (cell_id, json) => {
+    ["subject", "note"].forEach((t) => {
+      ["data", "effect", "design"].forEach((d) => {
+        _data[cell_id][t][d] = json[t][d]
+      })
+    })
+  }
+  //  JSON（セル集合）をデータに上書きする。
+  //  JSONが{area_w: {}, area_e: {}, ...} である前提。
+  static _copyCells = (json) => {
+    Object.keys(json).forEach((a) => {
+      Object.keys(json[a].cells).forEach((c) => {
+        ToolLogic._copyCell(c, json[a].cells[c])
+      })
+    })
   }
 }
 
