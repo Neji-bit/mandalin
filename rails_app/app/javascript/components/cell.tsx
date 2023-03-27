@@ -118,7 +118,7 @@ class Cell extends React.Component {
         />)
         break
     }
-    let classList = ["cell", "shadow"]
+    let classList = ["cell"]
     if(this.state.selected) classList.push("selected")
     if(_data.state.currentLeftCell == this.id) classList.push("twoinone--left")
     if(_data.state.currentRightCell == this.id) classList.push("twoinone--right")

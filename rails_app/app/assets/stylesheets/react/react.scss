@@ -236,6 +236,10 @@ body {
         grid-template-columns: 100%;
         height: 100%;
       }
+
+      .editor.subject {
+        border: none;
+      }
     }
   }
   .map--middle {
@@ -304,6 +308,7 @@ body {
     grid-template-rows: 100%;
     grid-template-columns: 100%;
     border-radius: 5px;
+    border: 1px solid black;
     overflow: hidden;
     //  グリッド配下要素に対していろいろ重ねたい時は、やっぱりgridを使う。
     //  自身の領域を1/1のグリッドと見立てて、その単一領域に配下を描画させる。
@@ -489,7 +494,7 @@ body {
 
   &.twoinone--left .tag--cell--twoinone--left {
     position: absolute;
-    background: pink;
+    background: coral;
     width: 6px;
     height: 6px;
     border-radius: 3px;
@@ -499,7 +504,7 @@ body {
   }
   &.twoinone--right .tag--cell--twoinone--right {
     position: absolute;
-    background: pink;
+    background: coral;
     width: 6px;
     height: 6px;
     border-radius: 3px;
