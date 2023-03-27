@@ -127,7 +127,13 @@ class ToolBox extends React.Component {
           tool_id="tool_toggle_copy"
           key="15"
         />
-        <div className="tool" key="16"> ペースト </div>
+        <ToolButton
+          parent={this}
+          label="ペースト"
+          logic={ToolLogic.paste}
+          tool_id="tool_button_paste"
+          key="16"
+        />
         <ToolButton
           parent={this}
           label="ブック"

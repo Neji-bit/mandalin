@@ -196,6 +196,22 @@ class ToolLogic {
     return true
   }
 
+  //  ペースト。
+  static paste = () => {
+    navigator.clipboard.readText()
+    .then((text) => {
+      let json = JSON.parse(text)
+      Object.keys(json).forEach((k) => {
+        ["subject", "note"].forEach((t) => {
+          ["data", "effect", "design"].forEach((d) => {
+            _data[k][t][d] = json[k][t][d]
+          })
+        })
+      })
+      _data.react.map.forceUpdate()
+    })
+  }
+
   //  パレットを表示する。
   static paletteSticker = (e) => {
     _data.state.paletteStickerUrl = true
