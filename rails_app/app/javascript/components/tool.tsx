@@ -168,17 +168,24 @@ class ToolBox extends React.Component {
 
         <ToolButton
           parent={this}
-          label="Undo Rollback"
+          label="Undo"
           logic={ToolLogic.undo}
           tool_id="tool_button_undo"
           key="21"
         />
         <ToolButton
           parent={this}
-          label="Redo Create new History."
+          label="Redo"
           logic={ToolLogic.redo}
           tool_id="tool_button_redo"
           key="22"
+        />
+        <ToolButton
+          parent={this}
+          label="History"
+          logic={ToolLogic.history}
+          tool_id="tool_button_history"
+          key="25"
         />
       </div>
     )

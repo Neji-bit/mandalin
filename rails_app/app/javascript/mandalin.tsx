@@ -4,6 +4,7 @@ import Cell from './components/cell'
 import Command from './logic/command'
 import Backboard from './components/layout'
 import {Keyboard} from './logic/keyboard'
+import {ToolLogic} from './logic/tool_logic'
 import {Api} from './logic/api'
 import {Util} from './logic/util'
 
@@ -72,14 +73,6 @@ window.data = {
     cell_ww: null,
   },
 }
-//  let arrows = "wersdfzxc"
-//  arrows.split("").forEach((a) => {
-//    window.data.page.areas[`area_${a}`] = {cells: {}}
-//    let cells = window.data.page.areas[`area_${a}`].cells
-//    arrows.split("").forEach((c) => {
-//      cells[`cell_${a}${c}`] = { subject: { effect: "", data: `${a}${c}_SUB`, }, note: { effect: "", data: `${a}${c}_NOTE`, } }
-//    })
-//  })
 
 //  「無効」を示す目印クラス。
 class Nil {}
@@ -124,7 +117,9 @@ dataRefresh = (entry = window.data) => {
   return result
 }
 
-_undo = []
+_undo = []      //  Undo履歴
+__undo = []     //  「未来の歴史」。Undoで巻き戻された歴史をここに仮置きする。
+UNDO_MAX = 20
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -170,6 +165,9 @@ function init() {
       <App />
     </React.StrictMode>
   )
+
+  //  初期化時、現状を「最初の歴史」として保存する。
+  ToolLogic.history()
 }
 //  ブックデータ、ページデータをサーバから取得してから初期化。
 window.onload = () => {

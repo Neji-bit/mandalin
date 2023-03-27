@@ -242,16 +242,42 @@ class ToolLogic {
       }
     )
   }
+  //  Undo履歴を作成する。
+  //  「未来の歴史」は削除する。
+  //  MAX件を超える場合、溢れた過去分を捨てる。
+  static history = (remove_future = true) => {
+    let current = JSON.stringify(_data.page.areas)
+    //  履歴の内容が「最新の歴史」と一致していた場合、パスする。
+    if(_undo.slice(-1)[0] == current) return
+    _undo.push(current)
+    if(UNDO_MAX < _undo.length) _undo.shift()
+    //  「未来の歴史」を削除する。
+    if(remove_future) __undo.length = 0
+  }
+  //  履歴を一つ戻す。
+  //  Undo履歴の最新一つを対象とする。
+  //    その履歴を「未来の歴史」の最古に移し、それを画面に反映する。
   static undo = (e) => {
-    console.log("Undo Rollback.")
+    //  まず、現状を歴史に追加する。
+    ToolLogic.history(false)
+    //  履歴は、最後のひとつは必ず残す。
+    if(_undo.length <= 1) return
+    //  最新の履歴（＝現在の画面）を「未来の履歴」に移動させる。
     let string = _undo.pop()
-    let json = JSON.parse(string)
-    ToolLogic._copyCells(json)
+    __undo.unshift(string)
+    //  最新の履歴を画面に反映。
+    ToolLogic._copyCells(JSON.parse(_undo.slice(-1)[0]))
     _data.react.map.forceUpdate()
   }
+  //  履歴を一つ進める。
+  //  「未来の歴史」の最古を対象とする。
+  //    その履歴をUndo履歴の最新に移し、それを画面に反映する。
   static redo = (e) => {
-    let string = JSON.stringify(_data.page.areas)
+    let string = __undo.shift()
+    if(! string) return
     _undo.push(string)
+    ToolLogic._copyCells(JSON.parse(string))
+    _data.react.map.forceUpdate()
   }
 
   //  JSONを指定されたセルのデータに上書きする。
