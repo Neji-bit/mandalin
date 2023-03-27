@@ -121,7 +121,7 @@ body {
       border-right: 1px solid black;
     }
     #layout_center {
-      background: silver;
+      background: darkgray;
       position: relative;
     }
     #layout_right {
@@ -481,36 +481,35 @@ body {
     border-radius: 4px;
     user-select: none;
   }
-  .tag--cell--content {
-    position: absolute;
-    background: lime;
-    width: 6px;
-    height: 6px;
-    border-radius: 3px;
-    right: 7px;
-    top: 7px;
-    border: 0.5px solid black;
-  }
 
-  &.twoinone--left .tag--cell--twoinone--left {
+  .lamp {
     position: absolute;
-    background: coral;
     width: 6px;
     height: 6px;
     border-radius: 3px;
-    right: 14px;
-    top: 7px;
+    top: 4px;
     border: 0.5px solid black;
+
+    &.lamp--cell--content {
+      background: lime;
+      right: 4px;
+    }
+    &.lamp--cell--twoinone--left {
+      display: none;
+      background: coral;
+      right: 11px;
+    }
+    &.lamp--cell--twoinone--right {
+      display: none;
+      background: coral;
+      right: 11px;
+    }
   }
-  &.twoinone--right .tag--cell--twoinone--right {
-    position: absolute;
-    background: coral;
-    width: 6px;
-    height: 6px;
-    border-radius: 3px;
-    right: 14px;
-    top: 7px;
-    border: 0.5px solid black;
+  &.twoinone--left .lamp--cell--twoinone--left {
+    display: initial;
+  }
+  &.twoinone--right .lamp--cell--twoinone--right {
+    display: initial;
   }
 }
 

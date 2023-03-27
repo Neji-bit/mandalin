@@ -165,7 +165,7 @@ class CellEffect extends React.Component {
   static contentLamp = () => {
     return (
       <div
-        className="tag--cell--content"
+        className="lamp lamp--cell--content"
         key="2"
       >
       </div>
@@ -174,7 +174,7 @@ class CellEffect extends React.Component {
   static twoinoneLeftLamp = () => {
     return (
       <div
-        className="tag--cell--twoinone--left"
+        className="lamp lamp--cell--twoinone--left"
         key="3"
       >
       </div>
@@ -183,7 +183,7 @@ class CellEffect extends React.Component {
   static twoinoneRightLamp = () => {
     return (
       <div
-        className="tag--cell--twoinone--right"
+        className="lamp lamp--cell--twoinone--right"
         key="4"
       >
       </div>
