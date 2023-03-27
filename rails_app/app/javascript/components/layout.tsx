@@ -245,6 +245,7 @@ class Palette extends React.Component {
     }
     if(_data.state.paletteDesignMenu) {
       type = "palette--design--menu"
+      palette = (<PaletteDesignMenu/>)
     }
     classList.push(type)
     let style = Object.assign({}, _data.state.palettePoint)
@@ -385,6 +386,46 @@ class PaletteStickerMenu extends React.Component {
 }
 
 class PaletteDesignMenu extends React.Component {
+  constructor(props) {
+    super(props)
+    this.designList = [
+      "design--normal",
+      "design--gold",
+      "design--silver",
+      "design--silver",
+      "design--silver",
+      "design--silver",
+      "design--silver",
+      "design--silver",
+    ]
+  }
+  setDesign = (e) => {
+    let cell_id = _data.state.paletteTarget.match(/^cell_../)
+    let role = _data.state.paletteTarget.split("_").pop()
+    _data[cell_id][role].design = this.designList[e.currentTarget.dataset.num]
+    _data.react[cell_id].forceUpdate()
+  }
+  render() {
+    <div>hoge</div>
+    let buttons = []
+    this.designList.forEach((d, i) => {
+      buttons.push(
+        <button
+          className={this.designList[i]}
+          data-num={i}
+          onClick={this.setDesign}
+          key={i}
+        > A </button>
+      )
+    })
+    return (
+      <div
+        id="palette_design_menu"
+      >
+        {buttons}
+      </div>
+    )
+  }
 }
 
 export default Backboard

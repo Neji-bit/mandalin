@@ -217,9 +217,16 @@ class ToolLogic {
     _data.react.palette_sheet.setState({enable: true},
       () => {
         _data.state.paletteTarget = e.target.id
-//        palette_sticker_url_input.focus()
-//        palette_sticker_url_input.value = ""
-//        palette_sticker_url_input.style.width = null
+      }
+    )
+  }
+  static paletteDesign = (e) => {
+    _data.state.paletteDesignMenu = true
+    _data.state.palettePoint.left = e.clientX
+    _data.state.palettePoint.top = e.clientY
+    _data.react.palette_sheet.setState({enable: true},
+      () => {
+        _data.state.paletteTarget = e.target.closest(".editor").id
       }
     )
   }

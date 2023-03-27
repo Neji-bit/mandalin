@@ -118,7 +118,7 @@ class Cell extends React.Component {
         />)
         break
     }
-    let classList = ["cell"]
+    let classList = ["cell", "shadow"]
     if(this.state.selected) classList.push("selected")
     if(_data.state.currentLeftCell == this.id) classList.push("twoinone--left")
     if(_data.state.currentRightCell == this.id) classList.push("twoinone--right")
@@ -241,29 +241,36 @@ class Editor extends React.Component {
       this.setState({selected: !this.state.selected},
       () => { ToolLogic.paletteSticker(e) })
     }
+    //  修飾パレット
+    if("selection--design" == _data.state.selectionMode) {
+      this.setState({selected: !this.state.selected},
+      () => { ToolLogic.paletteDesign(e) })
+    }
   }
   render() {
     let content = null
-    let className = ""
+    let classList = []
+    let cell_id = (this.id || "").match(/^cell_../)
+    if(cell_id) classList.push(_data[cell_id][this.role].design)
     switch(this.state.editable) {
       case true:
         content = <EditorData
           parent={this}
           updateTarget={this.updateTarget}
         />
-        className = "editable"
+        classList.push("editable")
         break
       default:
         content = <EditorDisplay
           parent={this}
         />
-        className = "readable"
+        classList.push("readable")
         break
     }
     return (
       <div
         id={this.id}
-        className={`editor ${this.role} ${className}`}
+        className={`editor ${this.role} ${classList.join(" ")}`}
         onClick={this.click}
       >
         {content}
@@ -300,11 +307,6 @@ class EditorDisplay extends React.Component {
           className={`effect ${_data.state.showSticker ? "" : "_hidden_sticker"}`}
         >
           {effect}
-          <div
-            className="テスト。このdivをクリックした時は、下には透過しない。"
-            style={{position: "absolute", width: "10px", height: "10px", background: "green", right: "5px", bottom: "5px"}}
-            onClick={(e) => {e.stopPropagation()}}
-          />
         </div>
         <ReactMarkdown className="display"
           rehypePlugins={[rehypeRaw, rehypeSanitize]}
@@ -347,13 +349,7 @@ class EditorData extends React.Component {
       <div className="wrapper middle">
         <div
           className={`effect ${_data.state.showSticker ? "" : "_hidden_sticker"}`}
-        >
-          <div
-            className="テスト。このdivをクリックした時は、下には透過しない。"
-            style={{position: "absolute", width: "10px", height: "10px", background: "green", right: "5px", bottom: "5px"}}
-            onClick={(e) => {e.stopPropagation()}}
-          />
-        </div>
+        />
         <textarea
           ref={this.ref}
           className="data"
@@ -389,7 +385,7 @@ class Sticker extends React.Component {
   static initialStyle = () => {
     let style = {}
     style.position = "absolute"
-    style.height = "10%"
+    style.height = "20%"
     style.top = "0%"
     style.left = "0%"
     style.transform = "rotate(0deg)"

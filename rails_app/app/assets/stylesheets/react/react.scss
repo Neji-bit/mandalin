@@ -452,9 +452,11 @@ body {
 
 ////////////////////////////////////////////////////////////////////////////////
 //  セルの装飾
+.shadow {
+  box-shadow: -3px -3px 8px rgba(0,0,0,0.5) inset,  3px 3px 8px rgba(0,0,0,0.5) inset;
+}
 .cell {
   background: linear-gradient(160deg, white, antiquewhite);
-  box-shadow: -3px -3px 8px rgba(0,0,0,0.5) inset,  3px 3px 8px rgba(0,0,0,0.5) inset;
   .editor.subject {
     padding: 5px;
   }
@@ -701,6 +703,19 @@ body {
   }
 }
 
+#palette_design_menu {
+  background: coral;
+  display: grid;
+  grid-template-columns: repeat(4, 4em);
+  grid-template-rows: repeat(2, 3em);
+  row-gap: 1px;
+  column-gap: 1px;
+
+  button {
+    border-radius: 3px;
+  }
+}
+
 .fadeIn {
   animation-name: fadeInAnime;
   animation-duration: 0.3s;
@@ -732,3 +747,24 @@ body {
     }
   }
 }
+
+.design--normal {
+  background: linear-gradient(160deg, white, antiquewhite);
+}
+.design--gold {
+  background: linear-gradient(160deg, navajowhite, goldenrod);
+}
+.design--silver {
+  background: linear-gradient(160deg, whitesmoke, silver);
+}
+.design--d {
+}
+.design--e {
+}
+.design--f {
+}
+.design--g {
+}
+.design--h {
+}
+
