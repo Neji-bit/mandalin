@@ -415,7 +415,7 @@ class PaletteDesignMenu extends React.Component {
           data-num={i}
           onClick={this.setDesign}
           key={i}
-        > A </button>
+        > {i} </button>
       )
     })
     return (
