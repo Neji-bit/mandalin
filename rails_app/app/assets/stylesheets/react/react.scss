@@ -201,6 +201,7 @@ body {
         grid-template-columns: auto auto;
         position: absolute;
         right: 16px;
+        user-select: none;
 
         img {
           display: inline;
