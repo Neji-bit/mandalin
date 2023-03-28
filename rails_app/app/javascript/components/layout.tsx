@@ -436,11 +436,11 @@ class PaletteDesignMenu extends React.Component {
       "design--normal",
       "design--gold",
       "design--silver",
-      "design--silver",
-      "design--silver",
-      "design--silver",
-      "design--silver",
-      "design--silver",
+      "design--white",
+      "design--dark",
+      "design--darkgreen",
+      "design--darkblue",
+      "design--darkred",
     ]
   }
   setDesign = (e) => {

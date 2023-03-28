@@ -814,6 +814,9 @@ body {
   }
 }
 
+.design--white {
+  background: white;
+}
 .design--normal {
   background: linear-gradient(160deg, white, antiquewhite);
 }
@@ -823,14 +826,20 @@ body {
 .design--silver {
   background: linear-gradient(160deg, whitesmoke, silver);
 }
-.design--d {
+.design--dark {
+  background: dimgray;
+  color: white;
 }
-.design--e {
+.design--darkgreen {
+  background: darkgreen;
+  color: white;
 }
-.design--f {
+.design--darkblue {
+  background: darkblue;
+  color: white;
 }
-.design--g {
-}
-.design--h {
+.design--darkred {
+  background: darkred;
+  color: white;
 }
 
