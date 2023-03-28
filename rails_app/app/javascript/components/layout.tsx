@@ -60,7 +60,7 @@ class TopPanel extends React.Component {
           <div
             className="email"
           >
-            me@example.com
+            {_data.app_info.visitor_email || "Guest"}
           </div>
           <div
             className="switch"

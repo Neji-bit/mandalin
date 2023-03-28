@@ -1,4 +1,7 @@
 {
+  "app_info": {
+    "visitor_email": null
+  },
   "book": {
     "title": { "effect": "", "data": "" },
     "authorization": {

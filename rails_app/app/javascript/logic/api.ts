@@ -21,7 +21,9 @@ class Api {
     this.is_synchronizing = true
     axios.get(`/api/v1/book/${book_id}`)
     .then((data) => {
-      window.data.book = JSON.parse(data.data).book
+      let json = JSON.parse(data.data)
+      window.data.book = json.book
+      window.data.app_info = json.app_info
       _data = dataRefresh()
     })
     .finally(() => {
@@ -48,7 +50,7 @@ class Api {
     let book_id = Util.urlParams().book
     let payload = {
       name: _data.book.title.data,
-      text: JSON.stringify({book: _data.book})
+      text: JSON.stringify({app_info: _data.app_info, book: _data.book})
     }
     axios.put(`/api/v1/book/${book_id}`, payload)
     .finally(() => {

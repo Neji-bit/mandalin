@@ -6,7 +6,7 @@ class Book < ApplicationRecord
     super(options)
     # 生成時、初期データを設定する。
     File.open("#{Rails.root}/app/models/concerns/book_default.json") do |j|
-      self.text = JSON.generate(JSON.load(j))
+      self.text = JSON.generate(json = JSON.load(j))
     end
   end
 end
