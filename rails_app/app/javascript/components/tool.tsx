@@ -10,9 +10,10 @@ class ToolBox extends React.Component {
     this.ref = React.createRef()
   }
   render() {
+    let readonly = (!_data.app_info.is_owner) && (_data.book.authorization.is_public) ? "editable--only" : ""
     return (
       <div id="toolbox">
-        <div className="toolbox--block">
+        <div className={`toolbox--block`}>
           <ToolToggle
             parent={this}
             label="タグ表示"
@@ -30,7 +31,7 @@ class ToolBox extends React.Component {
             key="8"
           />
         </div>
-        <div className="toolbox--block">
+        <div className={`toolbox--block`}>
           <ToolToggle
             parent={this}
             label="全体表示"
@@ -60,7 +61,7 @@ class ToolBox extends React.Component {
             key="4"
           />
         </div>
-        <div className="toolbox--block">
+        <div className={`toolbox--block`}>
           <ToolButton
             parent={this}
             label="全画面表示"
@@ -76,7 +77,7 @@ class ToolBox extends React.Component {
             key="5"
           />
         </div>
-        <div className="toolbox--block">
+        <div className={`toolbox--block ${readonly}`}>
           <ToolToggle
             parent={this}
             label="セル選択"
@@ -116,7 +117,7 @@ class ToolBox extends React.Component {
             key="14"
           />
         </div>
-        <div className="toolbox--block">
+        <div className={`toolbox--block ${readonly}`}>
           <ToolToggle
             parent={this}
             label="コピー"
@@ -132,7 +133,7 @@ class ToolBox extends React.Component {
             key="16"
           />
         </div>
-        <div className="toolbox--block">
+        <div className={`toolbox--block ${readonly}`}>
           <ToolToggle
             parent={this}
             label="装飾"
@@ -148,7 +149,7 @@ class ToolBox extends React.Component {
             key="24"
           />
         </div>
-        <div className="toolbox--block">
+        <div className={`toolbox--block ${readonly}`}>
           <ToolButton
             parent={this}
             label="Undo"
