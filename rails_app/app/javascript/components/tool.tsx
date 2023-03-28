@@ -210,7 +210,7 @@ class ToolButton extends React.Component {
   render() {
     return (
       <button
-        className="tool"
+        className="tool--button"
         id={this.id}
         onClick={this.logic}
       >

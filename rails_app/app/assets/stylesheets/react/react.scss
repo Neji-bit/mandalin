@@ -546,22 +546,10 @@ body {
   row-gap: 5px;
   padding: 5px;
 
-  .tool {
-    font-size: x-small;
-    height: 4em;
-    background: yellow;
-    border: 1px solid orange;
-
-    &:active {
-      background: green;
-    }
-  }
-
   //  押し込み／解除形式のチェックボックス
   .tool--toggle {
     display: flex;
-    width: 100%;
-    height: 100%;
+    height: 4em;
     justify-content: center;
     align-items: center;
     position: relative;
@@ -616,6 +604,37 @@ body {
         background: gray;
         transition: .5s;
       }
+    }
+  }
+
+  //  状態を持たないボタン
+  .tool--button {
+    border-width: initial;
+    border-style: initial;
+    border-color: initial;
+    border-image: initial;
+    height: 4em;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    font-size: x-small;
+    --enable-background: #af975e;
+    --disable-background: #eee;
+    --enable-color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    background: var(--disable-background);
+    cursor: pointer;
+    user-select: none;
+    transition: .5s;
+    &:hover {
+      background: var(--enable-background);
+      color: var(--enable-color);
     }
   }
 }
