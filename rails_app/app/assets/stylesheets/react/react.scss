@@ -539,12 +539,22 @@ body {
 
 #toolbox {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(12, 1fr);
-  background: gray;
+  grid-template-columns: repeat(1, 1fr);
+  background: slategray;
   column-gap: 5px;
   row-gap: 5px;
-  padding: 5px;
+  padding: 5px 0 5px 0;
+
+  .toolbox--block {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    background: gray;
+    column-gap: 5px;
+    row-gap: 5px;
+    padding: 5px;
+
+    background: darkgray;
+  }
 
   //  押し込み／解除形式のチェックボックス
   .tool--toggle {
@@ -580,6 +590,7 @@ body {
       width: 100%;
       height: 100%;
       border-radius: 5px;
+      border: 0.5px solid black;
       background: var(--disable-background);
       cursor: pointer;
       user-select: none;
@@ -628,6 +639,7 @@ body {
     justify-content: center;
     align-items: center;
     border-radius: 5px;
+    border: 0.5px solid black;
     background: var(--disable-background);
     cursor: pointer;
     user-select: none;
