@@ -300,6 +300,13 @@ class ToolLogic {
   static publish = (json) => {
     _data.authorization.is_public = !_data.authorization.is_public
   }
+
+  static login = () => {
+    Api.login()
+  }
+  static logout = () => {
+    Api.logout()
+  }
 }
 
 export {ToolLogic}

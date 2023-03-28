@@ -38,6 +38,38 @@ class TopPanel extends React.Component {
   }
   render() {
     let readonly = _readonly ? "editable--only" : ""
+    let accountButton = null
+    if(_readonly) {
+      accountButton = (
+        <div
+          className={`logout--button`}
+        >
+          <ToolButton
+            parent={this}
+            label="Login"
+            logic={ToolLogic.login}
+            tool_id="tool_toggle_publish"
+            checked={_data.authorization.is_public}
+            key="17"
+          />
+        </div>
+      )
+    } else {
+      accountButton = (
+        <div
+          className={`logout--button`}
+        >
+          <ToolButton
+            parent={this}
+            label="Logout"
+            logic={ToolLogic.logout}
+            tool_id="tool_toggle_publish"
+            checked={_data.authorization.is_public}
+            key="18"
+          />
+        </div>
+      )
+    }
     return(
       <div id={this.id} className="panel">
         <div
@@ -79,18 +111,7 @@ class TopPanel extends React.Component {
           <div
             className="switch"
           >
-            <div
-              className={`logout--button ${readonly}`}
-            >
-              <ToolButton
-                parent={this}
-                label="Logout"
-                logic={ToolLogic.publish}
-                tool_id="tool_toggle_publish"
-                checked={_data.authorization.is_public}
-                key="17"
-              />
-            </div>
+          {accountButton}
           </div>
         </div>
       </div>

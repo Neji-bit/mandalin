@@ -6,6 +6,7 @@ class Api {
   static is_synchronizing = false
 
   static login = (callback = null) => {
+    location.href("/users/sign_in")
   }
 
   //  ログアウトしたら、なにはともあれページリロード。
