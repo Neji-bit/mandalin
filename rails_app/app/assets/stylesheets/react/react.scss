@@ -132,13 +132,13 @@ body {
         padding: 4px;
         display: grid;
         row-gap: 2px;
-        font-size: smaller;
+        font-size: small;
 
         .label {
           display: flex;
           justify-content: center;
           align-items: center;
-          font-size: initial;
+          font-size: small;
           height: 1.6em;
           user-select: none;
         }
@@ -554,94 +554,42 @@ body {
     padding: 5px;
 
     background: darkgray;
-
-    &.editable--only {
-      display: none;
-    }
   }
+}
 
-  //  押し込み／解除形式のチェックボックス
-  .tool--toggle {
-    display: flex;
-    height: 4em;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    font-size: x-small;
-    --enable-background: #af975e;
-    --disable-background: #eee;
-    --enable-color: white;
+//  押し込み／解除形式のチェックボックス
+.tool--toggle {
+  display: flex;
+  height: 4em;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-size: x-small;
+  --enable-background: #af975e;
+  --disable-background: #eee;
+  --enable-color: white;
 
-    input {
-      visibility: hidden;
-      position: absolute;
-      left: 0;
-      &:focus + label {
-          box-shadow: 0 0 4px var(--enable-background);
-      }
-      &:checked + label {
-          background: var(--enable-background);
-          color: var(--enable-color);
-      }
-      &:checked + label:before {
-        background: lime;
-      }
+  input {
+    visibility: hidden;
+    position: absolute;
+    left: 0;
+    &:focus + label {
+        box-shadow: 0 0 4px var(--enable-background);
     }
-    label {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      height: 100%;
-      border-radius: 5px;
-      border: 0.5px solid black;
-      background: var(--disable-background);
-      cursor: pointer;
-      user-select: none;
-      transition: .5s;
-      &:hover {
+    &:checked + label {
         background: var(--enable-background);
         color: var(--enable-color);
-      }
-      //  左上にON/OFFランプをつけた
-      &:before {
-        content: "";
-        display: block;
-        position: absolute;
-        width: 6px;
-        height: 6px;
-        border: 0.5px solid black;
-        border-radius: 3px;
-        box-sizing: border-box;
-        color: black;
-        left: 3px;
-        top: 3px;
-        background: gray;
-        transition: .5s;
-      }
+    }
+    &:checked + label:before {
+      background: lime;
     }
   }
-
-  //  状態を持たないボタン
-  .tool--button {
-    border-width: initial;
-    border-style: initial;
-    border-color: initial;
-    border-image: initial;
-    height: 4em;
-
+  label {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
-    font-size: x-small;
-    --enable-background: #af975e;
-    --disable-background: #eee;
-    --enable-color: white;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100%;
+    height: 100%;
     border-radius: 5px;
     border: 0.5px solid black;
     background: var(--disable-background);
@@ -652,8 +600,77 @@ body {
       background: var(--enable-background);
       color: var(--enable-color);
     }
+    //  左上にON/OFFランプをつけた
+    &:before {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border: 0.5px solid black;
+      border-radius: 3px;
+      box-sizing: border-box;
+      color: black;
+      left: 3px;
+      top: 3px;
+      background: gray;
+      transition: .5s;
+    }
   }
 }
+
+//  状態を持たないボタン
+.tool--button {
+  border-width: initial;
+  border-style: initial;
+  border-color: initial;
+  border-image: initial;
+  height: 4em;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-size: x-small;
+  --enable-background: #af975e;
+  --disable-background: #eee;
+  --enable-color: white;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  border: 0.5px solid black;
+  background: var(--disable-background);
+  cursor: pointer;
+  user-select: none;
+  transition: .5s;
+  &:hover {
+    background: var(--enable-background);
+    color: var(--enable-color);
+  }
+}
+
+.public--button {
+  display: flex;
+  align-items: center;
+  width: 6em;
+  height: 100%;
+  padding: 0 5px 0 15px;
+
+  div {
+    width: 100%;
+    height: 3em;
+  }
+}
+
+//  「編集権限がある時だけ表示」のクラス。これだけインポータント。
+.editable--only {
+  display: none !important;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 
 ._hidden {
   display: none;

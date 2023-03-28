@@ -1,10 +1,11 @@
 import React from 'react'
 import {Map, LargeMap, MiddleMap, SmallMap, Area} from './map'
 import {Page} from './page'
-import {ToolBox} from './tool'
+import {ToolBox, ToolButton, ToolToggle} from './tool'
 import {IconLogo} from './common'
 import {Editor, Sticker} from './cell'
 import {Util} from '../logic/util'
+import {ToolLogic} from '../logic/tool_logic'
 
 class Backboard extends React.Component {
   render() {
@@ -36,11 +37,24 @@ class TopPanel extends React.Component {
     _data.react[this.id] = this
   }
   render() {
+    let readonly = _readonly ? "editable--only" : ""
     return(
       <div id={this.id} className="panel">
         <div
           key="1"
         >
+          <div
+            className={`public--button ${readonly}`}
+          >
+            <ToolToggle
+              parent={this}
+              label="公開"
+              logic={ToolLogic.publish}
+              tool_id="tool_toggle_publish"
+              checked={_data.authorization.is_public}
+              key="17"
+            />
+          </div>
         </div>
         <Editor
           parent={this}
@@ -133,7 +147,7 @@ class RightPanel extends React.Component {
           <div
             className="label"
           >
-            PageList
+            ページリスト
           </div>
           {contents}
         </div>

@@ -95,6 +95,9 @@ class Util {
     )
   }
 
+  static is_readonly() {
+    return (!_data.app_info.is_owner) && (_data.book.authorization.is_public)
+  }
 
 }
 

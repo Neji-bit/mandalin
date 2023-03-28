@@ -10,7 +10,7 @@ class ToolBox extends React.Component {
     this.ref = React.createRef()
   }
   render() {
-    let readonly = (!_data.app_info.is_owner) && (_data.book.authorization.is_public) ? "editable--only" : ""
+    let readonly = _readonly ? "editable--only" : ""
     return (
       <div id="toolbox">
         <div className={`toolbox--block`}>
@@ -170,14 +170,6 @@ class ToolBox extends React.Component {
             logic={ToolLogic.history}
             tool_id="tool_button_history"
             key="25"
-          />
-          <ToolToggle
-            parent={this}
-            label="公開"
-            logic={ToolLogic.publish}
-            tool_id="tool_toggle_publish"
-            checked={_data.authorization.is_public}
-            key="17"
           />
           <ToolButton
             parent={this}

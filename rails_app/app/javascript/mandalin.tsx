@@ -120,6 +120,7 @@ dataRefresh = (entry = window.data) => {
 _undo = []      //  Undo履歴
 __undo = []     //  「未来の歴史」。Undoで巻き戻された歴史をここに仮置きする。
 UNDO_MAX = 20
+_readonly = true
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -165,6 +166,8 @@ function init() {
       <App />
     </React.StrictMode>
   )
+
+  _readonly = Util.is_readonly()
 
   //  初期化時、現状を「最初の歴史」として保存する。
   ToolLogic.history()
