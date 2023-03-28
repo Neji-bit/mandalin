@@ -282,8 +282,8 @@ body {
   }
   .area {
     background: transparent;
-    --grid-gap-ver: 2px;
-    --grid-gap-hor: 2px;
+    --grid-gap-ver: 3px;
+    --grid-gap-hor: 3px;
     display: grid;
     height: 100%;
     width: 100%;
@@ -828,18 +828,19 @@ body {
 }
 .design--dark {
   background: dimgray;
-  color: white;
+  color: whitesmoke;
+  color: gainsboro;
 }
 .design--darkgreen {
   background: darkgreen;
-  color: white;
+  color: whitesmoke;
 }
 .design--darkblue {
   background: darkblue;
-  color: white;
+  color: whitesmoke;
 }
 .design--darkred {
   background: darkred;
-  color: white;
+  color: whitesmoke;
 }
 
