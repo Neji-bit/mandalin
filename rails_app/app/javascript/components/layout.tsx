@@ -44,7 +44,7 @@ class TopPanel extends React.Component {
           key="1"
         >
           <div
-            className={`public--button ${readonly}`}
+            className={`public--switch ${readonly}`}
           >
             <ToolToggle
               parent={this}
@@ -79,9 +79,18 @@ class TopPanel extends React.Component {
           <div
             className="switch"
           >
-            <button>
-              LogOut
-            </button>
+            <div
+              className={`logout--button ${readonly}`}
+            >
+              <ToolButton
+                parent={this}
+                label="Logout"
+                logic={ToolLogic.publish}
+                tool_id="tool_toggle_publish"
+                checked={_data.authorization.is_public}
+                key="17"
+              />
+            </div>
           </div>
         </div>
       </div>
