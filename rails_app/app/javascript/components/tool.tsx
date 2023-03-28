@@ -134,11 +134,12 @@ class ToolBox extends React.Component {
           tool_id="tool_button_paste"
           key="16"
         />
-        <ToolButton
+        <ToolToggle
           parent={this}
-          label="ブック"
-          logic={null}
-          tool_id="tool_button_books"
+          label="公開"
+          logic={ToolLogic.publish}
+          tool_id="tool_toggle_publish"
+          checked={_data.authorization.is_public}
           key="17"
         />
         <ToolButton

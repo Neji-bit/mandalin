@@ -297,6 +297,9 @@ class ToolLogic {
       })
     })
   }
+  static publish = (json) => {
+    _data.authorization.is_public = !_data.authorization.is_public
+  }
 }
 
 export {ToolLogic}
