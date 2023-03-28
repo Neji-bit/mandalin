@@ -19,8 +19,10 @@ module Resources
         end
         get do
           begin
-            json = JSON.parse(Book.find(params[:id]).text)
+            book = Book.find(params[:id])
+            json = JSON.parse(book.text)
             json["app_info"]["visitor_email"] = current_user ? current_user.email : nil
+            json["app_info"]["is_owner"] = (current_user == book.owner)
             present JSON.generate(json)
           rescue
             error!("Not found!", 404)

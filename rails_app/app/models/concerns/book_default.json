@@ -1,6 +1,7 @@
 {
   "app_info": {
-    "visitor_email": null
+    "visitor_email": null,
+    "is_owner": false
   },
   "book": {
     "title": { "effect": "", "data": "" },

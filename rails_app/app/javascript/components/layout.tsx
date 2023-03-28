@@ -55,7 +55,7 @@ class TopPanel extends React.Component {
           <div
             className="status"
           >
-            ReadOnly
+            {_data.app_info.is_owner ? "編集モード" : "読取専用"}
           </div>
           <div
             className="email"
