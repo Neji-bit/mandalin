@@ -38,6 +38,8 @@ class Api {
     axios.get(`/api/v1/book/${book_id}/page/${page_id}`)
     .then((data) => {
       window.data.page = JSON.parse(data.data).page
+      _undo.length = 0
+      __undo.length = 0
       _data = dataRefresh()
     })
     .finally(() => {
