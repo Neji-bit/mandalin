@@ -40,6 +40,17 @@ module Resources
 
             # 以下は仮コード。
             book = Book.find(_legal_params[:book_id])
+
+            # app_infoを作成する。コードの重複あるので、後で整理する。
+            json = JSON.parse(book.text)
+            json["app_info"]["visitor_email"] = current_user ? current_user.email : nil
+            json["app_info"]["is_owner"] = (current_user == book.owner)
+            unless(json["app_info"]["is_owner"]) then
+              unless(json["book"]["authorization"]["is_public"]) then
+                raise
+              end
+            end
+
             page = nil
             if(book.owner == current_user) then
               page = Page.find_or_create_by(book: book, name: _legal_params[:page_name]) do |c|

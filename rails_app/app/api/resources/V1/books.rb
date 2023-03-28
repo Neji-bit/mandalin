@@ -10,8 +10,7 @@ module Resources
 
       resources 'book/:id' do
         # GETでの処理：
-        #   find_or_initialize_by の動きをする。 
-        #   あえて、外部からの明示的なPOSTは作らない。
+        #   ここにくる＝コントローラでupsertが済んでいる。
         desc 'Return a book data.'
         route_setting :auth, disabled: true
         params do
@@ -20,9 +19,17 @@ module Resources
         get do
           begin
             book = Book.find(params[:id])
+
+            # app_infoを作成する。コードの重複あるので、後で整理する。
             json = JSON.parse(book.text)
             json["app_info"]["visitor_email"] = current_user ? current_user.email : nil
             json["app_info"]["is_owner"] = (current_user == book.owner)
+            unless(json["app_info"]["is_owner"]) then
+              unless(json["book"]["authorization"]["is_public"]) then
+                raise
+              end
+            end
+
             present JSON.generate(json)
           rescue
             error!("Not found!", 404)
