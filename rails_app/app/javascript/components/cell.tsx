@@ -60,6 +60,12 @@ class Cell extends React.Component {
           }
         })
     }
+    if("selection--design" == mode) {
+      this.setState({selected: !this.state.selected})
+    }
+    if("selection--sticker" == mode) {
+      this.setState({selected: !this.state.selected})
+    }
 
     //  大マップの時は、eraseでセブジェクトもノートもまとめて削除する
     if(_data.state.viewMode == "large" && _data.state.selectionMode == "selection--erase") {
