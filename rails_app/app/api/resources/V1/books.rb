@@ -29,6 +29,11 @@ module Resources
                 raise
               end
             end
+            # 応急処置。Owner以外（＝書き込み権限がない）場合はブックの状態を引き継がない。
+            unless(json["app_info"]["is_owner"]) then
+              json["book"]["state"] = {}
+            end
+
 
             present JSON.generate(json)
           rescue
