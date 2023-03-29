@@ -290,6 +290,11 @@ body {
     width: calc(100% - var(--grid-gap-hor) * 2);
     grid-template-rows: repeat(1, 1fr);
     grid-template-columns: repeat(2, 1fr);
+
+    //  2in1マップ時のセル
+    .cell {
+      font-size: initial;
+    }
   }
   .area {
     background: transparent;

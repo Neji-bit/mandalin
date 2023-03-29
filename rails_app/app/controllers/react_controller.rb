@@ -31,6 +31,9 @@ class ReactController < ApplicationController
         return
       end
     end
+    # message = "ログインしました。"
+    # session[:_flash] = session[:_flash] || []
+    # session[:_flash].push(message) unless session[:_flash].include?(message)
   end
 
   # パラメータから「正常なID」を抽出する。
