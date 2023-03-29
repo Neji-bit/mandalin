@@ -64,11 +64,14 @@ class ToolLogic {
       })
     }
     //  選択モードのうち、現在OFFのものについて、選択モードを解除（＝選択していたものを解放）する。
-    if(!tool_toggle_cell_checkbox.checked) {
-      Util.releaseSelected("cell")
-    }
-    if(!tool_toggle_area_checkbox.checked) {
-      Util.releaseSelected("area")
+    let exemptions = [tool_toggle_design_checkbox]
+    if(!((exemptions.filter((e) => {return e.checked})).length)) {
+      if(!tool_toggle_cell_checkbox.checked) {
+        Util.releaseSelected("cell")
+      }
+      if(!tool_toggle_area_checkbox.checked) {
+        Util.releaseSelected("area")
+      }
     }
     //  改めて、現在の「選択モード」を特定する。
     let mode = "selection--none"

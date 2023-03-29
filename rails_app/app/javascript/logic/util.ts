@@ -76,11 +76,27 @@ class Util {
     })
   }
 
+  //  選択されたセルのDOMを返す。
   static selectedCells = () => {
     return [...document.getElementsByClassName("cell selected")]
   }
+  //  選択されたエリアのDOMを返す。
   static selectedAreas = () => {
     return [...document.getElementsByClassName("area selected")]
+  }
+
+  //  選択されたセルおよびエリアを対象に、cell_idを返す。
+  static selectedCellIdWithArea = () => {
+    let cell_ids = []
+    Util.selectedCells().forEach((c) => {
+      cell_ids.push(c.id)
+    })
+    Util.selectedAreas().forEach((a) => {
+      [...a.getElementsByClassName("cell")].forEach((c) => {
+        cell_ids.push(c.id)
+      })
+    })
+    return cell_ids
   }
 
   static remToPx(rem) {

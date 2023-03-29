@@ -444,12 +444,23 @@ class PaletteDesignMenu extends React.Component {
     ]
   }
   setDesign = (e) => {
-    let cell_id = _data.state.paletteTarget.match(/^cell_../)
-    let role = _data.state.paletteTarget.split("_").pop()
-    _data[cell_id][role].design = this.designList[e.currentTarget.dataset.num]
-    _data.react[cell_id].setState({selected: false})
+    let selected = Util.selectedCellIdWithArea()
+    let roles = ["subject", "note"]
+    //  選択したセルにデザインを当てる
+    selected.forEach((c) => {
+      roles.forEach((r) => {
+        _data[c][r].design = this.designList[e.currentTarget.dataset.num]
+        _data.react[c].forceUpdate()
+      })
+    })
     _data.state.paletteDesignMenu = false
     _data.react.palette_sheet.setState({enable: false})
+    //  選択対象がセル１件のみだった場合は、選択を自動解除。
+    if(1 == selected.length) {
+      selected.forEach((c) => {
+        _data.react[c].setState({selected: false})
+      })
+    }
   }
   render() {
     let buttons = []

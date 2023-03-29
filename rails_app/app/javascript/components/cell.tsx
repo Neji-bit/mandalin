@@ -60,8 +60,13 @@ class Cell extends React.Component {
           }
         })
     }
+    //  セル装飾の場合は、いろいろ特殊。
+    //    セル装飾の時は２回目のクリックでも選択を解除しない。
+    //    また既に選択されたセルがある場合は、選択しない。
     if("selection--design" == mode) {
-      this.setState({selected: !this.state.selected})
+      if(! Util.selectedCells().length) {
+        this.setState({selected: true})
+      }
     }
     if("selection--sticker" == mode) {
       this.setState({selected: !this.state.selected})
