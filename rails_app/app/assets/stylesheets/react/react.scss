@@ -494,11 +494,19 @@ body {
       background: coral;
       right: 11px;
     }
+    &.lamp--cell--current {
+      display: none;
+      background: yellow;
+      right: 18px;
+    }
   }
   &.twoinone--left .lamp--cell--twoinone--left {
     display: initial;
   }
   &.twoinone--right .lamp--cell--twoinone--right {
+    display: initial;
+  }
+  &.cell--current .lamp--cell--current {
     display: initial;
   }
 }

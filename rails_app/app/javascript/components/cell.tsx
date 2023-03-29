@@ -128,6 +128,7 @@ class Cell extends React.Component {
     if(this.state.selected) classList.push("selected")
     if(_data.state.currentLeftCell == this.id) classList.push("twoinone--left")
     if(_data.state.currentRightCell == this.id) classList.push("twoinone--right")
+    if(_data.state.currentCell == this.id) classList.push("cell--current")
     return (
       <div
         ref={this.ref}
@@ -195,12 +196,22 @@ class CellEffect extends React.Component {
       </div>
     )
   }
+  static currentLamp = () => {
+    return (
+      <div
+        className="lamp lamp--cell--current"
+        key="5"
+      >
+      </div>
+    )
+  }
   render() {
     let contents = []
     contents.push( CellEffect.cellId(this))
     if(_data[this.parent.id].note.data) contents.push(CellEffect.contentLamp())
     contents.push(CellEffect.twoinoneLeftLamp())
     contents.push(CellEffect.twoinoneRightLamp())
+    contents.push(CellEffect.currentLamp())
     return (
       <div
         ref={this.ref}
