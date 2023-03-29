@@ -447,10 +447,11 @@ class PaletteDesignMenu extends React.Component {
     let cell_id = _data.state.paletteTarget.match(/^cell_../)
     let role = _data.state.paletteTarget.split("_").pop()
     _data[cell_id][role].design = this.designList[e.currentTarget.dataset.num]
-    _data.react[cell_id].forceUpdate()
+    _data.react[cell_id].setState({selected: false})
+    _data.state.paletteDesignMenu = false
+    _data.react.palette_sheet.setState({enable: false})
   }
   render() {
-    <div>hoge</div>
     let buttons = []
     this.designList.forEach((d, i) => {
       buttons.push(
