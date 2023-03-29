@@ -411,7 +411,7 @@ body {
     }
 
     &.selected {
-      border: 2px solid rgba(0, 0, 255, 1.0)
+      border: 2px solid rgba(0, 0, 255, 1.0) !important;
     }
   }
 }
@@ -713,6 +713,12 @@ body {
     cursor: pointer;
     .cell:hover {
       border: 2px solid rgba(255, 0, 255, 0.5);
+    }
+  }
+  &.selection--design {
+    cursor: pointer;
+    .cell:hover {
+      border: 2px solid rgba(0, 255, 255, 0.5);
     }
   }
   &.selection--sticker {
