@@ -256,6 +256,11 @@ body {
       //  不思議対応。とにかく「map--middle時だけareaにposition:absolute;をつける」と、セルが縦に自動で伸びる症状を止められる。
       position: absolute;
     }
+
+    //  中マップ時のセル
+    .cell {
+      font-size: initial;
+    }
   }
   .map--small {
     --grid-gap-ver: 6px;
@@ -268,6 +273,11 @@ body {
     width: calc(100% - var(--grid-gap-hor) * 2);
     grid-template-rows: 1fr;
     grid-template-columns: 1fr;
+
+    //  小マップ時のセル
+    .cell {
+      font-size: initial;
+    }
   }
   .map--twoinone {
     --grid-gap-ver: 6px;
