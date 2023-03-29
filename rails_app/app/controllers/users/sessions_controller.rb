@@ -11,7 +11,9 @@ class Users::SessionsController < Devise::SessionsController
 
   # POST /resource/sign_in
   def create
-    session[:_flash] = (session[:_flash] || []).push("I'm Login.")
+    message = "I'm Login."
+    session[:_flash] = session[:_flash] || []
+    session[:_flash].push(message) unless session[:_flash].include?(message)
     super
   end
 
