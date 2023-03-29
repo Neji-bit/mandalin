@@ -441,14 +441,6 @@ body {
     resize: none;
     overflow: hidden;
   }
-
-  .effect {
-    * {
-      //  エフェクトシートに載っているモノは、ポインタイベントを受け取れる。
-      //  （別途、Javascript側で onClick={(e) => { e.stopPropagation() }} すること。）
-      pointer-events: auto;
-    }
-  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -727,6 +719,12 @@ body {
     cursor: pointer;
     .cell:hover {
       border: 2px solid rgba(255, 165, 0, 0.5);
+      //  ステッカー選択時のみ、画像クリックを可能にする。
+      .effect {
+        img {
+          pointer-events: auto;
+        }
+      }
     }
   }
 }
