@@ -143,8 +143,10 @@ function init() {
   if(_data.state.showSticker != true) _data.state.showSticker = false
   _data.state.selectionMode = "selection--none"
   _data.state.currentPage = `page_${Util.urlParams().page || 0}`
-  _data.state.currentLeftCell ||= "cell_ew"
-  _data.state.currentRightCell ||= "cell_ee"
+  _data.state.currentArea ||= "area_d"
+  _data.state.currentCell ||= "cell_dd"
+  _data.state.currentLeftCell ||= "cell_ww"
+  _data.state.currentRightCell ||= "cell_we"
 
   //  パレットの対象となっている要素のID
   _data.state.paletteTarget = null
