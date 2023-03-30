@@ -34,7 +34,6 @@ module Resources
               json["book"]["state"] = {}
             end
 
-
             present JSON.generate(json)
           rescue
             error!("Not found!", 404)

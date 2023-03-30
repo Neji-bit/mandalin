@@ -115,6 +115,10 @@ class Util {
     return (!_data.app_info.is_owner) && (_data.book.authorization.is_public)
   }
 
+  static is_login() {
+    return (!!_data.app_info.visitor_email)
+  }
+
 }
 
 export {Util}

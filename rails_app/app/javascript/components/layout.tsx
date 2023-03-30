@@ -39,7 +39,7 @@ class TopPanel extends React.Component {
   render() {
     let readonly = _readonly ? "editable--only" : ""
     let accountButton = null
-    if(_readonly) {
+    if(!Util.is_login()) {
       accountButton = (
         <div
           className={`logout--button`}
