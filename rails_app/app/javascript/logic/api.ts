@@ -27,9 +27,9 @@ class Api {
       window.data.app_info = json.app_info
       _data = dataRefresh()
     })
-    .catch((
+    .catch(() => {
       location.href = "/404"
-    ))
+    })
     .finally(() => {
       this.is_synchronizing = false
       if(callback) callback()
@@ -46,9 +46,9 @@ class Api {
       __undo.length = 0
       _data = dataRefresh()
     })
-    .catch((
+    .catch(() => {
       location.href = "/404"
-    ))
+    })
     .finally(() => {
       this.is_synchronizing = false
       if(callback) callback()
