@@ -16,6 +16,4 @@ Rails.application.routes.draw do
     sessions: 'users/sessions',
     unlocks: 'users/unlocks',
   }
-
-  get '/react' => "react#main"
 end
