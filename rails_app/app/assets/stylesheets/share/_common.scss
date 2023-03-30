@@ -3,8 +3,8 @@
 .flash {
   position: absolute;
   z-index: 100;
-  background: white;
-  animation: 7s flashMsg;
+  background: floralwhite;
+  animation: 5s flashMsg;
   animation-fill-mode: forwards;
   left: 50%;
   padding: 10px 10px 10px 10px;
@@ -12,7 +12,7 @@
   border-radius: 15px;
   width: 50%;
   text-align: center;
-  border: 3px solid blue;
+  border: 3px solid royalblue;
 }
 @keyframes flashMsg {
   0% {

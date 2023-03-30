@@ -1,4 +1,4 @@
 Rails.application.config.dartsass.builds = {
-  "mandala/mandala.scss"  => "mandala.css",
+  "mandalin/mandalin.scss"  => "mandalin.css",
   "authentication/authentication.scss"  => "authentication.css",
 }

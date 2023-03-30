@@ -22,6 +22,7 @@ module Resources
             nil
           end
         end
+
         # Session情報を引っ張り出す。
         def session
           env["rack.session"]

@@ -9,6 +9,8 @@ module Resources
       end
 
       resources 'book/:id' do
+        # GETでの処理：
+        #   ここにくる＝コントローラでupsertが済んでいる。
         desc 'Return a book data.'
         route_setting :auth, disabled: true
         params do
@@ -16,27 +18,25 @@ module Resources
         end
         get do
           begin
-            present Book.find(params[:id]).text
+            book = Book.find(params[:id])
+
+            # app_infoを作成する。コードの重複あるので、後で整理する。
+            json = JSON.parse(book.text)
+            json["app_info"]["visitor_email"] = current_user ? current_user.email : nil
+            json["app_info"]["is_owner"] = (current_user == book.owner)
+            unless(json["app_info"]["is_owner"]) then
+              unless(json["book"]["authorization"]["is_public"]) then
+                raise
+              end
+            end
+            # 応急処置。Owner以外（＝書き込み権限がない）場合はブックの状態を引き継がない。
+            unless(json["app_info"]["is_owner"]) then
+              json["book"]["state"] = {}
+            end
+
+            present JSON.generate(json)
           rescue
             error!("Not found!", 404)
-          end
-        end
-
-        desc 'Create a book data.'
-        params do
-          requires :name, type: String, desc: 'name of book'
-          requires :text, type: String, desc: 'json of book'
-        end
-        post do
-          begin
-            Book.create({
-              name: params[:name],
-              text: params[:text],
-              owner: current_user
-            })
-            present true
-          rescue
-            error!("Duplicate!", 500)
           end
         end
 

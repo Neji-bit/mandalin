@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="91.4" height="21.8">
+  <style type="text/css">
+    .logo {
+      font-weight       : bold;
+      font-size         : 18px;
+      fill              : darkorange;
+      letter-spacing    : 0px;
+      dominant-baseline : alphabetic;
+      font-family       : "Lucida Console", Courier, monospace;
+    }
+    text:nth-of-type(1) {
+      stroke            : black;
+      stroke-width      : 5px;
+      paint-order       : stroke;
+      stroke-linejoin   : round;
+      transform         : translate(3.2px, 12px);
+    }
+    text:nth-of-type(2) {
+      stroke            : white;
+      stroke-width      : 4px;
+      paint-order       : stroke;
+      stroke-linejoin   : round;
+      transform         : translate(3.2px, 12px);
+    }
+    text:nth-of-type(3) {
+      stroke-width      : 0px;
+      fill              : olivedrab;
+      transform         : translate(calc(3.2px + 3.0em), 12px);
+    }
+
+    .leaf {
+      transform         : translate(67.8px, 3.5px) rotate(50deg);
+    }
+    .leaf:nth-of-type(1) {
+      fill              : transparent;
+      stroke            : black;
+      stroke-width      : 5px;
+    }
+    .leaf:nth-of-type(2) {
+      fill              : transparent;
+      stroke            : white;
+      stroke-width      : 4px;
+    }
+    .leaf:nth-of-type(3) {
+      fill              : yellowgreen;
+      stroke-width      : 0px;
+    }
+  </style>
+
+  <path class="leaf" d="m 0 0 c 2 2 2 4 0 6 c -2 -2 -2 -4 0 -6 z" />
+  <text dy="0.4em" class="logo">mandalin</text>
+  <path class="leaf" d="m 0 0 c 2 2 2 4 0 6 c -2 -2 -2 -4 0 -6 z" />
+  <text dy="0.4em" class="logo">mandalin</text>
+  <path class="leaf" d="m 0 0 c 2 2 2 4 0 6 c -2 -2 -2 -4 0 -6 z" />
+  <text dy="0.4em" class="logo">l</text>
+
+</svg>

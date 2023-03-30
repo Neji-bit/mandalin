@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+  <style type="text/css">
+    .arrow {
+      stroke-width: 1px;
+      stroke: black;
+      fill: white;
+      stroke-linejoin: round;
+    }
+  </style>
+
+  <path class="arrow" d="
+    m 0 8
+    l 5 7
+    l 0 -4
+    l 5 0
+    l 0 4
+    l 5 -7
+    l -5 -7
+    l 0 4
+    l -5 0
+    l 0 -4
+    z
+  " />
+
+</svg>

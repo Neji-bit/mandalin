@@ -1,0 +1,39 @@
+{
+  "app_info": {
+    "visitor_email": null,
+    "is_owner": false
+  },
+  "book": {
+    "title": { "effect": "", "data": "" },
+    "authorization": {
+      "is_public": false,
+      "collaborators": {
+        "readers": [],
+        "editors": []
+      }
+    },
+    "pages": {
+      "page_0": { "title": { "effect": "", "data": "" } },
+      "page_1": { "title": { "effect": "", "data": "" } },
+      "page_2": { "title": { "effect": "", "data": "" } },
+      "page_3": { "title": { "effect": "", "data": "" } },
+      "page_4": { "title": { "effect": "", "data": "" } },
+      "page_5": { "title": { "effect": "", "data": "" } },
+      "page_6": { "title": { "effect": "", "data": "" } },
+      "page_7": { "title": { "effect": "", "data": "" } },
+      "page_8": { "title": { "effect": "", "data": "" } },
+      "page_9": { "title": { "effect": "", "data": "" } },
+      "page_a": { "title": { "effect": "", "data": "" } },
+      "page_b": { "title": { "effect": "", "data": "" } },
+      "page_c": { "title": { "effect": "", "data": "" } },
+      "page_d": { "title": { "effect": "", "data": "" } },
+      "page_e": { "title": { "effect": "", "data": "" } },
+      "page_f": { "title": { "effect": "", "data": "" } }
+    },
+    "state": {
+    },
+    "toolbox": {
+    }
+  }
+}
+

@@ -1,0 +1,873 @@
+// Sassy
+@import "../share/common";
+
+* {
+  box-sizing: border-box;
+  font-family: "Lucida Console", Courier, monospace;
+  --toppanel--height: 3em;
+  --bottompanel--height: 3em;
+  --leftpanel--width: 12em;
+  --rightpanel--width: 12em;
+
+//  cursor: url("cursor_pen.svg"), auto;
+}
+
+.panel {
+  overflow: hidden;
+}
+
+body {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: black;
+  margin: 0;
+  padding: 0;
+}
+
+//  アプリ全体のレイアウト系
+#root {
+  display: block;
+  position: absolute;
+  background-color: transparent;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+
+  #layout_backboard {
+    --margin: 5px;
+    display: grid;
+    grid-template-rows: 3em auto 3em;
+    grid-template-columns: 12em auto 12em;
+    position: absolute;
+    background: linear-gradient(160deg, gold, sandybrown);
+    width: calc(100% - var(--margin) * 2);
+    height: calc(100% - var(--margin) * 2);
+    margin: var(--margin);
+    box-sizing: border-box;
+    border-radius: 15px;
+
+    &.fullscreen {
+      #layout_top {
+        display: none;
+      }
+      #layout_left {
+        display: none;
+      }
+      #layout_right {
+        display: none;
+      }
+      #layout_center {
+        grid-column: 1 / 4;
+        grid-row: 1 / 3;
+      }
+    }
+
+    #layout_top {
+      background: transparent;
+      grid-column: 1/4;
+      border-radius: 15px 15px 0 0;
+      border-bottom: 1px solid black;
+
+      display: grid;
+      grid-template-columns: 2fr 3fr 2fr;
+      grid-template-rows: 1fr;
+
+      .book--title {
+        display: flex;
+        position: relative;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .accounts {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        user-select: none;
+
+        .status {
+          display: flex;
+          font-size: small;
+          font-style: italic;
+          align-items: center;
+          justify-content: right;
+        }
+        .email {
+          display: flex;
+          font-size: small;
+          font-style: italic;
+          align-items: center;
+          justify-content: right;
+        }
+        .switch {
+          display: flex;
+          justify-content: right;
+          align-items: center;
+          grid-column: 2 / 3;
+          grid-row: 1 / 3;
+        }
+      }
+    }
+    #layout_left {
+      background: linear-gradient(160deg, white, silver);
+      border-right: 1px solid black;
+    }
+    #layout_center {
+      background: darkgray;
+      position: relative;
+    }
+    #layout_right {
+      background: linear-gradient(160deg, white, silver);
+      border-left: 1px solid black;
+
+      .page--list {
+        padding: 4px;
+        display: grid;
+        row-gap: 2px;
+        font-size: small;
+
+        .label {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: small;
+          height: 1.6em;
+          user-select: none;
+        }
+        .page {
+          display: grid;
+          grid-template-rows: 2em;
+          grid-template-columns: 2em auto;
+          border-radius: 5px;
+
+          .page--index {
+            display: flex;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+
+            &::after {
+              content: ":";
+            }
+          }
+          .editor {
+            .wrapper {
+              display: flex;
+              align-items: center;
+              position: relative;
+              width: 100%;
+              height: 100%;
+              * {
+                margin-block-start: 0;
+                margin-block-end: 0;
+              }
+              .display {
+                display: flex;
+                width: 100%;
+                height: 100%;
+                align-items: center;
+              }
+              .data {
+                width: 100%;
+                height: 100%;
+                text-align: initial;
+              }
+            }
+          }
+        }
+      }
+    }
+    #layout_bottom {
+      background: transparent;
+      grid-column: 1/4;
+      border-radius: 0 0 15px 15px;
+      border-top: 1px solid black;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .iconlogo {
+        height: 2em;
+        display: grid;
+        grid-template-rows: 100%;
+        grid-template-columns: auto auto;
+        position: absolute;
+        right: 16px;
+        user-select: none;
+
+        img {
+          display: inline;
+          height: 100%;
+        }
+      }
+    }
+  }
+}
+
+#map {
+  .map--large {
+    --grid-gap-ver: 6px;
+    --grid-gap-hor: 6px;
+    display: grid;
+    position: absolute;
+    background: transparent;
+    margin: var(--grid-gap-ver) var(--grid-gap-hor) var(--grid-gap-ver) var(--grid-gap-hor);
+    height: calc(100% - var(--grid-gap-ver) * 2);
+    width: calc(100% - var(--grid-gap-hor) * 2);
+    grid-template-rows: repeat(3, calc((100% - var(--grid-gap-ver) * 2) / 3));
+    grid-template-columns: repeat(3, calc((100% - var(--grid-gap-hor) * 2) / 3));
+    column-gap: var(--grid-gap-hor);
+    row-gap: var(--grid-gap-ver);
+
+    //  大マップ時のセル指定。
+    //  後から読んでも絶対わからなくなっているので、後で書き直す。
+    .cell {
+      grid-template-rows: 100%;
+
+      .wrapper {
+        grid-template-rows: 100%;
+        grid-template-columns: 100%;
+        height: 100%;
+      }
+
+      .editor.subject {
+        border: none;
+      }
+    }
+  }
+  .map--middle {
+    //  「内容物１のグリッド」として定義。
+    --grid-gap-ver: 6px;
+    --grid-gap-hor: 6px;
+    display: grid;
+    position: absolute;
+    background: transparent;
+    margin: var(--grid-gap-ver) var(--grid-gap-hor) var(--grid-gap-ver) var(--grid-gap-hor);
+    height: calc(100% - var(--grid-gap-ver) * 2);
+    width: calc(100% - var(--grid-gap-hor) * 2);
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr;
+
+    .area {
+      //  不思議対応。とにかく「map--middle時だけareaにposition:absolute;をつける」と、セルが縦に自動で伸びる症状を止められる。
+      position: absolute;
+    }
+
+    //  中マップ時のセル
+    .cell {
+      font-size: initial;
+    }
+  }
+  .map--small {
+    --grid-gap-ver: 6px;
+    --grid-gap-hor: 6px;
+    display: grid;
+    position: absolute;
+    background: transparent;
+    margin: var(--grid-gap-ver) var(--grid-gap-hor) var(--grid-gap-ver) var(--grid-gap-hor);
+    height: calc(100% - var(--grid-gap-ver) * 2);
+    width: calc(100% - var(--grid-gap-hor) * 2);
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr;
+
+    //  小マップ時のセル
+    .cell {
+      font-size: initial;
+    }
+  }
+  .map--twoinone {
+    --grid-gap-ver: 6px;
+    --grid-gap-hor: 6px;
+    display: grid;
+    position: absolute;
+    background: transparent;
+    margin: var(--grid-gap-ver) var(--grid-gap-hor) var(--grid-gap-ver) var(--grid-gap-hor);
+    height: calc(100% - var(--grid-gap-ver) * 2);
+    width: calc(100% - var(--grid-gap-hor) * 2);
+    grid-template-rows: repeat(1, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+
+    //  2in1マップ時のセル
+    .cell {
+      font-size: initial;
+    }
+  }
+  .area {
+    background: transparent;
+    --grid-gap-ver: 3px;
+    --grid-gap-hor: 3px;
+    display: grid;
+    height: 100%;
+    width: 100%;
+    grid-template-rows: repeat(3, calc((100% - var(--grid-gap-ver) * 2) / 3));
+    grid-template-columns: repeat(3, calc((100% - var(--grid-gap-hor) * 2) / 3));
+    column-gap: var(--grid-gap-hor);
+    row-gap: var(--grid-gap-ver);
+
+    &.selected {
+      border: 2px solid rgba(0, 0, 255, 1.0)
+    }
+  }
+
+  //  中／小マップ時のセル指定。
+  //  後から読んでも絶対わからなくなっているので、後で書き直す。
+  .cell {
+    display: grid;
+    grid-template-rows: 100%;
+    grid-template-columns: 100%;
+    border-radius: 5px;
+    border: 1px solid black;
+    overflow: hidden;
+    //  グリッド配下要素に対していろいろ重ねたい時は、やっぱりgridを使う。
+    //  自身の領域を1/1のグリッドと見立てて、その単一領域に配下を描画させる。
+
+    .effect {
+      position: relative;
+      grid-area: 1 / 1;
+      z-index: 4;
+      pointer-events: none;
+    }
+    .wrapper {
+      grid-area: 1 / 1;
+      background: transparent;
+      display: grid;
+      grid-template-rows: 3em auto;
+      grid-template-columns: 100%;
+
+      .subject {
+        .middle {
+          align-items: center;
+        }
+        .effect {
+          height: 100%;
+          &._hidden_sticker {
+            * {
+              display: none;
+            }
+          }
+        }
+      }
+      .note {
+        .wrapper {
+          height: 100%;
+          display: grid;
+          grid-template-rows: 100%;
+          grid-template-columns: 100%;
+
+          .effect {
+            //  不思議対応。ノート配下のeffectにposition:relative;をつけることで、セルを溢れて「エリアの右端」まで領域が伸びる現象を防げる。
+            position: relative;
+            &._hidden_sticker {
+              * {
+                display: none;
+              }
+            }
+          }
+
+          .display {
+            grid-area: 1 / 1;
+          }
+          .data {
+            grid-area: 1 / 1;
+          }
+        }
+      }
+    }
+    .editor {
+      display: grid;
+      grid-template-rows: 100%;
+      grid-template-columns: 100%;
+      z-index: 3;
+
+      &.subject {
+        grid-area: 1 / 1;
+        border-bottom: 1px solid black;
+        .effect {
+          position: relative;
+          z-index: 2;
+        }
+        .display {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100%;
+          overflow: hidden;
+          grid-area: 1 / 1;
+          z-index: 1;
+        }
+        .data {
+          position: relative;
+          grid-area: 1 / 1;
+          z-index: 1;
+        }
+      }
+
+      &.note {
+        display: block;
+        .display {
+          --padding-ver: 5px;
+          --padding-hor: 5px;
+          text-align: initial;
+          padding: var(--padding-ver) var(--padding-hor) var(--padding-ver) var(--padding-hor);
+          background: transparent;
+        }
+        .data {
+          --padding-ver: 5px;
+          --padding-hor: 5px;
+          width: 100%;
+          text-align: initial;
+          padding: var(--padding-ver) var(--padding-hor) var(--padding-ver) var(--padding-hor);
+          background: transparent;
+        }
+      }
+    }
+
+    &.selected {
+      border: 2px solid rgba(0, 0, 255, 1.0) !important;
+    }
+  }
+}
+
+.editor {
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: scroll;
+  height: 100%;
+
+  &.editable {
+    background: rgba(255, 105, 212, 0.1);
+  }
+
+  .display {
+    text-align: center;
+  }
+  .data {
+    height: auto;
+    font-size: 1em;
+    background: transparent;
+    border: none;
+    outline: none;
+    text-align: center;
+    resize: none;
+    overflow: hidden;
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  セルの装飾
+.shadow {
+  box-shadow: -3px -3px 8px rgba(0,0,0,0.5) inset,  3px 3px 8px rgba(0,0,0,0.5) inset;
+}
+.cell {
+  background: linear-gradient(160deg, white, antiquewhite);
+  font-size: x-small;
+  .editor.subject {
+    padding: 5px;
+  }
+  .editor.note {
+    padding: 5px;
+  }
+  .effect {
+    background: transparent;
+    padding: 5px;
+  }
+  .tag--cell--id {
+    position: absolute;
+    font-size: small;
+    font-style: italic;
+    background: orange;
+    padding: 1px 4px 1px 4px;
+    border-radius: 4px;
+    user-select: none;
+  }
+
+  .lamp {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    top: 4px;
+    border: 0.5px solid black;
+
+    &.lamp--cell--content {
+      background: lime;
+      right: 4px;
+    }
+    &.lamp--cell--twoinone--left {
+      display: none;
+      background: coral;
+      right: 11px;
+    }
+    &.lamp--cell--twoinone--right {
+      display: none;
+      background: coral;
+      right: 11px;
+    }
+    &.lamp--cell--current {
+      display: none;
+      background: yellow;
+      right: 18px;
+    }
+  }
+  &.twoinone--left .lamp--cell--twoinone--left {
+    display: initial;
+  }
+  &.twoinone--right .lamp--cell--twoinone--right {
+    display: initial;
+  }
+  &.cell--current .lamp--cell--current {
+    display: initial;
+  }
+}
+
+.page {
+  background: linear-gradient(160deg, lightcyan, paleturquoise);
+//  box-shadow: -3px -3px 8px rgba(0,0,0,0.5) inset,  3px 3px 8px rgba(0,0,0,0.5) inset;
+  cursor: pointer;
+  border: 1px solid black;
+  &:hover {
+    background: silver;
+  }
+  &:active {
+    background: white;
+  }
+
+  &.current--page {
+    background: linear-gradient(160deg, mistyrose, pink);
+  }
+}
+
+.map--large .editor.subject {
+  font-size: small;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//  ツールボックス系
+
+#toolbox {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  background: slategray;
+  column-gap: 5px;
+  row-gap: 5px;
+  padding: 5px 0 5px 0;
+
+  .toolbox--block {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    background: gray;
+    column-gap: 5px;
+    row-gap: 5px;
+    padding: 5px;
+
+    background: darkgray;
+  }
+}
+
+//  押し込み／解除形式のチェックボックス
+.tool--toggle {
+  display: flex;
+  height: 4em;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-size: x-small;
+  --enable-background: #af975e;
+  --disable-background: #eee;
+  --enable-color: white;
+
+  input {
+    visibility: hidden;
+    position: absolute;
+    left: 0;
+    &:focus + label {
+        box-shadow: 0 0 4px var(--enable-background);
+    }
+    &:checked + label {
+        background: var(--enable-background);
+        color: var(--enable-color);
+    }
+    &:checked + label:before {
+      background: lime;
+    }
+  }
+  label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    border: 0.5px solid black;
+    background: var(--disable-background);
+    cursor: pointer;
+    user-select: none;
+    transition: .5s;
+    &:hover {
+      background: var(--enable-background);
+      color: var(--enable-color);
+    }
+    //  左上にON/OFFランプをつけた
+    &:before {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border: 0.5px solid black;
+      border-radius: 3px;
+      box-sizing: border-box;
+      color: black;
+      left: 3px;
+      top: 3px;
+      background: gray;
+      transition: .5s;
+    }
+  }
+}
+
+//  状態を持たないボタン
+.tool--button {
+  border-width: initial;
+  border-style: initial;
+  border-color: initial;
+  border-image: initial;
+  height: 4em;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-size: x-small;
+  --enable-background: #af975e;
+  --disable-background: #eee;
+  --enable-color: white;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  border: 0.5px solid black;
+  background: var(--disable-background);
+  cursor: pointer;
+  user-select: none;
+  transition: .5s;
+  &:hover {
+    background: var(--enable-background);
+    color: var(--enable-color);
+  }
+}
+
+.public--switch {
+  display: flex;
+  align-items: center;
+  width: 6em;
+  height: 100%;
+  padding: 0 5px 0 15px;
+
+  div {
+    width: 100%;
+    height: 3em;
+  }
+}
+
+.logout--button {
+  display: flex;
+  align-items: center;
+  width: 6em;
+  height: 100%;
+  padding: 0 15px 0 5px;
+
+  button {
+    width: 100%;
+    height: 3em;
+  }
+}
+
+//  「編集権限がある時だけ表示」のクラス。これだけインポータント。
+.editable--only {
+  display: none !important;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+._hidden {
+  display: none;
+}
+
+#map {
+  &.selection--areas {
+    cursor: pointer;
+    .area:hover {
+      border: 2px solid rgba(0, 0, 255, 0.5);
+    }
+  }
+  &.selection--cells {
+    cursor: pointer;
+    .cell:hover {
+      border: 2px solid rgba(0, 0, 255, 0.5);
+    }
+  }
+  &.selection--edit {
+    cursor: url("cursor_pen.svg"), auto;
+    .cell:hover {
+      border: 2px solid rgba(255, 0, 0, 0.5);
+    }
+  }
+  &.selection--erase {
+    cursor: url("cursor_eraser.svg"), auto;
+    .cell:hover {
+      border: 2px solid rgba(255, 0, 0, 0.5);
+    }
+  }
+  &.selection--swap {
+    cursor: url("cursor_swap.svg"), auto;
+    .cell:hover {
+      border: 2px solid rgba(0, 255, 0, 0.5);
+    }
+  }
+  &.selection--twoinone {
+    cursor: pointer;
+    .cell:hover {
+      border: 2px solid rgba(255, 0, 255, 0.5);
+    }
+  }
+  &.selection--design {
+    cursor: pointer;
+    .cell:hover {
+      border: 2px solid rgba(0, 255, 255, 0.5);
+    }
+  }
+  &.selection--sticker {
+    cursor: pointer;
+    .cell:hover {
+      border: 2px solid rgba(255, 165, 0, 0.5);
+      //  ステッカー選択時のみ、画像クリックを可能にする。
+      .effect {
+        img {
+          pointer-events: auto;
+        }
+      }
+    }
+  }
+}
+
+#palette {
+  position: fixed;
+  background: pink;
+  font-size: small;
+  border-radius: 5px;
+  border: 2px solid coral;
+}
+
+#palette_sheet {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  z-index: 20;
+  visibility: hidden;
+}
+
+#palette_sticker_url {
+  position: relative;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 2fr;
+
+  div {
+    font-weight: bold;
+    user-select: none;
+  }
+
+  input {
+    padding: 0.5em 0px 0.5em 1em;
+    margin: 5px 0 0 10px;
+    outline: none;
+    border: 1px solid coral;
+    width: auto;
+  }
+}
+
+#palette_design_menu {
+  background: coral;
+  display: grid;
+  grid-template-columns: repeat(4, 4em);
+  grid-template-rows: repeat(2, 3em);
+  row-gap: 1px;
+  column-gap: 1px;
+
+  button {
+    border-radius: 3px;
+  }
+}
+
+.fadeIn {
+  animation-name: fadeInAnime;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+  opacity: 0;
+}
+@keyframes fadeInAnime {
+  from { opacity: 0; visibility: initial; }
+  to { opacity: 1; visibility: initial; }
+}
+
+.fadeOut {
+  animation-name: fadeOutAnime;
+  animation-duration: 0.3s;
+  animation-fill-mode: forwards;
+}
+@keyframes fadeOutAnime {
+  from { opacity: 1; visibility: initial; }
+  to { opacity: 0; visibility: hidden; }
+}
+
+.effect {
+  img {
+    position: absolute;
+    user-select: none;
+
+    &.sticker--current {
+      border: 2px solid red;
+    }
+  }
+}
+
+.design--white {
+  background: white;
+}
+.design--normal {
+  background: linear-gradient(160deg, white, antiquewhite);
+}
+.design--gold {
+  background: linear-gradient(160deg, navajowhite, goldenrod);
+}
+.design--silver {
+  background: linear-gradient(160deg, whitesmoke, silver);
+}
+.design--dark {
+  background: dimgray;
+  color: whitesmoke;
+  color: gainsboro;
+}
+.design--darkgreen {
+  background: darkgreen;
+  color: whitesmoke;
+}
+.design--darkblue {
+  background: darkblue;
+  color: whitesmoke;
+}
+.design--darkred {
+  background: darkred;
+  color: whitesmoke;
+}
+

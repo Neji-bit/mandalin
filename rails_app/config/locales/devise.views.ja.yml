@@ -48,30 +48,32 @@ ja:
       confirmation_instructions:
         action: メールアドレスの確認
         greeting: "%{recipient}様"
-        instruction: 以下のリンクをクリックし、メールアドレスの確認手続を完了させてください。
-        subject: メールアドレス確認メール
+        instruction: mandalin へようこそ！
+        instruction_2: 以下のリンクをクリックし、メールアドレスの確認手続を完了させてください。
+        instruction_3: ※心当たりがない場合、このメールを無視してください。
+        subject: 【mandalin】メールアドレス確認メール
       email_changed:
         greeting: こんにちは、%{recipient}様。
-        message: メールアドレスの（%{email}）変更が完了したため、メールを送信しています。
-        message_unconfirmed: メールアドレスが（%{email}）変更されたため、メールを送信しています。
-        subject: メール変更完了
+        message: 新しいメールアドレスへの変更（%{email}）が完了しました。
+        message_unconfirmed: (%{recipient})様のメールアドレスが（%{email}）へ変更されました。
+        subject: 【mandalin】メール変更完了
       password_change:
         greeting: "%{recipient}様"
         message: パスワードが再設定されました。
-        subject: パスワードの変更について
+        subject: 【mandalin】パスワードの変更について
       reset_password_instructions:
         action: パスワード変更
         greeting: "%{recipient}様"
         instruction: パスワード再設定の依頼を受けたため、メールを送信しています。下のリンクからパスワードの再設定ができます。
         instruction_2: パスワード再設定の依頼をしていない場合、このメールを無視してください。
         instruction_3: パスワードの再設定は、上のリンクから新しいパスワードを登録するまで完了しません。
-        subject: パスワードの再設定について
+        subject: 【mandalin】パスワードの再設定について
       unlock_instructions:
         action: アカウントのロック解除
         greeting: "%{recipient}様"
         instruction: アカウントのロックを解除するには下のリンクをクリックしてください。
         message: ログイン失敗が繰り返されたため、アカウントはロックされています。
-        subject: アカウントのロック解除について
+        subject: 【mandalin】アカウントのロック解除について
     omniauth_callbacks:
       failure: "%{kind} アカウントによる認証に失敗しました。理由：（%{reason}）"
       success: "%{kind} アカウントによる認証に成功しました。"
