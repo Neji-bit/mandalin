@@ -1,6 +1,6 @@
 import React from 'react'
 import {Util} from '../logic/util'
-import {Editor} from './cell'
+import {Editor} from './cell_editor'
 import {Api} from '../logic/api'
 
 import ReactMarkdown from 'react-markdown';
@@ -42,12 +42,16 @@ class Page extends React.Component {
           parent={this}
           key="1"
         />
-        <Editor
-          parent={this}
-          source={_data[this.id].title}
-          role="page--title"
-          key="2"
-        />
+        <div
+          className={_data.state.selectionMode}
+        >
+          <Editor
+            parent={this}
+            source={_data[this.id].title}
+            role="page--title"
+            key="2"
+          />
+        </div>
       </div>
     )
   }

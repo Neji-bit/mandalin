@@ -3,7 +3,8 @@ import {Map, LargeMap, MiddleMap, SmallMap, Area} from './map'
 import {Page} from './page'
 import {ToolBox, ToolButton, ToolToggle} from './tool'
 import {IconLogo} from './common'
-import {Editor, Sticker} from './cell'
+import {Editor} from './cell_editor'
+import {Sticker} from './cell_sticker'
 import {Util} from '../logic/util'
 import {ToolLogic} from '../logic/tool_logic'
 
@@ -88,12 +89,16 @@ class TopPanel extends React.Component {
             />
           </div>
         </div>
-        <Editor
-          parent={this}
-          role="book--title"
-          source={_data.book.title}
-          key="2"
-        />
+        <div
+          className={_data.state.selectionMode}
+        >
+          <Editor
+            parent={this}
+            role="book--title"
+            source={_data.book.title}
+            key="2"
+          />
+        </div>
         <div
           className="accounts"
           key="3"

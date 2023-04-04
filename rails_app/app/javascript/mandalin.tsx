@@ -142,7 +142,7 @@ function init() {
   if(_data.state.showTag != true) _data.state.showTag = false
   if(_data.state.showSticker != true) _data.state.showSticker = false
   _data.state.selectionMode = "selection--none"
-  _data.state.currentPage = `page_${Util.urlParams().page || 0}`
+  _data.state.currentPage = `page_${Util.urlParams().page || (_data.state.currentPage || "0").match(/.$/)}`
   _data.state.currentArea ||= "area_d"
   _data.state.currentCell ||= "cell_dd"
   _data.state.currentLeftCell ||= "cell_ww"
@@ -178,7 +178,9 @@ function init() {
 window.onload = () => {
   let params = Util.urlParams()
   Api.loadBook(params.book, () => {
-    Api.loadPage(params.book, params.page, init)
+    let book_id = params.book || 1
+    let page_id = params.page || (_data.state.currentPage || "0").match(/.$/)
+    Api.loadPage(book_id, page_id, init)
   })
 }
 

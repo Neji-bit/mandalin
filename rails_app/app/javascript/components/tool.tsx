@@ -17,6 +17,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="タグ表示"
+            hotkey="Ctrl_T"
             logic={ToolLogic.toggleTag}
             tool_id="tool_switch_tag"
             checked={_data.state.showTag}
@@ -25,6 +26,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="ステッカー表示"
+            hotkey="Ctrl_K"
             logic={ToolLogic.toggleSticker}
             tool_id="tool_switch_sticker"
             checked={_data.state.showSticker}
@@ -35,6 +37,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="全体表示"
+            hotkey="Ctrl_l"
             logic={ToolLogic.viewLarge}
             tool_id="tool_view_large"
             key="1"
@@ -42,6 +45,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="エリア表示"
+            hotkey="Ctrl_m"
             logic={ToolLogic.viewMiddle}
             tool_id="tool_view_middle"
             key="2"
@@ -49,6 +53,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="セル表示"
+            hotkey="Ctrl_s"
             logic={ToolLogic.viewSmall}
             tool_id="tool_view_small"
             key="3"
@@ -56,15 +61,17 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="２in１"
+            hotkey="Ctrl_v"
             logic={ToolLogic.viewTwoinone}
             tool_id="tool_view_twoinone"
             key="4"
           />
         </div>
         <div className={`toolbox--block`}>
-          <ToolButton
+          <ToolToggle
             parent={this}
             label="全画面表示"
+            hotkey="Ctrl_q"
             logic={ToolLogic.toggleFullscreen}
             tool_id="tool_toggle_fullscreen"
             key="6"
@@ -72,6 +79,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="２in１指定"
+            hotkey="t"
             logic={ToolLogic.selectModeBind}
             tool_id="tool_toggle_twoinone"
             key="5"
@@ -81,6 +89,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="セル選択"
+            hotkey="s"
             logic={ToolLogic.selectModeBind}
             tool_id="tool_toggle_cell"
             key="9"
@@ -88,6 +97,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="エリア選択"
+            hotkey="S"
             logic={ToolLogic.selectModeBind}
             tool_id="tool_toggle_area"
             key="10"
@@ -95,6 +105,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="編集"
+            hotkey="e"
             logic={ToolLogic.selectModeBind}
             tool_id="tool_toggle_edit"
             key="11"
@@ -102,6 +113,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="削除"
+            hotkey="d"
             logic={ToolLogic.selectModeBind}
             tool_id="tool_toggle_erase"
             key="12"
@@ -109,6 +121,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="入替"
+            hotkey="w"
             logic={ToolLogic.selectModeBind}
             tool_id="tool_toggle_swap"
             key="13"
@@ -121,6 +134,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="コピー"
+            hotkey="C"
             logic={ToolLogic.selectModeBind}
             tool_id="tool_toggle_copy"
             key="15"
@@ -128,6 +142,7 @@ class ToolBox extends React.Component {
           <ToolButton
             parent={this}
             label="ペースト"
+            hotkey="P"
             logic={ToolLogic.paste}
             tool_id="tool_button_paste"
             key="16"
@@ -137,6 +152,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="装飾"
+            hotkey="D"
             logic={ToolLogic.selectModeBind}
             tool_id="tool_toggle_design"
             key="23"
@@ -144,6 +160,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="ステッカー"
+            hotkey="T"
             logic={ToolLogic.selectModeBind}
             tool_id="tool_toggle_sticker"
             key="24"
@@ -196,16 +213,23 @@ class ToolButton extends React.Component {
     this.ref = React.createRef()
     this.id = props.tool_id
     this.label = props.label
+    this.hotkey = props.hotkey
     this.logic = props.logic
   }
   render() {
+    let label = ""
+    if(this.hotkey) {
+      label = (<div>{this.label}<br />[{this.hotkey}]</div>)
+    } else {
+      label = (<div>{this.label}</div>)
+    }
     return (
       <button
         className="tool--button"
         id={this.id}
         onClick={this.logic}
       >
-        {this.label}
+        {label}
       </button>
     )
   }
@@ -227,6 +251,7 @@ class ToolToggle extends React.Component {
     this.ref = React.createRef()
     this.id = props.tool_id
     this.label = props.label
+    this.hotkey = props.hotkey
     this.logic = props.logic
     this.checked = props.checked || false
   }
@@ -234,6 +259,12 @@ class ToolToggle extends React.Component {
     if(this.logic) this.logic(e)
   }
   render() {
+    let label = ""
+    if(this.hotkey) {
+      label = (<div>{this.label}<br />[{this.hotkey}]</div>)
+    } else {
+      label = (<div>{this.label}</div>)
+    }
     return (
       <div
         id={this.id}
@@ -249,7 +280,7 @@ class ToolToggle extends React.Component {
         <label
           htmlFor={`${this.id}_checkbox`}
         >
-          {this.label}
+          {label}
         </label>
       </div>
     )

@@ -69,7 +69,8 @@ class Api {
 
   static savePage = (callback = null) => {
     let book_id = Util.urlParams().book
-    let page_id = (_data.state.currentPage || "0").match(/.$/)
+    //  currentPage は絶対ある前提。ない場合はここでnull参照でコケるのが安全。
+    let page_id = _data.state.currentPage.match(/.$/)
     let payload = {text: JSON.stringify({page: _data.page})}
     axios.put(`/api/v1/book/${book_id}/page/${page_id}`, payload)
     .finally(() => {

@@ -9,17 +9,17 @@ class ToolLogic {
     this.viewModeBind()
   }
   static viewMiddle = (e) => {
-    _data.state.viewMode = "middle"
+    _data.state.viewMode = _data.state.viewMode == "middle" ? "large" : "middle"
     _data.react.map.forceUpdate()
     this.viewModeBind()
   }
   static viewSmall = (e) => {
-    _data.state.viewMode = "small"
+    _data.state.viewMode = _data.state.viewMode == "small" ? "large" : "small"
     _data.react.map.forceUpdate()
     this.viewModeBind()
   }
   static viewTwoinone = (e) => {
-    _data.state.viewMode = "twoinone"
+    _data.state.viewMode = _data.state.viewMode == "twoinone" ? "large" : "twoinone"
     _data.react.map.forceUpdate()
     this.viewModeBind()
   }
@@ -86,6 +86,8 @@ class ToolLogic {
     if(tool_toggle_sticker_checkbox.checked) mode = "selection--sticker"
     _data.state.selectionMode = mode
     _data.react.map.forceUpdate()
+    _data.react.layout_top.forceUpdate()
+    _data.react.layout_right.forceUpdate()
   }
   //  前処理。「動詞を選択された時、すでに選択対象があったらそれらを対象に実行する」アクション。
   static selectModeBindPreAction = (e) => {

@@ -84,6 +84,13 @@ class Util {
   static selectedAreas = () => {
     return [...document.getElementsByClassName("area selected")]
   }
+  //  編集中のセル１件のDOMを返す。
+  static editingCell = () => {
+    let cell = null
+    let editable = [...document.getElementsByClassName("editor editable")].shift()
+    if(editable) cell = editable.closest(".cell")
+    return cell
+  }
 
   //  選択されたセルおよびエリアを対象に、cell_idを返す。
   static selectedCellIdWithArea = () => {

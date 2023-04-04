@@ -5,119 +5,119 @@
     "areas": {
       "area_w": {
         "cells": {
-          "cell_ww": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_we": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_wr": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_ws": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_wd": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_wf": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_wz": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_wx": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_wc": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } }
+          "cell_ww": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_we": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_wr": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_ws": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_wd": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_wf": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_wz": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_wx": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_wc": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } }
         }
       },
       "area_e": {
         "cells": {
-          "cell_ew": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_ee": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_er": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_es": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_ed": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_ef": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_ez": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_ex": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_ec": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } }
+          "cell_ew": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_ee": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_er": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_es": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_ed": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_ef": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_ez": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_ex": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_ec": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } }
         }
       },
       "area_r": {
         "cells": {
-          "cell_rw": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_re": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_rr": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_rs": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_rd": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_rf": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_rz": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_rx": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_rc": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } }
+          "cell_rw": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_re": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_rr": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_rs": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_rd": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_rf": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_rz": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_rx": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_rc": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } }
         }
       },
       "area_s": {
         "cells": {
-          "cell_sw": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_se": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_sr": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_ss": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_sd": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_sf": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_sz": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_sx": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_sc": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } }
+          "cell_sw": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_se": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_sr": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_ss": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_sd": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_sf": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_sz": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_sx": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_sc": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } }
         }
       },
       "area_d": {
         "cells": {
-          "cell_dw": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_de": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_dr": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_ds": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_dd": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_df": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_dz": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_dx": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_dc": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } }
+          "cell_dw": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_de": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_dr": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_ds": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_dd": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_df": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_dz": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_dx": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_dc": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } }
         }
       },
       "area_f": {
         "cells": {
-          "cell_fw": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_fe": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_fr": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_fs": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_fd": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_ff": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_fz": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_fx": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_fc": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } }
+          "cell_fw": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_fe": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_fr": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_fs": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_fd": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_ff": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_fz": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_fx": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_fc": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } }
         }
       },
       "area_z": {
         "cells": {
-          "cell_zw": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_ze": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_zr": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_zs": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_zd": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_zf": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_zz": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_zx": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_zc": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } }
+          "cell_zw": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_ze": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_zr": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_zs": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_zd": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_zf": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_zz": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_zx": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_zc": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } }
         }
       },
       "area_x": {
         "cells": {
-          "cell_xw": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_xe": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_xr": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_xs": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_xd": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_xf": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_xz": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_xx": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_xc": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } }
+          "cell_xw": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_xe": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_xr": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_xs": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_xd": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_xf": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_xz": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_xx": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_xc": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } }
         }
       },
       "area_c": {
         "cells": {
-          "cell_cw": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_ce": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_cr": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_cs": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_cd": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_cf": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_cz": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_cx": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } },
-          "cell_cc": { "subject": { "effect": "", "data": "" }, "note": { "effect": "", "data": "" } }
+          "cell_cw": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_ce": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_cr": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_cs": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_cd": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_cf": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_cz": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_cx": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } },
+          "cell_cc": { "subject": { "effect": [], "data": "" }, "note": { "effect": [], "data": "" } }
         }
       }
     }

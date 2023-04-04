@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+  <style type="text/css">
+    .pen {
+      stroke-width: 1px;
+      stroke: black;
+      fill: white;
+      stroke-linejoin: round;
+    }
+  </style>
+
+  <path class="pen" d="
+    m 1 1
+    l 0 14
+    l 14 0
+    l 0 -14
+    z
+  " />
+
+  <path class="pen" d="
+    m 1 5
+    l 14 0
+    z
+  " />
+  <path class="pen" d="
+    m 1 10
+    l 14 0
+    z
+  " />
+
+  <path class="pen" d="
+    m 5 1
+    l 0 14
+    z
+  " />
+  <path class="pen" d="
+    m 10 1
+    l 0 14
+    z
+  " />
+
+</svg>

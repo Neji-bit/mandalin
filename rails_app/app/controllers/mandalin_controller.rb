@@ -2,17 +2,12 @@ class MandalinController < ApplicationController
   before_action :authenticate_user!, except: :main
   before_action :legal_params
 
-  DEFAULT_PATH = "/?book=1&page=0"
+  DEFAULT_PATH = "/?book=1"
 
   def main
     # 正常なブックIDがパラメータで指定されていなければ、強制的に初期ブックへ遷移。
     unless(@legal_params[:book]) then
       redirect_to DEFAULT_PATH
-      return
-    end
-    # 異常なページが指定されていたら、強制的にページ0に変更する。
-    unless(@legal_params[:page]) then
-      redirect_to "/?book=#{@legal_params[:book]}&page=0"
       return
     end
 

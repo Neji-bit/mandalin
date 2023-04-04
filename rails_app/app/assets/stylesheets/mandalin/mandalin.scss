@@ -694,11 +694,29 @@ body {
   display: none !important;
 }
 
+label {
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 ._hidden {
   display: none;
+}
+
+//  周辺パネルの一部は、選択モードの影響を受ける。
+#layout_top,#layout_right {
+  .selection--edit {
+    cursor: url("cursor_pen.svg"), auto;
+    .cell:hover {
+      border: 2px solid rgba(255, 0, 0, 0.5);
+    }
+  }
 }
 
 #map {
@@ -739,13 +757,13 @@ body {
     }
   }
   &.selection--design {
-    cursor: pointer;
+    cursor: url("cursor_design.svg"), auto;
     .cell:hover {
       border: 2px solid rgba(0, 255, 255, 0.5);
     }
   }
   &.selection--sticker {
-    cursor: pointer;
+    cursor: url("cursor_sticker.svg"), auto;
     .cell:hover {
       border: 2px solid rgba(255, 165, 0, 0.5);
       //  ステッカー選択時のみ、画像クリックを可能にする。
