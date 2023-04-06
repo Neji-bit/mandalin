@@ -17,7 +17,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="タグ表示"
-            hotkey="Ctrl_T"
+            hotkey="Ctrl_t"
             logic={ToolLogic.toggleTag}
             tool_id="tool_switch_tag"
             checked={_data.state.showTag}
@@ -26,11 +26,20 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="ステッカー表示"
-            hotkey="Ctrl_K"
+            hotkey="Ctrl_k"
             logic={ToolLogic.toggleSticker}
             tool_id="tool_switch_sticker"
             checked={_data.state.showSticker}
             key="8"
+          />
+          <ToolToggle
+            parent={this}
+            label="サムネイル表示"
+            hotkey="Ctrl_x"
+            logic={ToolLogic.toggleThumbnail}
+            tool_id="tool_switch_thumbnail"
+            checked={_data.state.showThumbnail}
+            key="20"
           />
         </div>
         <div className={`toolbox--block`}>

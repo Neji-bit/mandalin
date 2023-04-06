@@ -26,6 +26,30 @@ body {
   padding: 0;
 }
 
+
+//  メインではないエディタ要素（＝ブックタイトル、ページタイトル）。
+.book--title,.page .editor {
+  .wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    .display {
+      width: 100%;
+      p {
+        margin-block-start: 0;
+        margin-block-end: 0;
+        margin-inline-start: 0;
+        margin-inline-end: 0;
+      }
+    }
+    .data {
+      width: 100%;
+    }
+  }
+}
+
 //  アプリ全体のレイアウト系
 #root {
   display: block;
@@ -73,13 +97,6 @@ body {
       display: grid;
       grid-template-columns: 2fr 3fr 2fr;
       grid-template-rows: 1fr;
-
-      .book--title {
-        display: flex;
-        position: relative;
-        justify-content: center;
-        align-items: center;
-      }
 
       .accounts {
         display: grid;
@@ -153,27 +170,11 @@ body {
               content: ":";
             }
           }
+          //  ページタイトルは左寄せ。
           .editor {
             .wrapper {
-              display: flex;
-              align-items: center;
-              position: relative;
-              width: 100%;
-              height: 100%;
-              * {
-                margin-block-start: 0;
-                margin-block-end: 0;
-              }
-              .display {
-                display: flex;
-                width: 100%;
-                height: 100%;
-                align-items: center;
-              }
-              .data {
-                width: 100%;
-                height: 100%;
-                text-align: initial;
+              .display,textarea {
+                text-align: left;
               }
             }
           }
@@ -334,7 +335,7 @@ body {
       grid-area: 1 / 1;
       background: transparent;
       display: grid;
-      grid-template-rows: 3em auto;
+      grid-template-rows: 100%;
       grid-template-columns: 100%;
 
       .subject {
@@ -384,7 +385,6 @@ body {
 
       &.subject {
         grid-area: 1 / 1;
-        border-bottom: 1px solid black;
         .effect {
           position: relative;
           z-index: 2;
@@ -547,6 +547,45 @@ body {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+//  マークダウン装飾
+
+.cell {
+  .editor {
+    p {
+      margin-block-start: 0;
+      margin-block-end: 0;
+    }
+    ul {
+      margin-block-start: 0;
+      padding-inline-start: 1em;
+    }
+    ol {
+      margin-block-start: 0;
+      padding-inline-start: 2em;
+    }
+    table {
+      border-collapse: collapse;
+      th {
+        border: 1px solid black;
+        padding: 0 0.5em 0 0.5em;
+      }
+      td {
+        border: 1px solid black;
+        padding: 0 0.5em 0 0.5em;
+      }
+    }
+  }
+}
+.cell {
+  .subject {
+    p {
+      margin-block-start: 0;
+      margin-block-end: 0;
+    }
+  }
+}
+
+////////////////////////////////////////////////////////////////////////////////
 //  ツールボックス系
 
 #toolbox {
@@ -704,10 +743,6 @@ label {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
-._hidden {
-  display: none;
-}
 
 //  周辺パネルの一部は、選択モードの影響を受ける。
 #layout_top,#layout_right {
@@ -887,5 +922,59 @@ label {
 .design--darkred {
   background: darkred;
   color: whitesmoke;
+}
+
+.thumbnail--sheet {
+  display: block;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 3;
+  pointer-events: none;
+
+  .thumbnail {
+    display: block;
+    position: absolute;
+    width: calc(100% /3);
+    height: calc(100% /3);
+    background: white;
+    top: 2px;
+    right: 2px;
+    border: 0.5px solid black;
+    border-radius: 5px;
+    pointer-events: auto;
+    font-size: small;
+
+    .editor {
+      border-radius: 5px;
+      .wrapper {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
+
+.map--small {
+  .thumbnail {
+    width: calc(100% /9);
+    height: calc(100% /9);
+  }
+}
+
+.map--twoinone {
+  .thumbnail {
+    width: calc(2 * 100% /9);
+    height: calc(100% /9);
+  }
+}
+
+.cell {
+  position: relative;
+}
+
+
+._hidden {
+  display: none;
 }
 

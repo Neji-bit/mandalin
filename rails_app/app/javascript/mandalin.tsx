@@ -159,6 +159,10 @@ function init() {
   //  ステッカーの状態
   _data.state.stickerMode = "none"
 
+  //  ホットキーによる表示ズーム値
+  _data.state.hotkeyArea = null
+  _data.state.hotkeyCell = null
+
   const root = document.getElementById('root');
   if (!root) {
     throw new Error('No root element');

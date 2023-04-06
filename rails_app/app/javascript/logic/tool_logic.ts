@@ -42,6 +42,10 @@ class ToolLogic {
     _data.state.showSticker = !_data.state.showSticker
     _data.react.map.forceUpdate()
   }
+  static toggleThumbnail = (e) => {
+    _data.state.showThumbnail = !_data.state.showThumbnail
+    _data.react.map.forceUpdate()
+  }
 
   //  「選択モード（＝ 択一 or なし）」の連動を管理。
   static selectModeBind = (e) => {

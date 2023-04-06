@@ -96,6 +96,7 @@ class Cell extends React.Component {
   }
   render() {
     let contents = []
+    let thumbnail = null
     let area_id = `area_${this.id.match(/(.).$/)[1]}`
     switch(_data.state.viewMode) {
       case "large":
@@ -111,14 +112,24 @@ class Cell extends React.Component {
       case "middle":
       case "small":
       case "twoinone":
-        contents.push(<Editor
-          parent={this}
-          id={`${this.id}_editor_subject`}
-          role="subject"
-          source={_data[area_id].cells[this.id].subject}
-          updateTarget={this}
-          key="1"
-        />)
+        thumbnail = (
+          <div
+            className={`thumbnail--sheet ${_data.state.showThumbnail ? "" : "_hidden"}`}
+          >
+            <div
+              className="thumbnail"
+            >
+              <Editor
+                parent={this}
+                id={`${this.id}_editor_subject`}
+                role="subject"
+                source={_data[area_id].cells[this.id].subject}
+                updateTarget={this}
+                key="1"
+              />
+            </div>
+          </div>
+        )
         contents.push(<Editor
           parent={this}
           id={`${this.id}_editor_note`}
@@ -145,6 +156,7 @@ class Cell extends React.Component {
         <CellEffect parent={this} />
         <div className="wrapper">
           {contents}
+          {thumbnail}
         </div>
       </div>
     )

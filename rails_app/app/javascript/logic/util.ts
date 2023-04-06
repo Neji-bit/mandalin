@@ -12,7 +12,7 @@ class Util {
     let lineHeight = getComputedStyle(t).lineHeight
     // "19.6px" のようなピクセル値が返ってくるので、数字だけにする
     lineHeight = lineHeight.replace(/[^-\d\.]/g, '')
-    lineHeight = 20
+    lineHeight = 24
     // textarea要素に入力された値の行数
     const lines = (t.value + '\n').match(/\n/g).length
     // 高さを再計算

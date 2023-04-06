@@ -1,4 +1,5 @@
 import {Util} from "./util"
+import {Page} from "../components/page"
 
 //  キー入力処理
 class Keyboard {
@@ -50,6 +51,8 @@ class Keyboard {
           case "KeyT": document.querySelector("label[for='tool_switch_tag_checkbox']").click(); break
           //  タブステッカー
           case "KeyK": document.querySelector("label[for='tool_switch_sticker_checkbox']").click(); break
+          //  サムネイル
+          case "KeyX": document.querySelector("label[for='tool_switch_thumbnail_checkbox']").click(); break
           //  全体表示
           case "KeyL": document.querySelector("label[for='tool_view_large_checkbox']").click(); break
           //  エリア表示
@@ -66,10 +69,6 @@ class Keyboard {
       //      もう一度ARROWSを押す：セル表示
       //      スペースを押す：セル->エリア、エリア->全体、へ移動
       if(onAlt) {
-        if(! ["KeyW", "KeyE", "KeyR", "KeyS", "KeyD", "KeyF", "KeyZ", "KeyX", "KeyC", "Space"].includes(code)) {
-          _data.state.hotkeyArea = null
-          _data.state.hotkeyCell = null
-        }
         if(code == "Space") {
           if(_data.state.viewMode == "middle") {
             _data.state.hotkeyArea = null
@@ -110,6 +109,7 @@ class Keyboard {
 
       //  どの要素にもフォーカスしていない場合、ホットキーを受けつける
       if("BODY" == document.activeElement.nodeName) {
+        let pages = Page.page_ids.split("").map((p) => {return `page_${p}`})
         if(onCtrl) {
           switch(code) {
             case "Digit0": page_0.click(); break
@@ -128,6 +128,24 @@ class Keyboard {
             case "KeyD": page_d.click(); break
             case "KeyE": page_e.click(); break
             case "KeyF": page_f.click(); break
+            //  Ctrl+< : ページを後ろめくり
+            case "Comma":
+              {
+                let index = pages.indexOf(_data.state.currentPage)
+                index = (index - 1) < 0 ? pages.length - 1 : index - 1
+                let next_page = pages[index]
+                document.getElementById(next_page).click()
+              }
+              break
+            //  Ctrl+> : ページを前めくり
+            case "Period":
+              {
+                let index = pages.indexOf(_data.state.currentPage)
+                index = (index + 1) % pages.length
+                let next_page = pages[index]
+                document.getElementById(next_page).click()
+              }
+              break
           }
         }
       }
