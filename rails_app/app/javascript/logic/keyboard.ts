@@ -1,8 +1,67 @@
 import {Util} from "./util"
+import {ToolLogic} from "./tool_logic"
 import {Page} from "../components/page"
 
 //  キー入力処理
+
+//  キー入力は、専用のキューに「ちょっとだけ」履歴を残していく
+//    -> 「連続入力する系のHotkey処理」のニーズに楽に対応するため
+//    -> 連続性が無効になる入力がきたら、キューをクリアする。
+//  キューの形は「新しい履歴が 0」。キューの内容は「キーイベントそのまま」。
+class HotkeyQueue {
+  static queue = []
+  static MAX_LENGTH = 3
+  static LEGAL_KEYS = ["Period", "Comma", "KeyW", "KeyE", "KeyR", "KeyS", "KeyD", "KeyF", "KeyZ", "KeyX", "KeyC"]
+  static OPTION_KEYS = ["ControlLeft", "ShiftLeft", "AltLeft", "MetaLeft", "MetaRight", "ShiftRight", "Enter", "Backspace"]
+
+  static push = (e) => {
+    //  オプションキーのみである場合は、ホットキー入力とはみなさない
+    if(! this.OPTION_KEYS.includes(e.code)) {
+      this.queue.unshift(e)
+      if(this.MAX_LENGTH < this.queue.length) this.queue.pop()
+      //  //  記録対象のホットキーでない場合は、キューをリセットする
+      //  if(! this.LEGAL_KEYS.includes(e.code)) {
+      //    this.clear()
+      //  } else {
+      //    this.queue.unshift(e)
+      //    if(this.MAX_LENGTH < this.queue.length) this.queue.pop()
+      //  }
+    }
+    return this.queue
+  }
+  static clear = () => {
+    this.queue.length = 0
+    return this.queue
+  }
+  static get = () => {
+    return this.queue
+  }
+}
+
 class Keyboard {
+  //  キーイベントの「同時押し状態」を判定する。
+  static isOnly = (e) => {
+   return !(e.shiftKey || e.ctrlKey || e.altKey || e.metaKey)
+  }
+  static isWithShiftOnly = (e) => {
+   return !!(e.shiftKey && !(e.ctrlKey || e.altKey || e.metaKey))
+  }
+  static isWithCtrlOnly = (e) => {
+   return !!(e.ctrlKey && !(e.shiftKey || e.altKey || e.metaKey))
+  }
+  static isWithAltOnly = (e) => {
+   return !!(e.altKey && !(e.ctrlKey || e.shiftKey || e.metaKey))
+  }
+  static isWithMetaOnly = (e) => {
+   return !!(e.metaKey && !(e.ctrlKey || e.shiftKey || e.altKey))
+  }
+
+  //  「今、Hotkeyを受け入れて良いか？」
+  static hotkey_enable = () => {
+    let disables = ["TEXTAREA", "INPUT"]
+    return !(disables.includes(document.activeElement.nodeName))
+  }
+
   //  エリア表示ホットキー処理。
   static middleMap = (area_id) => {
     //  現在表示中のエリアを再度指定されたら、エリア表示解除
@@ -36,13 +95,101 @@ class Keyboard {
   static init = () => {
     window.addEventListener("keydown", (e)=>{
       const keycode = e.keyCode
-      const code  = e.code
+      const key     = e.key
+      const code    = e.code
       const onShift = e.shiftKey
       const onCtrl  = e.ctrlKey
       const onAlt   = e.altKey
       const onMeta  = e.metaKey
       const char    = String.fromCharCode(e.keyCode)
 
+      if(code == "Escape") {
+        if("TEXTAREA" == document.activeElement.nodeName) {
+          document.activeElement.blur()
+        } else if (palette_sheet.classList.contains("fadeIn")) {
+          palette_sheet.click()
+        } else {
+          ToolLogic.releaseToggles()
+        }
+      }
+
+      //  セル編集時の、サムネイルとノートの切り替え
+      if("w" == key && Keyboard.isWithCtrlOnly(e)) {
+        let editable = document.getElementsByClassName("editable")[0]
+        if(editable) {
+          let cell = editable.closest(".cell")
+          if(cell) {
+            let target = editable.classList.contains("note") ? cell.querySelector(".editor.subject") : cell.querySelector(".editor.note")
+            if(target) target.click()
+          }
+          return
+        }
+      }
+
+      //  セル編集時、サムネを設定するホットキー
+      //  ノートにフォーカス時：１行目をサムネに上書きする
+      //  サムネにフォーカス時：サムネの内容をノートの１行目に追加する
+      if("y" == key && Keyboard.isWithCtrlOnly(e)) {
+        let editable = document.getElementsByClassName("editable")[0]
+        if(editable) {
+          let cell = editable.closest(".cell")
+          if(cell) {
+            let id = cell.id
+            let current = cell.querySelector(".editor.subject.editable") ? "subject" : "note"
+            let opposite = current == "subject" ? "note" : "subject"
+            if(current == "subject") {
+              _data[id][opposite].data = _data[id][current].data + "\n---\n" + _data[id][opposite].data
+            } else {
+              _data[id][opposite].data = _data[id][current].data.split("\n")[0]
+            }
+            _data.react[id].forceUpdate()
+          }
+          return
+        }
+      }
+
+      //  キーをキューに入れる
+      //  TODO:精度上げるために「elseならキューをクリアする」を入れるべきでは？
+      if(Keyboard.hotkey_enable())  HotkeyQueue.push(e)
+
+      //  ホットキーによるセル／エリアのクリック。
+      //  ホットキー履歴を参照する。
+      if(Keyboard.hotkey_enable()) {
+        //  補助キー無しのキー入力のみを、履歴から抽出。
+        let hotkeys = HotkeyQueue.get().map((k) => {return Keyboard.isOnly(k) ? k.key : " "}).join("")
+        if("wersdfzxc.".includes(hotkeys[0])) {
+          //  セル入力中で、かつセル入力が完了していない場合は、ここで入力を食ってしまう。
+          if(hotkeys.includes(".") && "." != hotkeys[2]) return
+          if("." == hotkeys[2]) {
+            //  動詞が何も指定されていなかったら、暗黙的にセル選択を有効にする。
+            if(["selection--none", "selection--areas"].includes(_data.state.selectionMode)) document.querySelector("label[for='tool_toggle_cell_checkbox']").click()
+            let cell = hotkeys[0] == "." ? _data.state.currentCell.match(/.$/) : hotkeys[0]
+            let area = hotkeys[1] == "." ? _data.state.currentArea.match(/.$/) : hotkeys[1]
+            //  動詞によって、クリック対象を調整。
+            let editfor= "large" == _data.state.viewMode ? "_editor_subject" : "_editor_note"
+            let editor = ["selection--edit", "selection--design"].includes(_data.state.selectionMode) ? editfor : ""
+            let target = document.getElementById(`cell_${area}${cell}${editor}`)
+            e.preventDefault()
+            if(target) target.click()
+            //  セル入力を処理したら、履歴をクリア。
+            HotkeyQueue.clear()
+            return
+          }
+        }
+        if("wersdfzxc,".includes(hotkeys[0])) {
+          if(hotkeys.includes(",") && "," != hotkeys[1]) return
+          if("," == hotkeys[1]) {
+            if(["selection--none", "selection--cells"].includes(_data.state.selectionMode)) document.querySelector("label[for='tool_toggle_area_checkbox']").click()
+            let area = hotkeys[0] == "," ? _data.state.currentArea.match(/.$/) : hotkeys[0]
+            let target = document.getElementById(`area_${area}`)
+            if(target) target.click()
+            HotkeyQueue.clear()
+            return
+          }
+        }
+      }
+
+      //  編集者／閲覧者どちらでも使えるホットキー。
       if(onCtrl) {
         switch(code) {
           //  全画面表示
@@ -63,6 +210,7 @@ class Keyboard {
           case "KeyV": document.querySelector("label[for='tool_view_twoinone_checkbox']").click(); break
         }
       }
+
       //  AltKeyはエリア／セル表示
       //    Alt 押しっぱなしで：
       //      一度ARROWSを押す：エリア表示
@@ -107,8 +255,8 @@ class Keyboard {
         return
       }
 
-      //  どの要素にもフォーカスしていない場合、ホットキーを受けつける
-      if("BODY" == document.activeElement.nodeName) {
+      //  ページ遷移処理
+      if(Keyboard.hotkey_enable()) {
         let pages = Page.page_ids.split("").map((p) => {return `page_${p}`})
         if(onCtrl) {
           switch(code) {
@@ -150,10 +298,17 @@ class Keyboard {
         }
       }
 
-      //  ここから下は、編集モードでなければ利用不可。
+      //  ここから下は、編集者モードでなければ利用不可。
       if(! _data.app_info.is_owner) return
 
-      if("BODY" == document.activeElement.nodeName) {
+      //  修飾パレット表示時のホットキー
+      if(_data.state.paletteDesignMenu) {
+        if("0123456789ab".includes(key)) {
+          palette_design_menu.querySelector(`[data-num="${key}"]`).click()
+        }
+      }
+
+      if(Keyboard.hotkey_enable()) {
         if(! onCtrl) {
           switch(code) {
             case "KeyS":
@@ -179,7 +334,11 @@ class Keyboard {
               break
             case "KeyW":
               //  入替ホットキー
-              document.querySelector("label[for='tool_toggle_swap_checkbox']").click()
+              if(onShift) {
+                document.querySelector("label[for='tool_toggle_swapplus_checkbox']").click()
+              } else {
+                document.querySelector("label[for='tool_toggle_swap_checkbox']").click()
+              }
               break
             case "KeyC":
               //  コピーホットキー
@@ -201,6 +360,12 @@ class Keyboard {
                 //  2in1ホットキー
                 document.querySelector("label[for='tool_toggle_twoinone_checkbox']").click()
               }
+              break
+          }
+        } else {
+          switch(code) {
+            case "KeyU":
+                tool_button_union.click()
               break
           }
         }

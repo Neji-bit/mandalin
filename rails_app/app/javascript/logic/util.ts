@@ -126,6 +126,18 @@ class Util {
     return (!!_data.app_info.visitor_email)
   }
 
+  static assignUnionDesign = (elm) => {
+    //  デコレーション系のクラスを、一旦すべて取り除く
+    let classes = [...elm.classList].filter((c) => {return !c.match(/^union--(font|ribbon|back)/)})
+    //  合成クラスを取得する
+    let unions = classes.filter((c) => {return c.match(/union--design--./)})
+    //  合成クラスから、デコレーション系のクラスを引く
+    let details = []
+    unions.forEach((u) => {details = [...details, ...(Object.values(_data.state.decorates[u]).filter((f) => {return f}))]})
+    //  要素のクラスを指定。「元々あるもの」＋「デコレーション系」
+    elm.classList = classes.join(" ")
+    elm.classList.add(...details)
+  }
 }
 
 export {Util}

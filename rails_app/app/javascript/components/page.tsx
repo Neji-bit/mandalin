@@ -18,16 +18,25 @@ class Page extends React.Component {
     this.ref = React.createRef()
     this.id = props.page_id
   }
-  click = () => {
-    if(_data.state.currentPage != this.id) {
-      _data.state.currentPage = this.id
-      _data.react.layout_right.forceUpdate()
-      Api.loadPage(Util.urlParams().book, _data.state.currentPage.match(/.$/),
-        () => {
-          _data = dataRefresh()
-          _data.react.map.refresh()
-        }
-      )
+  click = (e) => {
+    //  「マウスによるページタイトルのクリックで、かつ編集モードのときはページ遷移しない」処理（判定が力技）。
+    let classlist = e.target.classList
+    let mode = _data.state.selectionMode
+    if(
+      classlist.contains("page") ||         //  マウスクリックではない（＝キーボード入力）場合はページ遷移を許可
+      classlist.contains("page--index") ||  //  ページINDEXのクリックである場合はページ遷移を許可
+      mode != "selection--edit"             //  （ページタイトルのクリックで）編集モードでない場合はページ遷移を許可
+    ) {
+      if(_data.state.currentPage != this.id) {
+        _data.state.currentPage = this.id
+        _data.react.layout_right.forceUpdate()
+        Api.loadPage(Util.urlParams().book, _data.state.currentPage.match(/.$/),
+          () => {
+            _data = dataRefresh()
+            _data.react.map.refresh()
+          }
+        )
+      }
     }
   }
   render() {

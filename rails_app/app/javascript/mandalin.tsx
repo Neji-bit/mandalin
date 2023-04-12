@@ -163,6 +163,19 @@ function init() {
   _data.state.hotkeyArea = null
   _data.state.hotkeyCell = null
 
+  //  合成デザインの初期値
+  let decorate = {
+    back: "union--back--0",
+    font_color: "union--font--color--0",
+    font_style: "union--font--style--0",
+    ribbon_color: "union--ribbon--color--0",
+    ribbon_style: "union--ribbon--style--0"
+  }
+  _data.state.decorates ||= {}
+  "0123456789abcdef".split("").forEach((i) => {
+    _data.state.decorates[`union--design--${i}`] ||= {...decorate}
+  })
+
   const root = document.getElementById('root');
   if (!root) {
     throw new Error('No root element');

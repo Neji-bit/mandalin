@@ -24,10 +24,20 @@ class Editor extends React.Component {
     //  実際はEditorDataのblurで参照され、強制的に再描画される。
     this.updateTarget = props.updateTarget
   }
-  click = (e) => {
+  doubleClicked = (e) => {
     if("selection--edit" == _data.state.selectionMode) {
-      this.setState({editable: !this.state.editable})
+      this.setState({editable: false})
     }
+  }
+  clicked = (e) => {
+    if("selection--edit" == _data.state.selectionMode) {
+      this.setState({editable: true})
+    }
+
+    //  ブックタイトル、ページタイトルの時は、これ以降は処理しない。
+    if("page--title" == this.role) return
+    if("book--title" == this.role) return
+
     //  削除モードの場合、サブジェクトとノートが表示されている場合は個々に削除する。
     if(
         ["middle", "small"].includes(_data.state.viewMode) &&
@@ -73,10 +83,19 @@ class Editor extends React.Component {
       <div
         id={this.id}
         className={`editor ${this.role} ${classList.join(" ")}`}
-        onClick={this.click}
+        onClick={this.clicked}
+        onDoubleClick={this.doubleClicked}
       >
         {content}
       </div>)
+  }
+  componentDidMount() {
+    let elm = document.getElementById(this.id)
+    if(elm) Util.assignUnionDesign(elm)
+  }
+  componentDidUpdate() {
+    let elm = document.getElementById(this.id)
+    if(elm) Util.assignUnionDesign(elm)
   }
 }
 
@@ -137,6 +156,10 @@ class EditorData extends React.Component {
     Util.textHeightAdjustment(e)
   }
   blur = (e) => {
+    //  エディタで編集中にMandalinのブラウザを隠した時は、フォーカスを外さない。（＝ブラウザ復帰時、編集状態が維持される）
+    //  （この書き方で「blurが発生した理由が、テキストエリア以外をクリックしたわけではない」が判定できる）
+    if("TEXTAREA" == document.activeElement.nodeName) return
+
     this.parent.setState({editable: false})
     if(this.updateTarget) this.updateTarget.forceUpdate()
   }

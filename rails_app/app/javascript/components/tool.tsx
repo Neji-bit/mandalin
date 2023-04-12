@@ -135,6 +135,14 @@ class ToolBox extends React.Component {
             tool_id="tool_toggle_swap"
             key="13"
           />
+          <ToolToggle
+            parent={this}
+            label="入替＋"
+            hotkey="W"
+            logic={ToolLogic.selectModeBind}
+            tool_id="tool_toggle_swapplus"
+            key="21"
+          />
           <div
             key="14"
           />
@@ -173,6 +181,14 @@ class ToolBox extends React.Component {
             logic={ToolLogic.selectModeBind}
             tool_id="tool_toggle_sticker"
             key="24"
+          />
+          <ToolButton
+            parent={this}
+            label="修飾合成"
+            hotkey="Ctrl_u"
+            logic={ToolLogic.union}
+            tool_id="tool_button_union"
+            key="26"
           />
         </div>
         <div className={`toolbox--block ${readonly}`}>

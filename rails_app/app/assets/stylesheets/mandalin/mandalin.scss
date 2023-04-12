@@ -474,7 +474,7 @@ body {
   }
   .effect {
     background: transparent;
-    padding: 5px;
+    padding: 2px;
   }
   .tag--cell--id {
     position: absolute;
@@ -609,7 +609,7 @@ body {
 }
 
 //  押し込み／解除形式のチェックボックス
-.tool--toggle {
+.panel .tool--toggle {
   display: flex;
   height: 4em;
   justify-content: center;
@@ -625,11 +625,11 @@ body {
     position: absolute;
     left: 0;
     &:focus + label {
-        box-shadow: 0 0 4px var(--enable-background);
+      box-shadow: 0 0 4px var(--enable-background);
     }
     &:checked + label {
-        background: var(--enable-background);
-        color: var(--enable-color);
+      background: var(--enable-background);
+      color: var(--enable-color);
     }
     &:checked + label:before {
       background: lime;
@@ -669,6 +669,7 @@ body {
     }
   }
 }
+
 
 //  状態を持たないボタン
 .tool--button {
@@ -785,6 +786,12 @@ label {
       border: 2px solid rgba(0, 255, 0, 0.5);
     }
   }
+  &.selection--swapplus {
+    cursor: url("cursor_swap.svg"), auto;
+    .cell:hover {
+      border: 2px solid rgba(0, 255, 0, 0.5);
+    }
+  }
   &.selection--twoinone {
     cursor: pointer;
     .cell:hover {
@@ -817,6 +824,15 @@ label {
   font-size: small;
   border-radius: 5px;
   border: 2px solid coral;
+
+  &:has(.palette--union--wrapper) {
+    position: absolute;
+    left: 200px !important;
+    right: 200px !important;
+    top: 100px !important;
+    bottom: 100px !important;
+    padding: 30px;
+  }
 }
 
 #palette_sheet {
@@ -826,6 +842,16 @@ label {
   background: transparent;
   z-index: 20;
   visibility: hidden;
+
+  &:has(.palette--union) {
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 #palette_sticker_url {
@@ -853,7 +879,7 @@ label {
   background: coral;
   display: grid;
   grid-template-columns: repeat(4, 4em);
-  grid-template-rows: repeat(2, 3em);
+  grid-template-rows: repeat(3, 3em);
   row-gap: 1px;
   column-gap: 1px;
 
@@ -973,8 +999,192 @@ label {
   position: relative;
 }
 
+//  間に合わせ対応。ページタイトル変更時の微調整。
+.page .editor textarea {
+  height: 1em !important;
+}
 
 ._hidden {
   display: none;
 }
+
+
+.palette--union--wrapper {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  height: 100%;
+  width: 100%;
+  .tool--toggle {
+    margin: 5px;
+    height: auto;
+  }
+}
+
+//  合成パレット上にあるトグルのための追加設定。
+.palette--union .tool--toggle {
+  display: flex;
+  height: auto;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  font-size: x-small;
+
+  input {
+    visibility: hidden;
+    position: absolute;
+    left: 0;
+    &:focus + label {
+    }
+    &:checked + label {
+      border: 2px solid blue;
+    }
+    &:checked + label:before {
+      background: lime;
+    }
+  }
+  label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    border: 0.5px solid black;
+    cursor: pointer;
+    user-select: none;
+    &:hover {
+    }
+    //  左上にON/OFFランプをつけた
+    &:before {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border: 0.5px solid black;
+      border-radius: 3px;
+      box-sizing: border-box;
+      color: black;
+      left: 3px;
+      top: 3px;
+      background: gray;
+    }
+  }
+}
+
+.tool--toggle label {
+  background: ivory;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+.union--ribbon--style--0 label, .union--ribbon--style--0.subject, button.union--ribbon--style--0 { 
+  --ribbon-color: black;
+  --back-color-start: white;
+  --back-color-end: antiquewhite;
+  background: linear-gradient(160deg, var(--back-color-start), var(--back-color-end));
+}
+.union--ribbon--style--1 label, .union--ribbon--style--1.subject, button.union--ribbon--style--1 { 
+  --ribbon-color: black;
+  --back-color-start: white;
+  --back-color-end: antiquewhite;
+  background: linear-gradient(transparent 90%, var(--ribbon-color) 90%), linear-gradient(160deg, var(--back-color-start), var(--back-color-end));
+}
+.union--ribbon--style--2 label, .union--ribbon--style--2.subject, button.union--ribbon--style--2 { 
+  --ribbon-color: black;
+  --back-color-start: white;
+  --back-color-end: antiquewhite;
+  background: linear-gradient(90deg, transparent 92%, var(--ribbon-color) 92%), linear-gradient(160deg, var(--back-color-start), var(--back-color-end));
+}
+.union--ribbon--style--3 label, .union--ribbon--style--3.subject, button.union--ribbon--style--3 { 
+  --ribbon-color: black;
+  --back-color-start: white;
+  --back-color-end: antiquewhite;
+  background: linear-gradient(40deg, transparent 88%, var(--ribbon-color) 88%), linear-gradient(160deg, var(--back-color-start), var(--back-color-end));
+}
+.union--ribbon--style--4 label, .union--ribbon--style--4.subject, button.union--ribbon--style--4 { 
+  --ribbon-color: black;
+  --back-color-start: white;
+  --back-color-end: antiquewhite;
+  background: linear-gradient(140deg, transparent 45%, var(--ribbon-color) 45%, var(--ribbon-color) 55%, transparent 55%), linear-gradient(40deg, transparent 45%, var(--ribbon-color) 45%, var(--ribbon-color) 55%, transparent 55%), linear-gradient(160deg, var(--back-color-start), var(--back-color-end));
+}
+.union--ribbon--style--5 label, .union--ribbon--style--5.subject, button.union--ribbon--style--5 { 
+  --ribbon-color: black;
+  --back-color-start: white;
+  --back-color-end: antiquewhite;
+  background: linear-gradient(140deg, var(--ribbon-color) 10%, transparent 10%, transparent 90%, var(--ribbon-color) 90%), linear-gradient(40deg, var(--ribbon-color) 10%, transparent 10%, transparent 90%, var(--ribbon-color) 90%), linear-gradient(160deg, var(--back-color-start), var(--back-color-end));
+}
+
+button.union--back--0, .union--back--0 label, .union--back--0.subject {
+  --back-color-start: white;
+  --back-color-end: antiquewhite;
+}
+button.union--back--1, .union--back--1 label, .union--back--1.subject {
+  --back-color-start: navajowhite;
+  --back-color-end: goldenrod;
+}
+button.union--back--2, .union--back--2 label, .union--back--2.subject {
+  --back-color-start: whitesmoke;
+  --back-color-end: silver;
+}
+button.union--back--3, .union--back--3 label, .union--back--3.subject {
+  --back-color-start: white;
+  --back-color-end: white;
+}
+button.union--back--4, .union--back--4 label, .union--back--4.subject {
+  --back-color-start: aliceblue;
+  --back-color-end: lightblue;
+}
+button.union--back--4, .union--back--4 label, .union--back--4.subject {
+  --back-color-start: aliceblue;
+  --back-color-end: lightblue;
+}
+button.union--back--5, .union--back--5 label, .union--back--5.subject {
+  --back-color-start: lightpink;
+  --back-color-end: plum;
+}
+
+.union--ribbon--color--0 label, .union--ribbon--color--0.subject, button.union--ribbon--color--0 { --ribbon-color: crimson; }
+.union--ribbon--color--1 label, .union--ribbon--color--1.subject, button.union--ribbon--color--1 { --ribbon-color: royalblue; }
+.union--ribbon--color--2 label, .union--ribbon--color--2.subject, button.union--ribbon--color--2 { --ribbon-color: seagreen; }
+.union--ribbon--color--3 label, .union--ribbon--color--3.subject, button.union--ribbon--color--3 { --ribbon-color: darkorchid; }
+.union--ribbon--color--4 label, .union--ribbon--color--4.subject, button.union--ribbon--color--4 { --ribbon-color: darkorange; }
+.union--ribbon--color--5 label, .union--ribbon--color--5.subject, button.union--ribbon--color--5 { --ribbon-color: yellow; }
+#union_ribbon_color_0 label { background: var(--ribbon-color); }
+#union_ribbon_color_1 label { background: var(--ribbon-color); }
+#union_ribbon_color_2 label { background: var(--ribbon-color); }
+#union_ribbon_color_3 label { background: var(--ribbon-color); }
+#union_ribbon_color_4 label { background: var(--ribbon-color); }
+#union_ribbon_color_5 label { background: var(--ribbon-color); }
+#union_back_0 label { background: linear-gradient(160deg, var(--back-color-start), var(--back-color-end)); }
+#union_back_1 label { background: linear-gradient(160deg, var(--back-color-start), var(--back-color-end)); }
+#union_back_2 label { background: linear-gradient(160deg, var(--back-color-start), var(--back-color-end)); }
+#union_back_3 label { background: linear-gradient(160deg, var(--back-color-start), var(--back-color-end)); }
+#union_back_4 label { background: linear-gradient(160deg, var(--back-color-start), var(--back-color-end)); }
+#union_back_5 label { background: linear-gradient(160deg, var(--back-color-start), var(--back-color-end)); }
+
+.union--font--color--0 label, .union--font--color--0.subject, button.union--font--color--0 { --font-color: black;  color: var(--font-color); }
+.union--font--color--1 label, .union--font--color--1.subject, button.union--font--color--1 { --font-color: red;    color: var(--font-color); }
+.union--font--color--2 label, .union--font--color--2.subject, button.union--font--color--2 { --font-color: blue;   color: var(--font-color); }
+.union--font--color--3 label, .union--font--color--3.subject, button.union--font--color--3 { --font-color: green;  color: var(--font-color); }
+.union--font--color--4 label, .union--font--color--4.subject, button.union--font--color--4 { --font-color: silver; color: var(--font-color); }
+.union--font--color--5 label, .union--font--color--5.subject, button.union--font--color--5 { --font-color: white;  color: var(--font-color); }
+#union_font_color_0 label { background: var(--font-color); }
+#union_font_color_1 label { background: var(--font-color); }
+#union_font_color_2 label { background: var(--font-color); }
+#union_font_color_3 label { background: var(--font-color); }
+#union_font_color_4 label { background: var(--font-color); }
+#union_font_color_5 label { background: var(--font-color); }
+
+.union--font--style--0 { * { font-family: "Lucida Console", Courier, monospace; } }
+.union--font--style--1 { * { font-family: "cursive"; } }
+.union--font--style--2 { * { font-family: "STFangsong"; } }
+.union--font--style--3 { * { font-family: "Weibei TC Bold"; } }
+.union--font--style--4 { * { font-family: "zapfino"; } }
+.union--font--style--5 { * { font-family: "BiauKai"; } }
 

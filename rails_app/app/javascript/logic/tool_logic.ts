@@ -47,6 +47,21 @@ class ToolLogic {
     _data.react.map.forceUpdate()
   }
 
+  //  選択トグルをすべて解除する
+  static releaseToggles = () => {
+    [ tool_toggle_area_checkbox,
+      tool_toggle_cell_checkbox,
+      tool_toggle_edit_checkbox,
+      tool_toggle_erase_checkbox,
+      tool_toggle_swap_checkbox,
+      tool_toggle_swapplus_checkbox,
+      tool_toggle_copy_checkbox,
+      tool_toggle_twoinone_checkbox,
+      tool_toggle_design_checkbox,
+      tool_toggle_sticker_checkbox
+    ].forEach((t) => {if(t.checked) t.click()})
+  }
+
   //  「選択モード（＝ 択一 or なし）」の連動を管理。
   static selectModeBind = (e) => {
     ToolLogic.selectModeBindPreAction(e)
@@ -58,6 +73,7 @@ class ToolLogic {
         tool_toggle_edit_checkbox,
         tool_toggle_erase_checkbox,
         tool_toggle_swap_checkbox,
+        tool_toggle_swapplus_checkbox,
         tool_toggle_copy_checkbox,
         tool_toggle_twoinone_checkbox,
         tool_toggle_design_checkbox,
@@ -84,6 +100,7 @@ class ToolLogic {
     if(tool_toggle_edit_checkbox.checked) mode = "selection--edit"
     if(tool_toggle_erase_checkbox.checked) mode = "selection--erase"
     if(tool_toggle_swap_checkbox.checked) mode = "selection--swap"
+    if(tool_toggle_swapplus_checkbox.checked) mode = "selection--swapplus"
     if(tool_toggle_copy_checkbox.checked) mode = "selection--copy"
     if(tool_toggle_twoinone_checkbox.checked) mode = "selection--twoinone"
     if(tool_toggle_design_checkbox.checked) mode = "selection--design"
@@ -113,6 +130,14 @@ class ToolLogic {
         tool_toggle_swap_checkbox.checked = false
       }
     }
+    //  入替（装飾も含む）：
+    if("tool_toggle_swapplus_checkbox" == e.currentTarget.id) {
+      if(2 == [...document.getElementsByClassName("selected")].length) {
+        ToolLogic.swap(true)
+        //  入替の場合は、選択を解除しない。
+        tool_toggle_swapplus_checkbox.checked = false
+      }
+    }
     //  コピー：選択されたものをただクリップボードにコピーするだけ。
     if("tool_toggle_copy_checkbox" == e.currentTarget.id) {
       if(0 < [...document.getElementsByClassName("selected")].length) {
@@ -124,10 +149,10 @@ class ToolLogic {
 
   //  入れ替え。現在は「選択対象が２つ」の時のみ機能。
   //  入替が成立した際は true, 不成立だった場合は false を返す。
-  static swap = () => {
+  static swap = (with_design = false) => {
     let cells = [...document.getElementsByClassName("cell selected")]
     if(2 == cells.length) {
-      ToolLogic._swap(cells[0].id, cells[1].id)
+      ToolLogic._swap(cells[0].id, cells[1].id, with_design)
       return true
     }
     let areas = [...document.getElementsByClassName("area selected")]
@@ -135,28 +160,43 @@ class ToolLogic {
       let left_cell_id_base = `cell_${areas[0].id.match(/.$/)}`
       let right_cell_id_base = `cell_${areas[1].id.match(/.$/)}`
       Cell.cell_ids.split("").forEach((c) => {
-        ToolLogic._swap(`${left_cell_id_base}${c}`, `${right_cell_id_base}${c}`)
+        ToolLogic._swap(`${left_cell_id_base}${c}`, `${right_cell_id_base}${c}`, with_design)
       })
       return true
     }
     return false
   }
-  static _swap = (left_cell_id, right_cell_id) => {
+  static _swap = (left_cell_id, right_cell_id, with_design = false) => {
     let left = _data[left_cell_id]
     let right = _data[right_cell_id]
     let tmp = null
+
     tmp = right.subject.data
     right.subject.data = left.subject.data
     left.subject.data = tmp
+
     tmp = right.subject.effect
     right.subject.effect = left.subject.effect
     left.subject.effect = tmp
+
     tmp = right.note.data
     right.note.data = left.note.data
     left.note.data = tmp
+
     tmp = right.note.effect
     right.note.effect = left.note.effect
     left.note.effect = tmp
+
+    if(with_design) {
+      tmp = right.subject.design
+      right.subject.design = left.subject.design
+      left.subject.design = tmp
+
+      tmp = right.note.design
+      right.note.design = left.note.design
+      left.note.design = tmp
+    }
+
     _data.react[left_cell_id].forceUpdate()
     _data.react[right_cell_id].forceUpdate()
   }
@@ -315,6 +355,12 @@ class ToolLogic {
   }
   static logout = () => {
     Api.logout()
+  }
+
+  //  装飾の合成パレットを表示する
+  static union = () => {
+    _data.state.paletteUnion = true
+    _data.react.palette_sheet.setState({enable: true})
   }
 }
 

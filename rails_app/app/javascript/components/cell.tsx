@@ -26,10 +26,11 @@ class Cell extends React.Component {
     if("selection--cells" == mode) {
       this.setState({selected: !this.state.selected})
     }
-    if("selection--swap" == mode) {
+    if("selection--swap" == mode || "selection--swapplus" == mode) {
+      let with_design = "selection--swapplus" == mode
       this.setState({selected: !this.state.selected},
         () => {
-          if(ToolLogic.swap()) {
+          if(ToolLogic.swap(with_design)) {
             Util.releaseSelected("cell")
             Util.releaseSelected("area")
           }
@@ -78,6 +79,8 @@ class Cell extends React.Component {
     }
   }
   doubleClicked = (e) => {
+    //  モードを持たない時に限り、ダブルクリックでドリルダウン。
+    if("selection--none" != _data.state.selectionMode) return
     _data.state.currentCell = this.id
     switch(_data.state.viewMode) {
       case "large":
