@@ -18,6 +18,7 @@ class Editor extends React.Component {
     this.parent = props.parent
     this.id = props.id
     this.role = props.role
+    this.parent[this.role] = this
     this.state = {editable: false}
     this.source = props.source
     //  このエディタでデータが更新された際に再描画するコンポーネント。
@@ -103,6 +104,7 @@ class EditorDisplay extends React.Component {
   constructor(props) {
     super(props)
     this.parent = props.parent
+    this.parent.editorDisplay = this
   }
   render() {
     let content = ""
@@ -149,11 +151,13 @@ class EditorData extends React.Component {
     this.ref = React.createRef()
     try { this.state.data = this.parent.source.data } catch(e) { this.state.data = "Now loading..." }
     this.updateTarget = props.updateTarget
+    this.parent.editorData = this
   }
-  change = (e) => {
-    this.setState({data: e.target.value})
-    this.parent.source.data = e.target.value
-    Util.textHeightAdjustment(e)
+  changed = (e) => {
+    let elm = e instanceof HTMLElement ? e : e.target
+    this.setState({data: elm.value})
+    this.parent.source.data = elm.value
+    Util.textHeightAdjustment(elm)
   }
   blur = (e) => {
     //  エディタで編集中にMandalinのブラウザを隠した時は、フォーカスを外さない。（＝ブラウザ復帰時、編集状態が維持される）
@@ -164,7 +168,7 @@ class EditorData extends React.Component {
     if(this.updateTarget) this.updateTarget.forceUpdate()
   }
   focus = (e) => {
-    Util.textHeightAdjustment(e)
+    Util.textHeightAdjustment(e.target)
   }
   componentDidMount() {
     this.ref.current.focus()
@@ -182,7 +186,7 @@ class EditorData extends React.Component {
           spellCheck="false"
           wrap="off"
           value={this.state.data}
-          onChange={this.change}
+          onChange={this.changed}
           onBlur={this.blur}
           onFocus={this.focus}
         />

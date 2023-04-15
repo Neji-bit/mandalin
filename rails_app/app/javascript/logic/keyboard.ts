@@ -102,6 +102,7 @@ class Keyboard {
       const onAlt   = e.altKey
       const onMeta  = e.metaKey
       const char    = String.fromCharCode(e.keyCode)
+      const ime     = e.isComposing
 
       if(code == "Escape") {
         if("TEXTAREA" == document.activeElement.nodeName) {
@@ -127,8 +128,8 @@ class Keyboard {
       }
 
       //  セル編集時、サムネを設定するホットキー
-      //  ノートにフォーカス時：１行目をサムネに上書きする
-      //  サムネにフォーカス時：サムネの内容をノートの１行目に追加する
+      //  ノートにフォーカス時：サムネの内容を１行に連結して、ノートの先頭に追加。
+      //  サムネにフォーカス時：ノートの１行目でサムネの内容を上書き。
       if("y" == key && Keyboard.isWithCtrlOnly(e)) {
         let editable = document.getElementsByClassName("editable")[0]
         if(editable) {
@@ -136,13 +137,15 @@ class Keyboard {
           if(cell) {
             let id = cell.id
             let current = cell.querySelector(".editor.subject.editable") ? "subject" : "note"
-            let opposite = current == "subject" ? "note" : "subject"
+            let textarea = cell.querySelector(".editor.editable textarea")
             if(current == "subject") {
-              _data[id][opposite].data = _data[id][current].data + "\n---\n" + _data[id][opposite].data
+              textarea.value = _data[id].note.data.split("\n")[0]
+              //  テキストエリアをJSで編集した場合 changeイベントが発火しないため、直接changed処理をコールしている。
+              _data.react[id].subject.editorData.changed(textarea)
             } else {
-              _data[id][opposite].data = _data[id][current].data.split("\n")[0]
+              textarea.value = _data[id].subject.data + "\n---\n" + textarea.value
+              _data.react[id].note.editorData.changed(textarea)
             }
-            _data.react[id].forceUpdate()
           }
           return
         }
@@ -190,7 +193,7 @@ class Keyboard {
       }
 
       //  編集者／閲覧者どちらでも使えるホットキー。
-      if(onCtrl) {
+      if(onCtrl && !ime) {
         switch(code) {
           //  全画面表示
           case "KeyQ": document.querySelector("label[for='tool_toggle_fullscreen_checkbox']").click(); break
@@ -303,7 +306,7 @@ class Keyboard {
 
       //  修飾パレット表示時のホットキー
       if(_data.state.paletteDesignMenu) {
-        if("0123456789ab".includes(key)) {
+        if("0123456789abcdefghijklmnopqrstuv".includes(key)) {
           palette_design_menu.querySelector(`[data-num="${key}"]`).click()
         }
       }

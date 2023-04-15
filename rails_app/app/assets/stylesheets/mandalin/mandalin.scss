@@ -139,23 +139,30 @@ body {
       background: linear-gradient(160deg, white, silver);
       border-left: 1px solid black;
 
+      .label {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: small;
+        height: 1.6em;
+        user-select: none;
+      }
+
       .page--list {
         padding: 4px;
         display: grid;
         row-gap: 2px;
         font-size: small;
 
-        .label {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          font-size: small;
-          height: 1.6em;
-          user-select: none;
-        }
+        //  「長い名前のページを表示」は、JSで管理する。
+        transition: .5s;
+        right: 0;
+        z-index: 10;
+        white-space: nowrap;
+
         .page {
           display: grid;
-          grid-template-rows: 2em;
+          grid-template-rows: 2.2em;
           grid-template-columns: 2em auto;
           border-radius: 5px;
 
@@ -440,7 +447,7 @@ body {
   height: 100%;
 
   &.editable {
-    background: rgba(255, 105, 212, 0.1);
+    background: rgba(255, 105, 212, 0.1) !important;
   }
 
   .display {
@@ -593,8 +600,8 @@ body {
   grid-template-columns: repeat(1, 1fr);
   background: slategray;
   column-gap: 5px;
-  row-gap: 5px;
-  padding: 5px 0 5px 0;
+  row-gap: 3px;
+  padding: 3px 0 3px 0;
 
   .toolbox--block {
     display: grid;
@@ -602,7 +609,7 @@ body {
     background: gray;
     column-gap: 5px;
     row-gap: 5px;
-    padding: 5px;
+    padding: 3px;
 
     background: darkgray;
   }
@@ -829,8 +836,8 @@ label {
     position: absolute;
     left: 200px !important;
     right: 200px !important;
-    top: 100px !important;
-    bottom: 100px !important;
+    top: 50px !important;
+    bottom: 50px !important;
     padding: 30px;
   }
 }
@@ -878,8 +885,8 @@ label {
 #palette_design_menu {
   background: coral;
   display: grid;
-  grid-template-columns: repeat(4, 4em);
-  grid-template-rows: repeat(3, 3em);
+  grid-template-columns: repeat(8, 4em);
+  grid-template-rows: repeat(4, 3em);
   row-gap: 1px;
   column-gap: 1px;
 
@@ -918,36 +925,6 @@ label {
       border: 2px solid red;
     }
   }
-}
-
-.design--white {
-  background: white;
-}
-.design--normal {
-  background: linear-gradient(160deg, white, antiquewhite);
-}
-.design--gold {
-  background: linear-gradient(160deg, navajowhite, goldenrod);
-}
-.design--silver {
-  background: linear-gradient(160deg, whitesmoke, silver);
-}
-.design--dark {
-  background: dimgray;
-  color: whitesmoke;
-  color: gainsboro;
-}
-.design--darkgreen {
-  background: darkgreen;
-  color: whitesmoke;
-}
-.design--darkblue {
-  background: darkblue;
-  color: whitesmoke;
-}
-.design--darkred {
-  background: darkred;
-  color: whitesmoke;
 }
 
 .thumbnail--sheet {
@@ -1011,11 +988,11 @@ label {
 
 .palette--union--wrapper {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(7, 1fr);
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: 2fr 2fr 2fr 2fr 2fr 1fr 2fr 1fr 2fr 1.5fr;
   height: 100%;
   width: 100%;
-  .tool--toggle {
+  .tool--toggle,.tool--button {
     margin: 5px;
     height: auto;
   }
@@ -1148,38 +1125,56 @@ button.union--back--5, .union--back--5 label, .union--back--5.subject {
   --back-color-start: lightpink;
   --back-color-end: plum;
 }
+button.union--back--6, .union--back--6 label, .union--back--6.subject {
+  --back-color-start: forestgreen;
+  --back-color-end: seagreen;
+}
+button.union--back--7, .union--back--7 label, .union--back--7.subject {
+  --back-color-start: dimgray;
+  --back-color-end: black;
+}
 
 .union--ribbon--color--0 label, .union--ribbon--color--0.subject, button.union--ribbon--color--0 { --ribbon-color: crimson; }
 .union--ribbon--color--1 label, .union--ribbon--color--1.subject, button.union--ribbon--color--1 { --ribbon-color: royalblue; }
 .union--ribbon--color--2 label, .union--ribbon--color--2.subject, button.union--ribbon--color--2 { --ribbon-color: seagreen; }
 .union--ribbon--color--3 label, .union--ribbon--color--3.subject, button.union--ribbon--color--3 { --ribbon-color: darkorchid; }
 .union--ribbon--color--4 label, .union--ribbon--color--4.subject, button.union--ribbon--color--4 { --ribbon-color: darkorange; }
-.union--ribbon--color--5 label, .union--ribbon--color--5.subject, button.union--ribbon--color--5 { --ribbon-color: yellow; }
+.union--ribbon--color--5 label, .union--ribbon--color--5.subject, button.union--ribbon--color--5 { --ribbon-color: sienna; }
+.union--ribbon--color--6 label, .union--ribbon--color--6.subject, button.union--ribbon--color--6 { --ribbon-color: gold; }
+.union--ribbon--color--7 label, .union--ribbon--color--7.subject, button.union--ribbon--color--7 { --ribbon-color: lightpink; }
 #union_ribbon_color_0 label { background: var(--ribbon-color); }
 #union_ribbon_color_1 label { background: var(--ribbon-color); }
 #union_ribbon_color_2 label { background: var(--ribbon-color); }
 #union_ribbon_color_3 label { background: var(--ribbon-color); }
 #union_ribbon_color_4 label { background: var(--ribbon-color); }
 #union_ribbon_color_5 label { background: var(--ribbon-color); }
+#union_ribbon_color_6 label { background: var(--ribbon-color); }
+#union_ribbon_color_7 label { background: var(--ribbon-color); }
 #union_back_0 label { background: linear-gradient(160deg, var(--back-color-start), var(--back-color-end)); }
 #union_back_1 label { background: linear-gradient(160deg, var(--back-color-start), var(--back-color-end)); }
 #union_back_2 label { background: linear-gradient(160deg, var(--back-color-start), var(--back-color-end)); }
 #union_back_3 label { background: linear-gradient(160deg, var(--back-color-start), var(--back-color-end)); }
 #union_back_4 label { background: linear-gradient(160deg, var(--back-color-start), var(--back-color-end)); }
 #union_back_5 label { background: linear-gradient(160deg, var(--back-color-start), var(--back-color-end)); }
+#union_back_6 label { background: linear-gradient(160deg, var(--back-color-start), var(--back-color-end)); }
+#union_back_7 label { background: linear-gradient(160deg, var(--back-color-start), var(--back-color-end)); }
 
-.union--font--color--0 label, .union--font--color--0.subject, button.union--font--color--0 { --font-color: black;  color: var(--font-color); }
-.union--font--color--1 label, .union--font--color--1.subject, button.union--font--color--1 { --font-color: red;    color: var(--font-color); }
-.union--font--color--2 label, .union--font--color--2.subject, button.union--font--color--2 { --font-color: blue;   color: var(--font-color); }
-.union--font--color--3 label, .union--font--color--3.subject, button.union--font--color--3 { --font-color: green;  color: var(--font-color); }
-.union--font--color--4 label, .union--font--color--4.subject, button.union--font--color--4 { --font-color: silver; color: var(--font-color); }
-.union--font--color--5 label, .union--font--color--5.subject, button.union--font--color--5 { --font-color: white;  color: var(--font-color); }
+.union--font--color--0 label, .union--font--color--0.subject, button.union--font--color--0 { --font-color: black;    color: var(--font-color); }
+.union--font--color--1 label, .union--font--color--1.subject, button.union--font--color--1 { --font-color: red;      color: var(--font-color); }
+.union--font--color--2 label, .union--font--color--2.subject, button.union--font--color--2 { --font-color: blue;     color: var(--font-color); }
+.union--font--color--3 label, .union--font--color--3.subject, button.union--font--color--3 { --font-color: green;    color: var(--font-color); }
+.union--font--color--4 label, .union--font--color--4.subject, button.union--font--color--4 { --font-color: purple;   color: var(--font-color); }
+.union--font--color--5 label, .union--font--color--5.subject, button.union--font--color--5 { --font-color: orange;   color: var(--font-color); }
+.union--font--color--6 label, .union--font--color--6.subject, button.union--font--color--6 { --font-color: darkgray; color: var(--font-color); }
+.union--font--color--7 label, .union--font--color--7.subject, button.union--font--color--7 { --font-color: white;    color: var(--font-color); }
 #union_font_color_0 label { background: var(--font-color); }
 #union_font_color_1 label { background: var(--font-color); }
 #union_font_color_2 label { background: var(--font-color); }
 #union_font_color_3 label { background: var(--font-color); }
 #union_font_color_4 label { background: var(--font-color); }
 #union_font_color_5 label { background: var(--font-color); }
+#union_font_color_6 label { background: var(--font-color); }
+#union_font_color_7 label { background: var(--font-color); }
 
 .union--font--style--0 { * { font-family: "Lucida Console", Courier, monospace; } }
 .union--font--style--1 { * { font-family: "cursive"; } }

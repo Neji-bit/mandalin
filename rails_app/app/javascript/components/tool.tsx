@@ -143,9 +143,6 @@ class ToolBox extends React.Component {
             tool_id="tool_toggle_swapplus"
             key="21"
           />
-          <div
-            key="14"
-          />
         </div>
         <div className={`toolbox--block ${readonly}`}>
           <ToolToggle

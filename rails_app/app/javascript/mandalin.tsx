@@ -2,7 +2,7 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import Cell from './components/cell'
 import Command from './logic/command'
-import Backboard from './components/layout'
+import {Backboard} from './components/layout'
 import {Keyboard} from './logic/keyboard'
 import {ToolLogic} from './logic/tool_logic'
 import {Api} from './logic/api'
@@ -171,10 +171,12 @@ function init() {
     ribbon_color: "union--ribbon--color--0",
     ribbon_style: "union--ribbon--style--0"
   }
-  _data.state.decorates ||= {}
-  "0123456789abcdef".split("").forEach((i) => {
-    _data.state.decorates[`union--design--${i}`] ||= {...decorate}
+  _data.app_info.decorates ||= {}
+  "0123456789abcdefghijklmnopqrstuv".split("").forEach((i) => {
+    _data.app_info.decorates[`union--design--${i}`] ||= {...decorate}
   })
+  //  デザイン群を表示する際の表示順。順序入替え時、（もちろん）デザインのIDは変えず、この表示順序だけを変更する仕組み。
+  _data.app_info.design_sort ||= "0123456789abcdefghijklmnopqrstuv"
 
   const root = document.getElementById('root');
   if (!root) {

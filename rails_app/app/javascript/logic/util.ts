@@ -3,20 +3,32 @@ import parse from 'html-react-parser'
 //  雑多な共通処理をまとめて置いておくクラス。
 class Util {
 
+  //  対象要素のスタイル設定でテキストを描いた場合の高さを擬似的に計算する。（改行には非対応）
+  static textRect = (elm, text) => {
+    const ctx = document.createElement('canvas').getContext('2d')
+    // 描画対象要素のテキストスタイルを取得し、Canvasに設定する
+    const style = getComputedStyle(elm, "")
+    ctx.font = `${style.fontSize} ${style.fontFamily}`
+    // 幅、高さを取得
+    const mesure = ctx.measureText(text)
+    const textWidth = mesure.width
+    const textHeight = mesure.actualBoundingBoxAscent + mesure.actualBoundingBoxDescent
+    return {width: textWidth, height: textHeight}
+  }
+
   //  textareaの高さを、内容を解釈して調整する
-  static textHeightAdjustment = (e) => {
+  static textHeightAdjustment = (elm) => {
     // textarea要素のpaddingのY軸(高さ)
     const PADDING_Y = 0
-    let t = e.currentTarget
     // textarea要素のlineheight
-    let lineHeight = getComputedStyle(t).lineHeight
+    let lineHeight = getComputedStyle(elm).lineHeight
     // "19.6px" のようなピクセル値が返ってくるので、数字だけにする
     lineHeight = lineHeight.replace(/[^-\d\.]/g, '')
     lineHeight = 24
     // textarea要素に入力された値の行数
-    const lines = (t.value + '\n').match(/\n/g).length
+    const lines = (elm.value + '\n').match(/\n/g).length
     // 高さを再計算
-    t.style.height = lineHeight * lines + PADDING_Y + 'px'
+    elm.style.height = lineHeight * lines + PADDING_Y + 'px'
   }
 
   //  "HTMLで記載されたテキスト"をHTMLにパースする。
@@ -118,6 +130,9 @@ class Util {
     )
   }
 
+  static intToHex(i) { return "0123456789abcdefghijklmnopqrstuv"[i] }
+  static hexToInt(h) { return "0123456789abcdefghijklmnopqrstuv".indexOf(h) }
+
   static is_readonly() {
     return (!_data.app_info.is_owner) && (_data.book.authorization.is_public)
   }
@@ -133,7 +148,7 @@ class Util {
     let unions = classes.filter((c) => {return c.match(/union--design--./)})
     //  合成クラスから、デコレーション系のクラスを引く
     let details = []
-    unions.forEach((u) => {details = [...details, ...(Object.values(_data.state.decorates[u]).filter((f) => {return f}))]})
+    unions.forEach((u) => {details = [...details, ...(Object.values(_data.app_info.decorates[u]).filter((f) => {return f}))]})
     //  要素のクラスを指定。「元々あるもの」＋「デコレーション系」
     elm.classList = classes.join(" ")
     elm.classList.add(...details)
