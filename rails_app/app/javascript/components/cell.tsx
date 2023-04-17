@@ -26,11 +26,10 @@ class Cell extends React.Component {
     if("selection--cells" == mode) {
       this.setState({selected: !this.state.selected})
     }
-    if("selection--swap" == mode || "selection--swapplus" == mode) {
-      let with_design = "selection--swapplus" == mode
+    if("selection--swap" == mode) {
       this.setState({selected: !this.state.selected},
         () => {
-          if(ToolLogic.swap(with_design)) {
+          if(ToolLogic.swap(Util.subKeys(e))) {
             Util.releaseSelected("cell")
             Util.releaseSelected("area")
           }
@@ -73,9 +72,13 @@ class Cell extends React.Component {
       this.setState({selected: !this.state.selected})
     }
 
-    //  大マップの時は、eraseでセブジェクトもノートもまとめて削除する
-    if(_data.state.viewMode == "large" && _data.state.selectionMode == "selection--erase") {
-      ToolLogic.eraseCell(this.id)
+    //  //  大マップの時は、eraseでセブジェクトもノートもまとめて削除する
+    //  if(_data.state.viewMode == "large" && _data.state.selectionMode == "selection--erase") {
+    //    ToolLogic.eraseCell(this.id, Util.subKeys(e))
+    //  }
+
+    if("selection--erase" == mode) {
+      ToolLogic.eraseCell(this.id, Util.subKeys(e))
     }
   }
   doubleClicked = (e) => {
@@ -154,6 +157,7 @@ class Cell extends React.Component {
         id={this.id}
         className={classList.join(" ")}
         onClick={this.clicked}
+        onContextMenu={(e) => { Util.rightClickToLeftClick(e) }}
         onDoubleClick={this.doubleClicked}
       >
         <CellEffect parent={this} />

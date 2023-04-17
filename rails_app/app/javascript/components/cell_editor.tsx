@@ -39,16 +39,17 @@ class Editor extends React.Component {
     if("page--title" == this.role) return
     if("book--title" == this.role) return
 
-    //  削除モードの場合、サブジェクトとノートが表示されている場合は個々に削除する。
-    if(
-        ["middle", "small"].includes(_data.state.viewMode) &&
-        "selection--erase" == _data.state.selectionMode
-    ) {
-      if(["subject", "note"].includes(this.role)) {
-        _data[this.parent.id][this.role].data = ""
-        this.forceUpdate()
-      }
-    }
+    //  //  削除モードの場合、サブジェクトとノートが表示されている場合は個々に削除する。
+    //  if(
+    //      ["middle", "small"].includes(_data.state.viewMode) &&
+    //      "selection--erase" == _data.state.selectionMode
+    //  ) {
+    //    if(["subject", "note"].includes(this.role)) {
+    //      _data[this.parent.id][this.role].data = ""
+    //      this.forceUpdate()
+    //    }
+    //  }
+
     //  ステッカーパレット
     if("selection--sticker" == _data.state.selectionMode) {
       this.setState({selected: !this.state.selected},

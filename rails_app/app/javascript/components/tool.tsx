@@ -1,5 +1,5 @@
 import React from 'react'
-import Util from '../logic/util'
+import {Util} from '../logic/util'
 import {ToolLogic} from '../logic/tool_logic'
 
 class ToolBox extends React.Component {
@@ -17,7 +17,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="タグ表示"
-            hotkey="Ctrl_t"
+            hotkey="Ctrl_z"
             logic={ToolLogic.toggleTag}
             tool_id="tool_switch_tag"
             checked={_data.state.showTag}
@@ -26,7 +26,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="ステッカー表示"
-            hotkey="Ctrl_k"
+            hotkey="Ctrl_x"
             logic={ToolLogic.toggleSticker}
             tool_id="tool_switch_sticker"
             checked={_data.state.showSticker}
@@ -35,7 +35,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="サムネイル表示"
-            hotkey="Ctrl_x"
+            hotkey="Ctrl_c"
             logic={ToolLogic.toggleThumbnail}
             tool_id="tool_switch_thumbnail"
             checked={_data.state.showThumbnail}
@@ -46,7 +46,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="全体表示"
-            hotkey="Ctrl_l"
+            hotkey="Ctrl_m"
             logic={ToolLogic.viewLarge}
             tool_id="tool_view_large"
             key="1"
@@ -54,7 +54,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="エリア表示"
-            hotkey="Ctrl_m"
+            hotkey="Ctrl_n"
             logic={ToolLogic.viewMiddle}
             tool_id="tool_view_middle"
             key="2"
@@ -62,7 +62,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="セル表示"
-            hotkey="Ctrl_s"
+            hotkey="Ctrl_b"
             logic={ToolLogic.viewSmall}
             tool_id="tool_view_small"
             key="3"
@@ -122,7 +122,7 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="削除"
-            hotkey="d"
+            hotkey="k"
             logic={ToolLogic.selectModeBind}
             tool_id="tool_toggle_erase"
             key="12"
@@ -130,18 +130,10 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="入替"
-            hotkey="w"
+            hotkey="l"
             logic={ToolLogic.selectModeBind}
             tool_id="tool_toggle_swap"
             key="13"
-          />
-          <ToolToggle
-            parent={this}
-            label="入替＋"
-            hotkey="W"
-            logic={ToolLogic.selectModeBind}
-            tool_id="tool_toggle_swapplus"
-            key="21"
           />
         </div>
         <div className={`toolbox--block ${readonly}`}>
@@ -156,8 +148,8 @@ class ToolBox extends React.Component {
           <ToolButton
             parent={this}
             label="ペースト"
-            hotkey="P"
-            logic={ToolLogic.paste}
+            hotkey="p"
+            logic={(e) => {ToolLogic.paste(Util.subKeys(e))}}
             tool_id="tool_button_paste"
             key="16"
           />
@@ -182,7 +174,7 @@ class ToolBox extends React.Component {
           <ToolButton
             parent={this}
             label="修飾合成"
-            hotkey="Ctrl_u"
+            hotkey="Ctrl_d"
             logic={ToolLogic.union}
             tool_id="tool_button_union"
             key="26"
@@ -250,6 +242,7 @@ class ToolButton extends React.Component {
         className="tool--button"
         id={this.id}
         onClick={this.logic}
+        onContextMenu={(e) => { Util.rightClickToLeftClick(e) }}
       >
         {label}
       </button>
@@ -301,6 +294,7 @@ class ToolToggle extends React.Component {
         />
         <label
           htmlFor={`${this.id}_checkbox`}
+          onContextMenu={(e) => { Util.rightClickToLeftClick(e) }}
         >
           {label}
         </label>

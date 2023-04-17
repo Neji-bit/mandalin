@@ -178,6 +178,10 @@ function init() {
   //  デザイン群を表示する際の表示順。順序入替え時、（もちろん）デザインのIDは変えず、この表示順序だけを変更する仕組み。
   _data.app_info.design_sort ||= "0123456789abcdefghijklmnopqrstuv"
 
+  //  ツールの初期値。
+  _data.state.showSticker = true
+  _data.state.showThumbnail= true
+
   const root = document.getElementById('root');
   if (!root) {
     throw new Error('No root element');

@@ -1,4 +1,5 @@
 import parse from 'html-react-parser'
+import {HotkeyQueue} from `./keyboard`
 
 //  雑多な共通処理をまとめて置いておくクラス。
 class Util {
@@ -141,6 +142,7 @@ class Util {
     return (!!_data.app_info.visitor_email)
   }
 
+  //  抽象的なデザインクラスが設定された要素について、具体的なデザインクラスを割り当てる。
   static assignUnionDesign = (elm) => {
     //  デコレーション系のクラスを、一旦すべて取り除く
     let classes = [...elm.classList].filter((c) => {return !c.match(/^union--(font|ribbon|back)/)})
@@ -152,6 +154,24 @@ class Util {
     //  要素のクラスを指定。「元々あるもの」＋「デコレーション系」
     elm.classList = classes.join(" ")
     elm.classList.add(...details)
+  }
+
+  //  「Ctrl+Click」したい時用の処理。Ctrl+Clickは「右クリック扱い」になってしまうため、左クリックに置き換える。
+  //  「補助キーを押しながらクリック」系のアクション用。
+  static rightClickToLeftClick = (e) => {
+    if(e.ctrlKey) {
+      e.preventDefault()
+      e.target.dispatchEvent(new MouseEvent("click", {bubbles: true, ctrlKey: e.ctrlKey, shiftKey: e.shiftKey, altKey: e.altKey}))
+    }
+  }
+  //  イベントから補助キー情報を抽出する
+  static subKeys = (e) => {
+    if(e.ctrlKey != undefined) {
+      return {ctrlKey: e.ctrlKey, shiftKey: e.shiftKey, altKey: e.altKey}
+    } else {
+      //  Reactイベントが情報を直接持っていない場合は、下の層にあるnativeEventが持ってるハズ
+      return {ctrlKey: e.nativeEvent.ctrlKey, shiftKey: e.nativeEvent.shiftKey, altKey: e.nativeEvent.altKey}
+    }
   }
 }
 

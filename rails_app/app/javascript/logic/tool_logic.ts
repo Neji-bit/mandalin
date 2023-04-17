@@ -54,7 +54,6 @@ class ToolLogic {
       tool_toggle_edit_checkbox,
       tool_toggle_erase_checkbox,
       tool_toggle_swap_checkbox,
-      tool_toggle_swapplus_checkbox,
       tool_toggle_copy_checkbox,
       tool_toggle_twoinone_checkbox,
       tool_toggle_design_checkbox,
@@ -73,7 +72,6 @@ class ToolLogic {
         tool_toggle_edit_checkbox,
         tool_toggle_erase_checkbox,
         tool_toggle_swap_checkbox,
-        tool_toggle_swapplus_checkbox,
         tool_toggle_copy_checkbox,
         tool_toggle_twoinone_checkbox,
         tool_toggle_design_checkbox,
@@ -100,7 +98,6 @@ class ToolLogic {
     if(tool_toggle_edit_checkbox.checked) mode = "selection--edit"
     if(tool_toggle_erase_checkbox.checked) mode = "selection--erase"
     if(tool_toggle_swap_checkbox.checked) mode = "selection--swap"
-    if(tool_toggle_swapplus_checkbox.checked) mode = "selection--swapplus"
     if(tool_toggle_copy_checkbox.checked) mode = "selection--copy"
     if(tool_toggle_twoinone_checkbox.checked) mode = "selection--twoinone"
     if(tool_toggle_design_checkbox.checked) mode = "selection--design"
@@ -115,7 +112,7 @@ class ToolLogic {
     //  削除：選択されているものがある場合は、それらを削除し、ツールはOFFにする。
     if("tool_toggle_erase_checkbox" == e.currentTarget.id) {
       if(0 < [...document.getElementsByClassName("selected")].length) {
-        ToolLogic.erase()
+        ToolLogic.erase(Util.subKeys(e))
         //  削除の場合は、ついでに選択を解除する。
         tool_toggle_cell_checkbox.checked = false
         tool_toggle_area_checkbox.checked = false
@@ -125,17 +122,9 @@ class ToolLogic {
     //  入替：選択されているものがある場合は、入替し、ツールはOFFにする。
     if("tool_toggle_swap_checkbox" == e.currentTarget.id) {
       if(2 == [...document.getElementsByClassName("selected")].length) {
-        ToolLogic.swap()
+        ToolLogic.swap(Util.subKeys(e))
         //  入替の場合は、選択を解除しない。
         tool_toggle_swap_checkbox.checked = false
-      }
-    }
-    //  入替（装飾も含む）：
-    if("tool_toggle_swapplus_checkbox" == e.currentTarget.id) {
-      if(2 == [...document.getElementsByClassName("selected")].length) {
-        ToolLogic.swap(true)
-        //  入替の場合は、選択を解除しない。
-        tool_toggle_swapplus_checkbox.checked = false
       }
     }
     //  コピー：選択されたものをただクリップボードにコピーするだけ。
@@ -149,10 +138,10 @@ class ToolLogic {
 
   //  入れ替え。現在は「選択対象が２つ」の時のみ機能。
   //  入替が成立した際は true, 不成立だった場合は false を返す。
-  static swap = (with_design = false) => {
+  static swap = (subKeys = {ctrlKey: false, shiftKey: false, altKey: false}) => {
     let cells = [...document.getElementsByClassName("cell selected")]
     if(2 == cells.length) {
-      ToolLogic._swap(cells[0].id, cells[1].id, with_design)
+      ToolLogic._swap(cells[0].id, cells[1].id, subKeys)
       return true
     }
     let areas = [...document.getElementsByClassName("area selected")]
@@ -160,58 +149,68 @@ class ToolLogic {
       let left_cell_id_base = `cell_${areas[0].id.match(/.$/)}`
       let right_cell_id_base = `cell_${areas[1].id.match(/.$/)}`
       Cell.cell_ids.split("").forEach((c) => {
-        ToolLogic._swap(`${left_cell_id_base}${c}`, `${right_cell_id_base}${c}`, with_design)
+        ToolLogic._swap(`${left_cell_id_base}${c}`, `${right_cell_id_base}${c}`, subKeys)
       })
       return true
     }
     return false
   }
-  static _swap = (left_cell_id, right_cell_id, with_design = false) => {
+  static _swap = (left_cell_id, right_cell_id, subKeys = {ctrlKey: false, shiftKey: false, altKey: false}) => {
     let left = _data[left_cell_id]
     let right = _data[right_cell_id]
     let tmp = null
+    let isPlain = !Object.values(subKeys).find((k) => {return k})
 
-    tmp = right.subject.data
-    right.subject.data = left.subject.data
-    left.subject.data = tmp
-
-    tmp = right.subject.effect
-    right.subject.effect = left.subject.effect
-    left.subject.effect = tmp
-
-    tmp = right.note.data
-    right.note.data = left.note.data
-    left.note.data = tmp
-
-    tmp = right.note.effect
-    right.note.effect = left.note.effect
-    left.note.effect = tmp
-
-    if(with_design) {
+    if(isPlain || subKeys.ctrlKey) {
+      tmp = right.subject.data
+      right.subject.data = left.subject.data
+      left.subject.data = tmp
+      tmp = right.note.data
+      right.note.data = left.note.data
+      left.note.data = tmp
+    }
+    if(isPlain || subKeys.shiftKey) {
+      tmp = right.subject.effect
+      right.subject.effect = left.subject.effect
+      left.subject.effect = tmp
+      tmp = right.note.effect
+      right.note.effect = left.note.effect
+      left.note.effect = tmp
+    }
+    if(isPlain || subKeys.altKey) {
       tmp = right.subject.design
       right.subject.design = left.subject.design
       left.subject.design = tmp
-
       tmp = right.note.design
       right.note.design = left.note.design
       left.note.design = tmp
     }
-
     _data.react[left_cell_id].forceUpdate()
     _data.react[right_cell_id].forceUpdate()
   }
 
   //  セル／エリアの削除。
-  static erase = () => {
-    Util.selectedCells().forEach((c) => { ToolLogic.eraseCell(c.id) })
+  static erase = (subKeys) => {
+    Util.selectedCells().forEach((c) => { ToolLogic.eraseCell(c.id, subKeys) })
     areas = Util.selectedAreas().forEach((a) => {
-      Object.keys(_data[a.id].cells).forEach((c) => { ToolLogic.eraseCell(c) })
+      Object.keys(_data[a.id].cells).forEach((c) => { ToolLogic.eraseCell(c, subKeys) })
     })
   }
-  static eraseCell = (cell_id) => {
+  static eraseCell = (cell_id, subKeys = {ctrlKey: false, shiftKey: false, altKey: false}) => {
+    let isPlain = !Object.values(subKeys).find((k) => {return k})
     let data = _data[cell_id]
-    data.subject.data = ""
-    data.note.data = ""
+    if(isPlain || subKeys.ctrlKey) {
+      data.subject.data = ""
+      data.note.data = ""
+    }
+    if(isPlain || subKeys.shiftKey) {
+      data.subject.effect = ""
+      data.note.effect = ""
+    }
+    if(isPlain || subKeys.altKey) {
+      data.subject.design = ""
+      data.note.design = ""
+    }
     _data.react[cell_id].forceUpdate()
   }
 
@@ -246,12 +245,12 @@ class ToolLogic {
   }
 
   //  ペースト。
-  static paste = () => {
+  static paste = (subKeys = {ctrlKey: false, shiftKey: false, altKey: false}) => {
     navigator.clipboard.readText()
     .then((text) => {
       let json = JSON.parse(text)
       Object.keys(json).forEach((c) => {
-        ToolLogic._copyCell(c, json[c])
+        ToolLogic._copyCell(c, json[c], subKeys)
       })
       _data.react.map.forceUpdate()
     })
@@ -330,11 +329,12 @@ class ToolLogic {
   }
 
   //  JSONを指定されたセルのデータに上書きする。
-  static _copyCell = (cell_id, json) => {
-    ["subject", "note"].forEach((t) => {
-      ["data", "effect", "design"].forEach((d) => {
-        _data[cell_id][t][d] = json[t][d]
-      })
+  static _copyCell = (cell_id, json, subKeys = {ctrlKey: false, shiftKey: false, altKey: false}) => {
+    let isPlain = !Object.values(subKeys).find((k) => {return k})
+    Array("subject", "note").forEach((t) => {
+      if(isPlain || subKeys.ctrlKey) _data[cell_id][t]["data"] = json[t]["data"]
+      if(isPlain || subKeys.shiftKey) _data[cell_id][t]["effect"] = json[t]["effect"]
+      if(isPlain || subKeys.altKey) _data[cell_id][t]["design"] = json[t]["design"]
     })
   }
   //  JSON（セル集合）をデータに上書きする。

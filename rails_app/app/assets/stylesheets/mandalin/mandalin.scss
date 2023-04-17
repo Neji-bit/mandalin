@@ -793,12 +793,6 @@ label {
       border: 2px solid rgba(0, 255, 0, 0.5);
     }
   }
-  &.selection--swapplus {
-    cursor: url("cursor_swap.svg"), auto;
-    .cell:hover {
-      border: 2px solid rgba(0, 255, 0, 0.5);
-    }
-  }
   &.selection--twoinone {
     cursor: pointer;
     .cell:hover {

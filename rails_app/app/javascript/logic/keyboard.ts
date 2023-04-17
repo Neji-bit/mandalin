@@ -155,37 +155,50 @@ class Keyboard {
       //  TODO:精度上げるために「elseならキューをクリアする」を入れるべきでは？
       if(Keyboard.hotkey_enable())  HotkeyQueue.push(e)
 
-      //  ホットキーによるセル／エリアのクリック。
+      //  ホットキーによるセル／エリア／ページのクリック。
       //  ホットキー履歴を参照する。
       if(Keyboard.hotkey_enable()) {
         //  補助キー無しのキー入力のみを、履歴から抽出。
-        let hotkeys = HotkeyQueue.get().map((k) => {return Keyboard.isOnly(k) ? k.key : " "}).join("")
-        if("wersdfzxc.".includes(hotkeys[0])) {
+        let keys = HotkeyQueue.get().map((k) => {return Keyboard.isOnly(k) ? k.key : " "}).join("")
+        let codes = HotkeyQueue.get().map((k) => {return k.code})
+        let whiches = HotkeyQueue.get().map((k) => {return k.which})
+        let arrows = "WERSDFZXC".split("").map((a) => {return `Key${a}`})
+        if(arrows.concat("Period").includes(codes[0])) {
           //  セル入力中で、かつセル入力が完了していない場合は、ここで入力を食ってしまう。
-          if(hotkeys.includes(".") && "." != hotkeys[2]) return
-          if("." == hotkeys[2]) {
+          if(keys.includes(".") && "." != keys[2]) return
+          if("." == keys[2]) {
             //  動詞が何も指定されていなかったら、暗黙的にセル選択を有効にする。
             if(["selection--none", "selection--areas"].includes(_data.state.selectionMode)) document.querySelector("label[for='tool_toggle_cell_checkbox']").click()
-            let cell = hotkeys[0] == "." ? _data.state.currentCell.match(/.$/) : hotkeys[0]
-            let area = hotkeys[1] == "." ? _data.state.currentArea.match(/.$/) : hotkeys[1]
+            let cell = codes[0] == "Period" ? _data.state.currentCell.match(/.$/) : String.fromCharCode(whiches[0]).toLowerCase()
+            let area = codes[1] == "Period" ? _data.state.currentArea.match(/.$/) : String.fromCharCode(whiches[1]).toLowerCase()
             //  動詞によって、クリック対象を調整。
             let editfor= "large" == _data.state.viewMode ? "_editor_subject" : "_editor_note"
             let editor = ["selection--edit", "selection--design"].includes(_data.state.selectionMode) ? editfor : ""
             let target = document.getElementById(`cell_${area}${cell}${editor}`)
             e.preventDefault()
-            if(target) target.click()
+            if(target) target.dispatchEvent(new MouseEvent("click", {bubbles: true, ctrlKey: e.ctrlKey, shiftKey: e.shiftKey, altKey: e.altKey}))
             //  セル入力を処理したら、履歴をクリア。
             HotkeyQueue.clear()
             return
           }
         }
-        if("wersdfzxc,".includes(hotkeys[0])) {
-          if(hotkeys.includes(",") && "," != hotkeys[1]) return
-          if("," == hotkeys[1]) {
+        if(arrows.concat("Comma").includes(codes[0])) {
+          //  エリアのクリック。
+          if(keys.includes(",") && "," != keys[1]) return
+          if("," == keys[1]) {
             if(["selection--none", "selection--cells"].includes(_data.state.selectionMode)) document.querySelector("label[for='tool_toggle_area_checkbox']").click()
-            let area = hotkeys[0] == "," ? _data.state.currentArea.match(/.$/) : hotkeys[0]
+            let area = codes[0] == "Comma" ? _data.state.currentArea.match(/.$/) : String.fromCharCode(whiches[0]).toLowerCase()
             let target = document.getElementById(`area_${area}`)
-            if(target) target.click()
+            if(target) target.dispatchEvent(new MouseEvent("click", {bubbles: true, ctrlKey: e.ctrlKey, shiftKey: e.shiftKey, altKey: e.altKey}))
+            HotkeyQueue.clear()
+            return
+          }
+        }
+          //  ページのクリック。
+        if("0123456789abcdef".includes(keys[0])) {
+          if(keys.includes(";") && ";" != keys[1]) return
+          if(";" == keys[1]) {
+            document.getElementById(`page_${keys[0]}`).click()
             HotkeyQueue.clear()
             return
           }
@@ -198,17 +211,17 @@ class Keyboard {
           //  全画面表示
           case "KeyQ": document.querySelector("label[for='tool_toggle_fullscreen_checkbox']").click(); break
           //  タブ表示
-          case "KeyT": document.querySelector("label[for='tool_switch_tag_checkbox']").click(); break
-          //  タブステッカー
-          case "KeyK": document.querySelector("label[for='tool_switch_sticker_checkbox']").click(); break
+          case "KeyZ": document.querySelector("label[for='tool_switch_tag_checkbox']").click(); break
+          //  ステッカー
+          case "KeyX": document.querySelector("label[for='tool_switch_sticker_checkbox']").click(); break
           //  サムネイル
-          case "KeyX": document.querySelector("label[for='tool_switch_thumbnail_checkbox']").click(); break
+          case "KeyC": document.querySelector("label[for='tool_switch_thumbnail_checkbox']").click(); break
           //  全体表示
-          case "KeyL": document.querySelector("label[for='tool_view_large_checkbox']").click(); break
+          case "KeyM": document.querySelector("label[for='tool_view_large_checkbox']").click(); break
           //  エリア表示
-          case "KeyM": document.querySelector("label[for='tool_view_middle_checkbox']").click(); break
+          case "KeyN": document.querySelector("label[for='tool_view_middle_checkbox']").click(); break
           //  セル表示
-          case "KeyS": document.querySelector("label[for='tool_view_small_checkbox']").click(); break
+          case "KeyB": document.querySelector("label[for='tool_view_small_checkbox']").click(); break
           //  2in1表示
           case "KeyV": document.querySelector("label[for='tool_view_twoinone_checkbox']").click(); break
         }
@@ -255,7 +268,6 @@ class Keyboard {
             case "KeyC": _data.state.hotkeyArea = "c"; Keyboard.middleMap("area_c"); break
           }
         }
-        return
       }
 
       //  ページ遷移処理
@@ -263,22 +275,6 @@ class Keyboard {
         let pages = Page.page_ids.split("").map((p) => {return `page_${p}`})
         if(onCtrl) {
           switch(code) {
-            case "Digit0": page_0.click(); break
-            case "Digit1": page_1.click(); break
-            case "Digit2": page_2.click(); break
-            case "Digit3": page_3.click(); break
-            case "Digit4": page_4.click(); break
-            case "Digit5": page_5.click(); break
-            case "Digit6": page_6.click(); break
-            case "Digit7": page_7.click(); break
-            case "Digit8": page_8.click(); break
-            case "Digit9": page_9.click(); break
-            case "KeyA": page_a.click(); break
-            case "KeyB": page_b.click(); break
-            case "KeyC": page_c.click(); break
-            case "KeyD": page_d.click(); break
-            case "KeyE": page_e.click(); break
-            case "KeyF": page_f.click(); break
             //  Ctrl+< : ページを後ろめくり
             case "Comma":
               {
@@ -312,6 +308,21 @@ class Keyboard {
       }
 
       if(Keyboard.hotkey_enable()) {
+        //  補助キーでモード調整をするコマンド
+        switch(code) {
+          case "KeyK":
+            //  削除ホットキー
+            document.querySelector("label[for='tool_toggle_erase_checkbox']").dispatchEvent(new MouseEvent("click", {bubbles: true, ctrlKey: e.ctrlKey,shiftKey: e.shiftKey, altKey: e.altKey}))
+            break
+          case "KeyL":
+            //  入替ホットキー
+            document.querySelector("label[for='tool_toggle_swap_checkbox']").dispatchEvent(new MouseEvent("click", {bubbles: true, ctrlKey: e.ctrlKey,shiftKey: e.shiftKey, altKey: e.altKey}))
+            break
+          case "KeyP":
+            //  ペーストホットキー
+              tool_button_paste.dispatchEvent(new MouseEvent("click", {bubbles: true, ctrlKey: e.ctrlKey,shiftKey: e.shiftKey, altKey: e.altKey}))
+            break
+        }
         if(! onCtrl) {
           switch(code) {
             case "KeyS":
@@ -330,29 +341,12 @@ class Keyboard {
               if(onShift) {
                 //  デザインホットキー
                 document.querySelector("label[for='tool_toggle_design_checkbox']").click()
-              } else {
-                //  削除ホットキー
-                document.querySelector("label[for='tool_toggle_erase_checkbox']").click()
-              }
-              break
-            case "KeyW":
-              //  入替ホットキー
-              if(onShift) {
-                document.querySelector("label[for='tool_toggle_swapplus_checkbox']").click()
-              } else {
-                document.querySelector("label[for='tool_toggle_swap_checkbox']").click()
               }
               break
             case "KeyC":
               //  コピーホットキー
               if(onShift) {
                 document.querySelector("label[for='tool_toggle_copy_checkbox']").click()
-              }
-              break
-            case "KeyP":
-              //  ペーストホットキー
-              if(onShift) {
-                tool_button_paste.click()
               }
               break
             case "KeyT":
@@ -365,9 +359,10 @@ class Keyboard {
               }
               break
           }
-        } else {
+        }
+        if(Keyboard.isWithCtrlOnly(e)) {
           switch(code) {
-            case "KeyU":
+            case "KeyD":
                 tool_button_union.click()
               break
           }
@@ -377,4 +372,4 @@ class Keyboard {
   }
 }
 
-export {Keyboard}
+export {Keyboard, HotkeyQueue}
