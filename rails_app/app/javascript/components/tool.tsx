@@ -140,17 +140,17 @@ class ToolBox extends React.Component {
           <ToolToggle
             parent={this}
             label="コピー"
-            hotkey="C"
+            hotkey="c"
             logic={ToolLogic.selectModeBind}
             tool_id="tool_toggle_copy"
             key="15"
           />
-          <ToolButton
+          <ToolToggle
             parent={this}
             label="ペースト"
             hotkey="p"
-            logic={(e) => {ToolLogic.paste(Util.subKeys(e))}}
-            tool_id="tool_button_paste"
+            logic={(e) => {ToolLogic.selectModeBind(e); ToolLogic.paste(e.target.checked, Util.subKeys(e))}}
+            tool_id="tool_toggle_paste"
             key="16"
           />
         </div>

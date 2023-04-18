@@ -104,12 +104,18 @@ class Keyboard {
       const char    = String.fromCharCode(e.keyCode)
       const ime     = e.isComposing
 
+      //  様々なものの解除
       if(code == "Escape") {
         if("TEXTAREA" == document.activeElement.nodeName) {
+          //  テキスト入力状態の解除
           document.activeElement.blur()
         } else if (palette_sheet.classList.contains("fadeIn")) {
+          //  パレットを閉じる
           palette_sheet.click()
         } else {
+          //  オペレーションを解除する
+          //  はりつけ予告も外す
+          ToolLogic.disablePasteShadow()
           ToolLogic.releaseToggles()
         }
       }
@@ -149,6 +155,19 @@ class Keyboard {
           }
           return
         }
+      }
+
+      //  ペースト時の位置調整
+      if(("selection--paste" == _data.state.selectionMode) && "wersdfzxc".includes(key)) {
+        if("wsz".includes(key)) _data.state.pasteSlideX -= 1
+        if("rfc".includes(key)) _data.state.pasteSlideX += 1
+        if("wer".includes(key)) _data.state.pasteSlideY -= 1
+        if("zxc".includes(key)) _data.state.pasteSlideY += 1
+        if("d".includes(key)) _data.state.pasteSlideX = 0
+        if("d".includes(key)) _data.state.pasteSlideY = 0
+        ToolLogic.disablePasteShadow()
+        ToolLogic.paste(tool_toggle_paste_checkbox.checked)
+        return
       }
 
       //  キーをキューに入れる
@@ -273,7 +292,7 @@ class Keyboard {
       //  ページ遷移処理
       if(Keyboard.hotkey_enable()) {
         let pages = Page.page_ids.split("").map((p) => {return `page_${p}`})
-        if(onCtrl) {
+        if(onCtrl || onAlt) {
           switch(code) {
             //  Ctrl+< : ページを後ろめくり
             case "Comma":
@@ -320,7 +339,7 @@ class Keyboard {
             break
           case "KeyP":
             //  ペーストホットキー
-              tool_button_paste.dispatchEvent(new MouseEvent("click", {bubbles: true, ctrlKey: e.ctrlKey,shiftKey: e.shiftKey, altKey: e.altKey}))
+            document.querySelector("label[for='tool_toggle_paste_checkbox']").dispatchEvent(new MouseEvent("click", {bubbles: true, ctrlKey: e.ctrlKey,shiftKey: e.shiftKey, altKey: e.altKey}))
             break
         }
         if(! onCtrl) {
@@ -345,9 +364,7 @@ class Keyboard {
               break
             case "KeyC":
               //  コピーホットキー
-              if(onShift) {
-                document.querySelector("label[for='tool_toggle_copy_checkbox']").click()
-              }
+              document.querySelector("label[for='tool_toggle_copy_checkbox']").click()
               break
             case "KeyT":
               if(onShift) {

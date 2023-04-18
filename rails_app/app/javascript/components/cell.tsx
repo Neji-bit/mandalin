@@ -19,7 +19,7 @@ class Cell extends React.Component {
     this.ref = React.createRef()
     this.id = `cell_${this.props.area_id}${this.props.cell_id || ""}`
     _data.react[this.id] = this
-    this.state = {selected: false}
+    this.state = {selected: false, pasteTo: null}
   }
   clicked = (e) => {
     let mode = _data.state.selectionMode
@@ -159,6 +159,7 @@ class Cell extends React.Component {
         onClick={this.clicked}
         onContextMenu={(e) => { Util.rightClickToLeftClick(e) }}
         onDoubleClick={this.doubleClicked}
+        data-paste-to={this.state.pasteTo}
       >
         <CellEffect parent={this} />
         <div className="wrapper">

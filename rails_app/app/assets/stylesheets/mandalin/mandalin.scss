@@ -435,6 +435,12 @@ body {
     &.selected {
       border: 2px solid rgba(0, 0, 255, 1.0) !important;
     }
+    &[data-paste-to] {
+      > .effect {
+        border: 2px solid rgba(255, 0, 0, 1.0);
+        background: rgba(255, 0, 0, 0.2);
+      }
+    }
   }
 }
 
@@ -640,6 +646,10 @@ body {
     }
     &:checked + label:before {
       background: lime;
+    }
+    //  ペーストは「ちょっと特殊な挙動」なので、目印にランプの色を変えておく。
+    &:checked + label[for="tool_toggle_paste_checkbox"]:before {
+      background: coral;
     }
   }
   label {

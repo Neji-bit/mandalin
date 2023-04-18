@@ -55,6 +55,7 @@ class ToolLogic {
       tool_toggle_erase_checkbox,
       tool_toggle_swap_checkbox,
       tool_toggle_copy_checkbox,
+      tool_toggle_paste_checkbox,
       tool_toggle_twoinone_checkbox,
       tool_toggle_design_checkbox,
       tool_toggle_sticker_checkbox
@@ -73,6 +74,7 @@ class ToolLogic {
         tool_toggle_erase_checkbox,
         tool_toggle_swap_checkbox,
         tool_toggle_copy_checkbox,
+        tool_toggle_paste_checkbox,
         tool_toggle_twoinone_checkbox,
         tool_toggle_design_checkbox,
         tool_toggle_sticker_checkbox,
@@ -99,6 +101,7 @@ class ToolLogic {
     if(tool_toggle_erase_checkbox.checked) mode = "selection--erase"
     if(tool_toggle_swap_checkbox.checked) mode = "selection--swap"
     if(tool_toggle_copy_checkbox.checked) mode = "selection--copy"
+    if(tool_toggle_paste_checkbox.checked) mode = "selection--paste"
     if(tool_toggle_twoinone_checkbox.checked) mode = "selection--twoinone"
     if(tool_toggle_design_checkbox.checked) mode = "selection--design"
     if(tool_toggle_sticker_checkbox.checked) mode = "selection--sticker"
@@ -106,6 +109,17 @@ class ToolLogic {
     _data.react.map.forceUpdate()
     _data.react.layout_top.forceUpdate()
     _data.react.layout_right.forceUpdate()
+
+    //  ペーストにまつわる特別処理
+    if(tool_toggle_paste_checkbox == e.currentTarget) {
+      //  ペースト予告セルのスライド情報を初期化
+      _data.state.pasteSlideX = 0
+      _data.state.pasteSlideY = 0
+    } else {
+      //  ペースト以外のコマンドを選択した場合、ペースト予告セルを取り消す。
+      //  （ペーストを選択した場合、後続のペースト処理のためにペースト予告セルをそのまま残す）
+      ToolLogic.disablePasteShadow()
+    }
   }
   //  前処理。「動詞を選択された時、すでに選択対象があったらそれらを対象に実行する」アクション。
   static selectModeBindPreAction = (e) => {
@@ -245,15 +259,67 @@ class ToolLogic {
   }
 
   //  ペースト。
-  static paste = (subKeys = {ctrlKey: false, shiftKey: false, altKey: false}) => {
-    navigator.clipboard.readText()
-    .then((text) => {
-      let json = JSON.parse(text)
-      Object.keys(json).forEach((c) => {
-        ToolLogic._copyCell(c, json[c], subKeys)
-      })
-      _data.react.map.forceUpdate()
+  //  はりつけ予告セルがまだなければ：予告を出す。
+  //  予告がもう出ていれば：はりつけを実行し、予告を解除する。
+  //  予告がなく、かつトグルが解除された場合（＝ペーストの途中キャンセル）：なにもしない。
+  static paste = (toggle_enabled = false, subKeys = {ctrlKey: false, shiftKey: false, altKey: false}) => {
+    navigator.clipboard.readText().then(
+      (text) => {
+        json = JSON.parse(text)
+        if("selection--paste" == _data.state.selectionMode) {
+          if(toggle_enabled) {
+            ToolLogic.enablePasteShadow(Object.keys(json))
+          }
+        } else {
+          Object.keys(json).forEach((c) => {
+            let pasteTo = document.querySelector(`[data-paste-to="${c}"]`)
+            if(pasteTo) ToolLogic._copyCell(pasteTo.id, json[c], subKeys)
+          })
+          ToolLogic.disablePasteShadow()
+          _data.react.map.forceUpdate()
+        }
+      }
+    )
+  }
+
+  // 配列でID指定されたセルに、ペースト予告デザインを当てる
+  static enablePasteShadow = (ids = []) => {
+    _data.state.pasteSlideX ||= 0
+    _data.state.pasteSlideY ||= 0
+    ids.forEach((e) => {
+      let elm = _data.react[ToolLogic.getSlideCell(e, _data.state.pasteSlideX, _data.state.pasteSlideY)]
+      if(elm) elm.setState({pasteTo: e})
     })
+  }
+  // ペースト予告デザインを全て解除する
+  static disablePasteShadow = () => {
+    Object.keys(_data.react).filter((k) => {return k.match(/^cell_..$/)}).forEach((c) => {
+      _data.react[c].setState({pasteTo: null})
+    })
+  }
+  //  「指定されたセルをx, yだけずらした位置のセルID」を返す。
+  //  ずらした結果、mapからはみ出した場合はnullを返す。
+  static getSlideCell = (cell_id, x = 0, y = 0) => {
+    let map = [
+      ..."ww we wr ew ee er rw re rr".split(" "),
+      ..."ws wd wf es ed ef rs rd rf".split(" "),
+      ..."wz wx wc ez ex ec rz rx rc".split(" "),
+      ..."sw se sr dw de dr fw fe fr".split(" "),
+      ..."ss sd sf ds dd df fs fd ff".split(" "),
+      ..."sz sx sc dz dx dc fz fx fc".split(" "),
+      ..."zw ze zr xw xe xr cw ce cr".split(" "),
+      ..."zs zd zf xs xd xf cs cd cf".split(" "),
+      ..."zz zx zc xz xx xc cz cx cc".split(" ")
+    ]
+    let id = cell_id.match(/..$/)[0]
+    let index = map.indexOf(id)
+    let _x = index % 9
+    let _y = Math.floor(index / 9)
+    _x += x
+    _y += y
+    if(_x < 0 || 9 <= _x) return null
+    if(_y < 0 || 9 <= _y) return null
+    return `cell_${map[_y * 9 + _x]}`
   }
 
   //  パレットを表示する。

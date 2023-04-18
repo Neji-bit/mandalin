@@ -182,6 +182,10 @@ function init() {
   _data.state.showSticker = true
   _data.state.showThumbnail= true
 
+  //  はりつけ位置調整変数。
+  _data.state.pasteSlideX = 0
+  _data.state.pasteSlideY = 0
+
   const root = document.getElementById('root');
   if (!root) {
     throw new Error('No root element');
