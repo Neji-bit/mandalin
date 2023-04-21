@@ -247,6 +247,7 @@ class ToolLogic {
   static save = () => {
     Api.saveBook()
     Api.savePage()
+    Api.saveUserProperty()
   }
 
   //  2in1設定。2つ選ばれたセルに、2in1対象のクラスを付与する。
@@ -427,6 +428,143 @@ class ToolLogic {
   static union = () => {
     _data.state.paletteUnion = true
     _data.react.palette_sheet.setState({enable: true})
+  }
+
+  //  ブックパレットを表示する
+  static books = () => {
+    Api.loadUserProperty()
+    _data.state.paletteBook = true
+    _data.react.palette_sheet.setState({enable: true})
+  }
+
+  static bookModeBind = (e) => {
+    let binds = [
+      [tool_switch_book_favorites_checkbox, "booksFavorites"],
+      [tool_switch_book_histories_checkbox, "booksHistories"],
+      [tool_switch_book_owns_checkbox, "booksOwns"]
+    ]
+    binds.forEach((c) => {if(e.currentTarget != c[0]) c[0].checked = false})
+    if(! binds.find((c) => {return c[0].checked})) {
+      binds[0][0].checked = true
+    }
+    _data.state.bookListType = binds.find((b) => {return b[0].checked})[1]
+    _data.react.palette_book_list.forceUpdate(() => {
+      document.querySelector(".book--item").click()
+    })
+  }
+
+  static bookProperties = (book_id) => {
+    if(book_id) {
+      //  サーバからブック情報を取得
+      axios.get(`/api/v1/book/${book_id}`)
+      .then((data) => {
+        let app_info = JSON.parse(data.data).app_info
+        let book = JSON.parse(data.data).book
+        _data.state.targetBook.id             = book_id
+        _data.state.targetBook.title          = book.title.data || "<タイトル未設定>"
+        _data.state.targetBook.owner          = app_info.visitor_email
+        _data.state.targetBook.thumbnail      = "/mandalin_icon.svg"
+        _data.state.targetBook.authorization  = null
+        _data.state.targetBook.tag            = null
+        _data.state.targetBook.text           = null
+        _data.state.targetBook.lastUpdatedAt  = null
+        _data.state.targetBook.createdAt      = null
+        //  パレットを再描画
+        _data.react.palette.forceUpdate()
+        //  お気に入りUIの設定
+        tool_toggle_book_favorite_checkbox.checked = book_id && _data.user.books.booksFavorites.find((e) => {return e.id == book_id})
+      })
+    } else {
+      _data.state.targetBook.id             = null
+      _data.state.targetBook.title          = "<未使用>"
+      _data.state.targetBook.owner          = ""
+      _data.state.targetBook.thumbnail      = "/mandalin_icon.svg"
+      _data.state.targetBook.authorization  = null
+      _data.state.targetBook.tag            = null
+      _data.state.targetBook.text           = null
+      _data.state.targetBook.lastUpdatedAt  = null
+      _data.state.targetBook.createdAt      = null
+      //  パレットを再描画
+      _data.react.palette.forceUpdate()
+      //  お気に入りUIの設定
+      tool_toggle_book_favorite_checkbox.checked = book_id && _data.user.books.booksFavorites.find((e) => {return e.id == book_id})
+    }
+  }
+
+  //  指定されているブックへ遷移する
+  //  自分持ちのブックリストを開いている時は、未使用枠を開いた時、新ブックを作成しそれを開く。
+  static bookOpen = (e) => {
+    let book_id = ToolLogic._targetBookId()
+    if(book_id) {
+      location.href = `/?book=${book_id}`
+    } else if("booksOwns" == _data.state.bookListType) {
+      location.href = `/new_book`
+    }
+  }
+
+  //  ユーザーが持つブック情報の、配列上の順序を入れ替える。
+  static bookToUp = (e) => {
+    if("booksHistories" == _data.state.bookListType) return
+    let down = document.getElementById(_data.state.currentBook)
+    let up = down.previousElementSibling
+    if(!up) return
+    let from = _data.user.books[_data.state.bookListType][Util.hexToInt(down.id.match(/.$/))]
+    let to = _data.user.books[_data.state.bookListType][Util.hexToInt(up.id.match(/.$/))]
+    //  オブジェクトが参照されている場合、を考慮して、オブジェクトの属性の値単位で交換する。
+    Util.swapAttribute(from, to, "id")
+    Util.swapAttribute(from, to, "name")
+    _data.state.currentBook = up.id
+    _data.react.palette.forceUpdate()
+  }
+
+  static bookToDown = (e) => {
+    if("booksHistories" == _data.state.bookListType) return
+    let up = document.getElementById(_data.state.currentBook)
+    let down = up.nextElementSibling
+    if(!down) return
+    let from = _data.user.books[_data.state.bookListType][Util.hexToInt(up.id.match(/.$/))]
+    let to = _data.user.books[_data.state.bookListType][Util.hexToInt(down.id.match(/.$/))]
+    //  オブジェクトが参照されている場合、を考慮して、オブジェクトの属性の値単位で交換する。
+    Util.swapAttribute(from, to, "id")
+    Util.swapAttribute(from, to, "name")
+    _data.state.currentBook = down.id
+    _data.react.palette.forceUpdate()
+  }
+
+  //  お気に入り enable/disable
+  static bookFavorite = (e) => {
+    let list = _data.user.books.booksFavorites
+    let book_id = ToolLogic._targetBookId()
+    if(! book_id) return
+    if(e.currentTarget.checked) {
+      //  お気に入りリストに登録する（まだ登録されていない場合）
+      if(list.find((e) => {return (e.id == book_id)})) return
+      let target = list.find((e) => {return (!e.id)})
+      if(!target) return
+      target.id = book_id
+      target.name = _data.state.targetBook.title
+    } else {
+      //  お気に入りから削除する
+      let alt = list.filter((b) => {return !(!b.id || b.id == book_id)})
+      for(let i = 0; i < 16; i++) if(!alt[i]) alt.push({id: null, name: "<未使用>"})
+      _data.user.books.booksFavorites = alt
+    }
+    Api.saveUserProperty()
+    _data.react.palette_book_list.forceUpdate(() => {
+      //  お気に入りの操作でブックのリストが変動するケースを考慮し、「いま指しているブックをもう一度クリックする」挙動を入れる。
+      document.querySelector(".book--item.current--page").click()
+    })
+  }
+
+  static bookUrlCopy = (e) => {
+    let book_id = ToolLogic._targetBookId()
+    let url = book_id ? `${location.origin}/?book=${book_id}` : ""
+    navigator.clipboard.writeText(url)
+  }
+
+  static _targetBookId = () => {
+    let book = document.querySelector(".book--property[data-book]")
+    if(book) return Number(book.dataset.book)
   }
 }
 

@@ -190,7 +190,6 @@ class RightPanel extends React.Component {
         <Page
           page_id={`page_${i}`}
           parent={this}
-          className="page"
           key={n}
         />)
     })

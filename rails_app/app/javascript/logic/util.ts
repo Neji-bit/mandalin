@@ -173,6 +173,14 @@ class Util {
       return {ctrlKey: e.nativeEvent.ctrlKey, shiftKey: e.nativeEvent.shiftKey, altKey: e.nativeEvent.altKey}
     }
   }
+
+  //  オブジェクトの属性の値の交換
+  //  オブジェクト l と r の キーk の値を交換する
+  static swapAttribute = (l, r, k) => {
+    let tmp = l[k]
+    l[k] = r[k]
+    r[k] = tmp
+  }
 }
 
 export {Util}

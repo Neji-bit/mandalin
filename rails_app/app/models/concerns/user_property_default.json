@@ -1,0 +1,58 @@
+{
+  "books": {
+    "booksFavorites": [
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null}
+    ],
+    "booksHistories": [
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null}
+    ],
+    "booksOwns": [
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null},
+      {"id": null, "name": null}
+    ]
+  }
+}

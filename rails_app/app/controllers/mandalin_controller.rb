@@ -31,6 +31,22 @@ class MandalinController < ApplicationController
     # session[:_flash].push(message) unless session[:_flash].include?(message)
   end
 
+
+  # ブックを新規作成する。
+  # （条件を確認後）ここでブックを作成し、そのブックを開くURLへ遷移させる。
+  def new_book
+    if(current_user) then
+      if(Book.where(owner: current_user).count < 16) then
+        b = Book.create!(owner: current_user)
+        redirect_to "/?book=#{b.id}"
+      else
+        render_405
+      end
+    else
+        render_401
+    end
+  end
+
   # パラメータから「正常なID」を抽出する。
   def legal_params
     @legal_params = {}
@@ -41,7 +57,13 @@ class MandalinController < ApplicationController
   def render_500
     render json: { error: "500 Internal Server Error" }, status: :internal_server_error
   end
+  def render_401
+    render json: { error: "401 Unauthorized" }, status: :unauthorized
+  end
   def render_404
     render json: { error: "404 Not Found" }, status: :not_found
+  end
+  def render_405
+    render json: { error: "405 Method Not Allowed" }, status: :method_not_allowed
   end
 end

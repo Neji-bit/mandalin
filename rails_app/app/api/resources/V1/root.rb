@@ -31,6 +31,7 @@ module Resources
   
       mount Resources::V1::Books
       mount Resources::V1::Pages
+      mount Resources::V1::UserProperties
     end
   end
 end

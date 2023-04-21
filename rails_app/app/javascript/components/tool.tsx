@@ -41,6 +41,14 @@ class ToolBox extends React.Component {
             checked={_data.state.showThumbnail}
             key="20"
           />
+          <ToolButton
+            parent={this}
+            label="ブック"
+            hotkey="Ctrl_g"
+            logic={ToolLogic.books}
+            tool_id="tool_button_books"
+            key="27"
+          />
         </div>
         <div className={`toolbox--block`}>
           <ToolToggle

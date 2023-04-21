@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   mount API => '/'
 
   get '/' => "mandalin#main"
+  get '/new_book' => "mandalin#new_book"
   devise_for :users, controllers: {
     confirmations: 'users/confirmations',
     passwords: 'users/passwords',

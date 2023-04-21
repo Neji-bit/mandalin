@@ -42,12 +42,39 @@ class Api {
     axios.get(`/api/v1/book/${book_id}/page/${page_id}`)
     .then((data) => {
       window.data.page = JSON.parse(data.data).page
+      //  ページを読み直す＝undo履歴をリセットする
       _undo.length = 0
       __undo.length = 0
       _data = dataRefresh()
     })
     .catch(() => {
       location.href = "/404"
+    })
+    .finally(() => {
+      this.is_synchronizing = false
+      if(callback) callback()
+    })
+  }
+
+  //  ユーザーの詳細情報を取得する。ひとまず「自分の情報」に限定。
+  static loadUserProperty = (callback = null) => {
+    if(this.is_synchronizing) throw new Error("Already sync now. (UserProperty)");
+    this.is_synchronizing = true
+    axios.get(`/api/v1/user_property`)
+    .then((data) => {
+      const LENGTH = 16
+      let userData = JSON.parse(data.data)
+      Object.keys(userData.books).forEach((k) => {
+        let list = userData.books[k]
+        userData.books[k] = list.splice(0, LENGTH)
+        for(let i = userData.books[k].length; i < LENGTH; i++) {
+          userData.books[k].push({id: null, name: "<未使用>"})
+        }
+      })
+      window.data.user = userData
+      _data = dataRefresh()
+    })
+    .catch(() => {
     })
     .finally(() => {
       this.is_synchronizing = false
@@ -73,6 +100,14 @@ class Api {
     let page_id = _data.state.currentPage.match(/.$/)
     let payload = {text: JSON.stringify({page: _data.page})}
     axios.put(`/api/v1/book/${book_id}/page/${page_id}`, payload)
+    .finally(() => {
+      if(callback) callback()
+    })
+  }
+
+  static saveUserProperty = (callback = null) => {
+    let payload = {text: JSON.stringify(_data.user)}
+    axios.put(`/api/v1/user_property`, payload)
     .finally(() => {
       if(callback) callback()
     })

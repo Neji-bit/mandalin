@@ -2,6 +2,7 @@ import React from 'react'
 import {Util} from '../logic/util'
 import {ToolButton, ToolToggle} from './tool'
 import {Sticker} from './cell_sticker'
+import {ToolLogic} from '../logic/tool_logic'
 
 class PaletteSheet extends React.Component {
   constructor(props) {
@@ -22,6 +23,7 @@ class PaletteSheet extends React.Component {
         _data.state.paletteDesignMenu = false
         _data.state.stickerMode = "none"
         _data.state.paletteUnion = false
+        _data.state.paletteBook = false
         Util.releaseSelected("cell")
         let stickers = [...document.getElementsByClassName("sticker--current")]
         stickers.forEach((s) => { _data.react[s.id].setState({current: false}) })
@@ -108,6 +110,10 @@ class Palette extends React.Component {
     if(_data.state.paletteUnion) {
       type = "palette--union"
       palette = (<PaletteUnion/>)
+    }
+    if(_data.state.paletteBook) {
+      type = "palette--book"
+      palette = (<PaletteBook/>)
     }
     classList.push(type)
     let style = Object.assign({}, _data.state.palettePoint)
@@ -705,5 +711,241 @@ class PaletteUnion extends React.Component {
   }
 }
 
-export {PaletteSheet, Palette, PaletteStickerUrl, PaletteStickerMenu, PaletteDesignMenu, PaletteUnion}
+class PaletteBook extends React.Component {
+  render() {
+    return (
+      <div
+        className="palette--book--wrapper"
+      >
+        <div
+          className="palette--book--list"
+        >
+          <BookList/>
+          <div
+            className="palette--book--list--actions"
+          >
+            <ToolToggle
+              parent={this}
+              label="お気に入り"
+              hotkey={null}
+              logic={ToolLogic.bookModeBind}
+              tool_id="tool_switch_book_favorites"
+              checked={false}
+              key="1"
+            />
+            <ToolToggle
+              parent={this}
+              label="オーナー"
+              hotkey={null}
+              logic={ToolLogic.bookModeBind}
+              tool_id="tool_switch_book_owns"
+              checked={false}
+              key="2"
+            />
+            <ToolToggle
+              parent={this}
+              label="履歴"
+              hotkey={null}
+              logic={ToolLogic.bookModeBind}
+              tool_id="tool_switch_book_histories"
+              checked={false}
+              key="3"
+            />
+          </div>
+        </div>
+        <div
+          className="palette--book--property"
+        >
+          <div
+            className="palette--book--property--contents"
+          >
+            <BookProperty/>
+          </div>
+          <div
+            className="palette--book--property--actions"
+          >
+            <ToolButton
+              parent={this}
+              label="開く"
+              hotkey={null}
+              logic={ToolLogic.bookOpen}
+              tool_id="tool_button_book_open"
+              key="1"
+            />
+            <ToolButton
+              parent={this}
+              label="上へ"
+              hotkey={null}
+              logic={ToolLogic.bookToUp}
+              tool_id="tool_button_book_up"
+              key="2"
+            />
+            <ToolButton
+              parent={this}
+              label="下へ"
+              hotkey={null}
+              logic={ToolLogic.bookToDown}
+              tool_id="tool_button_book_down"
+              key="3"
+            />
+            <ToolButton
+              parent={this}
+              label="削除"
+              hotkey={null}
+              logic={null}
+              tool_id="tool_button_book_remove"
+              key="4"
+            />
+            <ToolToggle
+              parent={this}
+              label="お気に入り"
+              hotkey={null}
+              logic={ToolLogic.bookFavorite}
+              tool_id="tool_toggle_book_favorite"
+              key="5"
+            />
+            <ToolButton
+              parent={this}
+              label="URLコピー"
+              hotkey={null}
+              logic={ToolLogic.bookUrlCopy}
+              tool_id="tool_button_book_url_copy"
+              key="6"
+            />
+          </div>
+        </div>
+      </div>
+    )
+  } 
+}
+
+class BookList extends React.Component {
+  constructor(props) {
+    super(props)
+    this.id = "palette_book_list"
+    _data.react[this.id] = this
+  }
+  clicked = (e) => {
+    _data.state.currentBook = e.currentTarget.id
+    ToolLogic.bookProperties(e.currentTarget.dataset.book)
+  }
+  render() {
+    let books = []
+    let listType = _data.state.bookListType
+    "0123456789abcdef".split("").forEach((i) => {
+      let book = _data.user.books[listType][Util.hexToInt(i)]
+      books.push(
+        <div
+          id={`book_${i}`}
+          className={`page book--item ${_data.state.currentBook == `book_${i}` ? "current--page" : ""}`}
+          key={i}
+          data-book={book ? book.id : null}
+          onClick={this.clicked}
+        >
+          <span className="book--item--label">{i}</span>
+          <span>{book ? book.name : ""}</span>
+        </div>
+      )
+    })
+
+    return (
+      <div
+        className="palette--book--list--contents"
+      >
+        {books}
+      </div>
+    )
+  }
+}
+
+class BookProperty extends React.Component {
+  constructor(props) {
+    super(props)
+    this.id = "palette_book_property"
+    _data.react[this.id] = this
+  }
+  componentDidMount() {
+    palette.querySelector(".book--item").click()
+    tool_switch_book_favorites.querySelector("label").click()
+  }
+  componentDidUpdate() {
+  }
+  render() {
+    let book = _data.state.targetBook
+    return (
+      <div
+        className="book--property"
+        data-book={_data.state.targetBook.id}
+      >
+        <div
+          className="book--property--top"
+        >
+          <div
+            className="book--property--top--thumbnail"
+          >
+            <img
+              src={book.thumbnail}
+            />
+          </div>
+          <div
+            className="book--property--top--title"
+          >
+            <span className="book--item--label">タイトル</span>
+            <span>{book.title}</span>
+          </div>
+          <div
+            className="book--property--top--owner"
+          >
+            <span className="book--item--label">オーナー</span>
+            <span>{book.owner}</span>
+          </div>
+        </div>
+        <div
+          className="book--property--middle"
+        >
+          <div
+            className="book--property--middle--timestamps"
+          >
+            <div>
+              <span className="book--item--label">作成時刻</span><span>{book.createdAt || "--/--/-- --:--:--"}</span>
+            </div>
+            <div>
+              <span className="book--item--label">最終更新時刻</span><span>{book.lastUpdateAt || "--/--/-- --:--:--"}</span>
+            </div>
+          </div>
+          <div
+            className="book--property--middle--authorization"
+          >
+            <span className="book--item--label">認可</span>
+            <div>
+              {book.authorization || "なし"}
+            </div>
+          </div>
+          <div
+            className="book--property--middle--tag"
+          >
+            <span className="book--item--label">タグ</span>
+            <div>
+              {book.tag  || "なし"}
+            </div>
+          </div>
+        </div>
+        <div
+          className="book--property--bottom"
+        >
+          <div
+            className="book--property--bottom--text"
+          >
+            <span className="book--item--label">説明</span>
+            <div>
+              {book.text || "なし"}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
+export {PaletteSheet, Palette, PaletteStickerUrl, PaletteStickerMenu, PaletteDesignMenu, PaletteUnion, PaletteBook}
 
