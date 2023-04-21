@@ -186,18 +186,6 @@ function init() {
   _data.state.pasteSlideX = 0
   _data.state.pasteSlideY = 0
 
-//  //  ユーザー固有の情報
-//  _data.user = {}
-//  _data.user.books = {}
-//  _data.user.books.booksFavorites = []
-//  _data.user.books.booksHistories = []
-//  _data.user.books.booksOwns = []
-//  "0123456789abcdef".split("").forEach((i) => {
-//    _data.user.books.booksFavorites.push(JSON.parse(JSON.stringify({id: i, name: `favorite_${i}`})))
-//    _data.user.books.booksHistories.push(JSON.parse(JSON.stringify({id: i, name: `history_${i}`})))
-//    _data.user.books.booksOwns.push(JSON.parse(JSON.stringify({id: i, name: `own_${i}`})))
-//  })
-
   _data.state.bookListType = "booksFavorites"
   _data.state.targetBook = {
     id: 0,
@@ -220,18 +208,23 @@ function init() {
   )
 
   _readonly = Util.is_readonly()
+  _authenticated = Util.is_login()
 
   //  初期化時、現状を「最初の歴史」として保存する。
   ToolLogic.history()
 
-  //  ブック履歴に現在のページを登録する。
-  let book_id = Number(Util.urlParams().book)
-  if(book_id) {
-    let list = _data.user.books.booksHistories.filter((i) => {return !(!i.id || i.id == book_id)})
-    list.unshift({id: book_id, text: ""})
-    list = list.splice(0, 16)
-    _data.user.books.booksHistories = list
-    Api.saveUserProperty()
+  if(_authenticated) {
+    Api.loadUserProperty(() => {
+      //  ブック履歴に現在のページを登録する。
+      let book_id = Number(Util.urlParams().book)
+      if(book_id) {
+        let list = _data.user.books.booksHistories.filter((i) => {return !(!i.id || i.id == book_id)})
+        list.unshift({id: book_id, text: ""})
+        list = list.splice(0, 16)
+        _data.user.books.booksHistories = list
+        Api.saveUserProperty()
+      }
+    })
   }
 }
 //  ブックデータ、ページデータ、ユーザープロパティデータをサーバから取得してから初期化。
@@ -240,9 +233,7 @@ window.onload = () => {
   Api.loadBook(params.book, () => {
     let book_id = params.book || 1
     let page_id = params.page || (_data.state.currentPage || "0").match(/.$/)
-    Api.loadPage(book_id, page_id,() => {
-      Api.loadUserProperty(init)
-    })
+    Api.loadPage(book_id, page_id, init)
   })
 }
 

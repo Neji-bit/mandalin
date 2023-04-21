@@ -235,8 +235,11 @@ class Keyboard {
           case "KeyX": document.querySelector("label[for='tool_switch_sticker_checkbox']").click(); break
           //  サムネイル
           case "KeyC": document.querySelector("label[for='tool_switch_thumbnail_checkbox']").click(); break
-          //  サムネイル
-          case "KeyG": tool_button_books.click(); break
+          //  ブック管理
+          case "KeyG":
+            let elm = document.getElementById("tool_button_books")
+            if(elm) elm.click()
+            break
           //  全体表示
           case "KeyM": document.querySelector("label[for='tool_view_large_checkbox']").click(); break
           //  エリア表示

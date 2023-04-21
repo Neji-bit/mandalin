@@ -11,6 +11,16 @@ class ToolBox extends React.Component {
   }
   render() {
     let readonly = _readonly ? "editable--only" : ""
+    let bookManager = !_authenticated ? null : (
+      <ToolButton
+        parent={this}
+        label="ブック"
+        hotkey="Ctrl_g"
+        logic={ToolLogic.books}
+        tool_id="tool_button_books"
+        key="27"
+      />
+    )
     return (
       <div id="toolbox">
         <div className={`toolbox--block`}>
@@ -41,14 +51,7 @@ class ToolBox extends React.Component {
             checked={_data.state.showThumbnail}
             key="20"
           />
-          <ToolButton
-            parent={this}
-            label="ブック"
-            hotkey="Ctrl_g"
-            logic={ToolLogic.books}
-            tool_id="tool_button_books"
-            key="27"
-          />
+          {bookManager}
         </div>
         <div className={`toolbox--block`}>
           <ToolToggle
