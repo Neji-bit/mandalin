@@ -62,7 +62,6 @@ class Sticker extends React.Component {
     let pr = this.ref.current.parentNode.getBoundingClientRect()
     let r = this.ref.current.getBoundingClientRect()
     this.style.height = `${(Math.floor(Math.abs(r.top - e.clientY) * 10000 / pr.height)) / 100}%`
-    console.log(this.style.height)
     this.forceUpdate()
   }
   _rotate = (e) => {
@@ -72,7 +71,6 @@ class Sticker extends React.Component {
     let c = r.left + r.width / 2
     let d = Math.floor(e.clientX - c)
     if(d < 0) d = 0
-    console.log(d)
     this.style.transform = `rotate(${d % 360}deg)`
     this.forceUpdate()
   }

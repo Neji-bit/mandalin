@@ -189,26 +189,76 @@ body {
       }
     }
     #layout_bottom {
-      background: transparent;
       grid-column: 1/4;
-      border-radius: 0 0 15px 15px;
+      display: grid;
+      grid-template-columns: 2fr 2fr 1fr;
       border-top: 1px solid black;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      #layout_bottom_left {
+        --message-padding-horizontal: 10px;
+        display: flex;
+        position: relative;
+        background: transparent;
+        #message {
+          position: relative;
+          left: var(--message-padding-horizontal);
+          background: transparent;
+          width: calc(100% - (var(--message-padding-horizontal) * 2));
+          top: calc((100% - 1.2em) / 2);
+          height: 1.2em;
 
-      .iconlogo {
-        height: 2em;
-        display: grid;
-        grid-template-rows: 100%;
-        grid-template-columns: auto auto;
-        position: absolute;
-        right: 16px;
-        user-select: none;
+          display: flex;
+          align-items: center;
+          padding-left: 16px;
+          &:before {
+            content: "";
+            display: block;
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border: 0.5px solid black;
+            border-radius: 4px;
+            box-sizing: border-box;
+            color: black;
+            left: 3px;
+            top: calc((100% - 8px) / 2);
+            background: gray;
+          }
+          &.message--active {
+            &:before {
+              animation-name: messageActive;
+              animation-duration: 30s;
+              animation-fill-mode: forwards;
+            }
+          }
 
-        img {
-          display: inline;
-          height: 100%;
+          overflow: hidden;
+          #message_line {
+            position: relative;
+          }
+        }
+      }
+      #layout_bottom_center {
+      }
+      #layout_bottom_right {
+        background: transparent;
+        border-radius: 0 0 15px 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .iconlogo {
+          height: 2em;
+          display: grid;
+          grid-template-rows: 100%;
+          grid-template-columns: auto auto;
+          position: absolute;
+          right: 16px;
+          user-select: none;
+
+          img {
+            display: inline;
+            height: 100%;
+          }
         }
       }
     }
@@ -803,6 +853,11 @@ label {
       border: 2px solid rgba(0, 255, 0, 0.5);
     }
   }
+  &.selection--copy {
+    .cell:hover {
+      border: 2px solid rgba(255, 0, 0, 0.5);
+    }
+  }
   &.selection--twoinone {
     cursor: pointer;
     .cell:hover {
@@ -1017,6 +1072,11 @@ label {
   button {
     border-radius: 3px;
   }
+}
+
+@keyframes messageActive {
+  from { background: red; }
+  to { background: gray; }
 }
 
 .fadeIn {

@@ -14,7 +14,7 @@ class ToolBox extends React.Component {
     let bookManager = !_authenticated ? null : (
       <ToolButton
         parent={this}
-        label="ブック"
+        label="ブック管理"
         hotkey="Ctrl_g"
         logic={ToolLogic.books}
         tool_id="tool_button_books"

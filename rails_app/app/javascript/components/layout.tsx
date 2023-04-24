@@ -5,7 +5,7 @@ import {ToolBox, ToolButton, ToolToggle} from './tool'
 import {IconLogo} from './common'
 import {Editor} from './cell_editor'
 import {Sticker} from './cell_sticker'
-import {Util} from '../logic/util'
+import {Util, Message} from '../logic/util'
 import {ToolLogic} from '../logic/tool_logic'
 import {PaletteSheet, Palette, PaletteStickerUrl, PaletteStickerMenu, PaletteDesignMenu, PaletteUnion} from './palette'
 
@@ -223,7 +223,28 @@ class BottomPanel extends React.Component {
   render() {
     return(
       <div id={this.id} className="panel">
-        <IconLogo parent={this}/>
+        <div
+          id={`layout_bottom_left`}
+        >
+          <div
+            id={`message`}
+            className={`message--active`}
+          >
+            <div
+              id={`message_line`}
+            >
+            </div>
+          </div>
+        </div>
+        <div
+          id={`layout_bottom_center`}
+        >
+        </div>
+        <div
+          id={`layout_bottom_right`}
+        >
+          <IconLogo parent={this}/>
+        </div>
       </div>
     )
   }

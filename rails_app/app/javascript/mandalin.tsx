@@ -6,7 +6,7 @@ import {Backboard} from './components/layout'
 import {Keyboard} from './logic/keyboard'
 import {ToolLogic} from './logic/tool_logic'
 import {Api} from './logic/api'
-import {Util} from './logic/util'
+import {Util, Message} from './logic/util'
 
 ////////////////////////////////////////////////////////////////////////////////
 //  データ構造の定義。
@@ -74,48 +74,8 @@ window.data = {
   },
 }
 
-//  「無効」を示す目印クラス。
-class Nil {}
-
-//  window.data 配下に効率良くアクセスするためのショートカット。
-//  window.data を一次元の連想配列にほぐしたイメージ。
-//  一意特定できない要素（＝keyが重複するケース）は、ショートカットを用意しない。
+//  アプリデータの置き場所
 _data = {}
-_dataRefresh = (entry = window.data) => {
-  let result = {}
-  if(entry.constructor !== Object) return result
-  //  指定された連想配列を走査
-  let keys = Object.keys(entry)
-  keys.forEach((k) => {
-    //  要素が連想配列であった場合、結果に追加＆再帰。
-    if(entry[k] && entry[k].constructor === Object) {
-      result[k] = entry[k]
-      let sub = _dataRefresh(result[k])
-      let sub_key = Object.keys(sub)
-      sub_key.forEach((s) => {
-        if(result[s]) {
-          result[s] = new Nil()
-        } else {
-          result[s] = sub[s]
-        }
-      })
-    }
-  })
-  return result
-}
-//  再帰で作ったショートカット集の仕上げ。
-dataRefresh = (entry = window.data) => {
-  let result = _dataRefresh(entry)
-  //  走査の最初の要素もショートカット集に追加する。
-  result["data"] = entry
-  //  無効なショートカット（＝一意特定できなかったもの）を除外する。
-  Object.keys(result).forEach((k) => {
-    if(!result[k] || result[k].constructor === Nil) {
-      delete result[k]
-    }
-  })
-  return result
-}
 
 _undo = []      //  Undo履歴
 __undo = []     //  「未来の歴史」。Undoで巻き戻された歴史をここに仮置きする。
@@ -129,6 +89,7 @@ Keyboard.init()
 class App extends React.Component {
   componentDidMount() {
     _data.react.app = this
+    Message.set("book")
   }
   render() {
     return (

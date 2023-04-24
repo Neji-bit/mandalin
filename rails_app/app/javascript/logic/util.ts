@@ -1,6 +1,9 @@
 import parse from 'html-react-parser'
 import {HotkeyQueue} from `./keyboard`
 
+//  「無効」を示す目印クラス。
+class Nil {}
+
 //  雑多な共通処理をまとめて置いておくクラス。
 class Util {
 
@@ -181,6 +184,240 @@ class Util {
     l[k] = r[k]
     r[k] = tmp
   }
+
+  //  window.data 配下に効率良くアクセスするためのショートカット。
+  //  window.data を一次元の連想配列にほぐしたイメージ。
+  //  一意特定できない要素（＝keyが重複するケース）は、ショートカットを用意しない。
+  static _indexOfHash = (entry = window.data) => {
+    let result = {}
+    if(entry.constructor !== Object) return result
+    //  指定された連想配列を走査
+    let keys = Object.keys(entry)
+    keys.forEach((k) => {
+      //  要素が連想配列であった場合、結果に追加＆再帰。
+      if(entry[k] && entry[k].constructor === Object) {
+        result[k] = entry[k]
+        let sub = this._indexOfHash(result[k])
+        let sub_key = Object.keys(sub)
+        sub_key.forEach((s) => {
+          if(result[s]) {
+            result[s] = new Nil()
+          } else {
+            result[s] = sub[s]
+          }
+        })
+      }
+    })
+    return result
+  }
+
+  //  再帰で作ったショートカット集の仕上げ。
+  static indexOfHash = (entry = window.data) => {
+    let result = this._indexOfHash(entry)
+    //  走査の最初の要素もショートカット集に追加する。
+    result["data"] = entry
+    //  無効なショートカット（＝一意特定できなかったもの）を除外する。
+    Object.keys(result).forEach((k) => {
+      if(!result[k] || result[k].constructor === Nil) {
+        delete result[k]
+      }
+    })
+    return result
+  }
 }
 
-export {Util}
+class Message {
+  static messages = {
+    shows: {
+      tags: {
+        enable: "セルのIDタグの表示を有効にしました。",
+        disable: "セルのIDタグの表示を無効にしました。",
+      },
+      stickers: {
+        enable: "ステッカーの表示を有効にしました。",
+        disable: "ステッカーの表示を無効にしました。",
+      },
+      thumbnails: {
+        enable: "サムネイルの表示を有効にしました。",
+        disable: "サムネイルの表示を無効にしました。",
+      }
+    },
+    views: {
+      large: {
+        enable: "ビューを「全体表示」に変更しました。",
+        disable: null
+      },
+      middle: {
+        enable: "ビューを「エリア表示」に変更しました。",
+        disable: null
+      },
+      small: {
+        enable: "ビューを「セル表示」に変更しました。",
+        disable: null
+      },
+      twoinone: {
+        enable: "ビューを「2in1表示」に変更しました。",
+        disable: null
+      },
+      fullscreen: {
+        enable: "全画面表示を有効にしました。（Ctrl+q で解除）",
+        disable:  "全画面表示を無効にしました。"
+      }
+    },
+    actions: {
+      copies: {
+        enable: "セルをコピーしました",
+        disable: null
+      },
+      twoinoneSelect: {
+        determination: "2in1表示の対象セルを指定しました。"
+      },
+      eraseWithSelected: {
+        enable: "セルを削除しました。",
+        disable: null
+      },
+      swapsCell: {
+        enable: "セルを入れ替えました。",
+        disable: null
+      },
+      swapsArea: {
+        enable: "エリアを入れ替えました。",
+        disable: null
+      }
+    },
+    selections: {
+      selectionCells: {
+        enable: "セルを選択してください。",
+        disable: null
+      },
+      selectionAreas: {
+        enable: "エリアを選択してください。",
+        disable: null
+      },
+      selectionEdit: {
+        enable: "編集対象のセルを選択してください。",
+        disable: null
+      },
+      selectionErase: {
+        enable: "削除対象のセルを選択してください。",
+        disable: null
+      },
+      selectionSwap: {
+        enable: "入替対象のセルを２つ選択してください。",
+        disable: null
+      },
+      selectionCopy: {
+        enable: "コピー対象のセルを選択してください。",
+        disable: null
+      },
+      selectionPaste: {
+        enable: "ペーストの位置を指定してください。",
+        disable: null
+      },
+      selectionTwoinone: {
+        enable: "2in1表示の対象セルを選択してください。",
+        disable: null
+      },
+      selectionDesign: {
+        enable: "装飾を設定するセルを選択してください。",
+        disable: null
+      },
+      selectionSticker: {
+        enable: "ステッカーを貼るセル、またはステッカーを選択してください。",
+        disable: null
+      },
+    },
+    palettes: {
+      paletteStickers: {
+        enable: "ステッカー画像のURLを入力してください。",
+        disable: null
+      },
+      paletteStickerMenu: {
+        enable: "ステッカーの調整が可能です。",
+        disable: null
+      },
+      paletteDesign: {
+        enable: "装飾を選択してください。",
+        disable: null
+      },
+      paletteUnion: {
+        enable: "装飾を合成可能です。",
+        disable: null
+      },
+      paletteBooks: {
+        enable: "ブックの管理が可能です。",
+        disable: null
+      },
+    },
+    app: {
+      book: {
+        enable: "ブックを開きました。",
+        disable: null
+      },
+      page: {
+        enable: "ページを開きました。",
+        disable: null
+      },
+      publish: {
+        enable: "ブックを「公開中」に設定しました。",
+        disable: "ブックを「非公開」に設定しました。"
+      }
+    }
+  }
+  //  メッセージのショートカット。
+  static _messages = Util.indexOfHash(this.messages)
+
+  //  ショートカットからメッセージを探し、返す。
+  //  ID: メッセージの一意識別子。
+  //  attr: IDで指定したメッセージが属性を持つ場合、それを指定。
+  //    "enable", "disable" は true/false による簡易指定が可能。
+  static pick(id, attribute = true) {
+    let attr = attribute
+    if(true == attribute) attr  = "enable"
+    if(false == attribute) attr  = "disable"
+    let msg = this._messages[id]
+    return attr ? msg[attr] : ("string" == typeof msg ? msg : null)
+  }
+
+  //  メッセージの表示
+  //  arrow:
+  //    true: 表示更新時、上方向へアニメーション
+  //    false:  表示更新時、下方向へアニメーション
+  static add = (text, arrow = true, duration_time = 200) => {
+    let animation = arrow ?
+      [
+        [ {top: "0px"}, {top: "-1.2em"} ],
+        [ {top: "1.2em"}, {top: "0px"} ]
+      ] : 
+      [
+        [ {top: "0px"}, {top: "1.2em"} ],
+        [ {top: "-1.2em"}, {top: "0px"} ]
+      ]
+
+    let anime = message_line.animate(
+      animation[0]
+    , {
+      duration: duration_time
+    })
+    anime.addEventListener("finish", () => {
+      message_line.innerHTML = text
+      message.classList.remove("message--active")
+      let anime = message_line.animate(
+        animation[1]
+      , {
+        duration: duration_time
+      })
+      anime.addEventListener("finish", () => {
+        message.classList.add("message--active")
+      })
+    })
+  }
+
+  //  add と pick の混合。
+  static set = (id, attr = true, arrow = true, duration_time = 200) => {
+    let msg = this.pick(id, attr)
+    this.add(msg, arrow, duration_time)
+  }
+}
+
+export {Util, Message}

@@ -1,6 +1,6 @@
 import {Cell} from '../components/cell'
 import {Api} from '../logic/api'
-import {Util} from '../logic/util'
+import {Util, Message} from '../logic/util'
 
 class ToolLogic {
   static viewLarge = (e) => {
@@ -24,27 +24,50 @@ class ToolLogic {
     this.viewModeBind()
   }
   static viewModeBind = () => {
-    tool_view_large_checkbox.checked = _data.state.viewMode == "large"
-    tool_view_middle_checkbox.checked = _data.state.viewMode == "middle"
-    tool_view_small_checkbox.checked = _data.state.viewMode == "small"
-    tool_view_twoinone_checkbox.checked = _data.state.viewMode == "twoinone"
+    tool_view_large_checkbox.checked = false
+    tool_view_middle_checkbox.checked = false
+    tool_view_small_checkbox.checked = false
+    tool_view_twoinone_checkbox.checked = false
+
+    switch(_data.state.viewMode) {
+      case "large":
+        tool_view_large_checkbox.checked = true
+        Message.set("large")
+        break
+      case "middle":
+        tool_view_middle_checkbox.checked = true
+        Message.set("middle")
+        break
+      case "small":
+        tool_view_small_checkbox.checked = true
+        Message.set("small")
+        break
+      case "twoinone":
+        tool_view_twoinone_checkbox.checked = true
+        Message.set("twoinone")
+        break
+    }
   }
 
   static toggleTag = (e) => {
     _data.state.showTag = !_data.state.showTag
     _data.react.map.forceUpdate()
+    Message.set("tags", _data.state.showTag)
   }
   static toggleFullscreen = (e) => {
     _data.state.fullscreen = !_data.state.fullscreen
     _data.react.app.forceUpdate()
+    Message.set("fullscreen", _data.state.fullscreen)
   }
   static toggleSticker = (e) => {
     _data.state.showSticker = !_data.state.showSticker
     _data.react.map.forceUpdate()
+    Message.set("stickers", _data.state.showSticker)
   }
   static toggleThumbnail = (e) => {
     _data.state.showThumbnail = !_data.state.showThumbnail
     _data.react.map.forceUpdate()
+    Message.set("thumbnails", _data.state.showThumbnail)
   }
 
   //  選択トグルをすべて解除する
@@ -106,7 +129,7 @@ class ToolLogic {
     if(tool_toggle_design_checkbox.checked) mode = "selection--design"
     if(tool_toggle_sticker_checkbox.checked) mode = "selection--sticker"
     _data.state.selectionMode = mode
-    _data.react.map.forceUpdate()
+    _data.react.map.forceUpdate(this.messageWithSelectModeBind)
     _data.react.layout_top.forceUpdate()
     _data.react.layout_right.forceUpdate()
 
@@ -149,6 +172,41 @@ class ToolLogic {
       }
     }
   }
+  //  選択モードを有効にした際に出すメッセージ。
+  static messageWithSelectModeBind = () => {
+    switch(_data.state.selectionMode) {
+      case "selection--cells":
+        Message.set("selectionCells")
+        break
+      case "selection--areas":
+        Message.set("selectionAreas")
+        break
+      case "selection--edit":
+        Message.set("selectionEdit")
+        break
+      case "selection--erase":
+        Message.set("selectionErase")
+        break
+      case "selection--swap":
+        Message.set("selectionSwap")
+        break
+      case "selection--copy":
+        Message.set("selectionCopy")
+        break
+      case "selection--paste":
+        Message.set("selectionPaste")
+        break
+      case "selection--twoinone":
+        Message.set("selectionTwoinone")
+        break
+      case "selection--design":
+        Message.set("selectionDesign")
+        break
+      case "selection--sticker":
+        Message.set("selectionSticker")
+        break
+    }
+  }
 
   //  入れ替え。現在は「選択対象が２つ」の時のみ機能。
   //  入替が成立した際は true, 不成立だった場合は false を返す。
@@ -156,6 +214,7 @@ class ToolLogic {
     let cells = [...document.getElementsByClassName("cell selected")]
     if(2 == cells.length) {
       ToolLogic._swap(cells[0].id, cells[1].id, subKeys)
+      Message.set("swapsCell")
       return true
     }
     let areas = [...document.getElementsByClassName("area selected")]
@@ -165,6 +224,7 @@ class ToolLogic {
       Cell.cell_ids.split("").forEach((c) => {
         ToolLogic._swap(`${left_cell_id_base}${c}`, `${right_cell_id_base}${c}`, subKeys)
       })
+      Message.set("swapsArea")
       return true
     }
     return false
@@ -209,6 +269,7 @@ class ToolLogic {
     areas = Util.selectedAreas().forEach((a) => {
       Object.keys(_data[a.id].cells).forEach((c) => { ToolLogic.eraseCell(c, subKeys) })
     })
+    Message.set("eraseWithSelected")
   }
   static eraseCell = (cell_id, subKeys = {ctrlKey: false, shiftKey: false, altKey: false}) => {
     let isPlain = !Object.values(subKeys).find((k) => {return k})
@@ -240,6 +301,7 @@ class ToolLogic {
     let json = {}
     cell_ids.forEach((k) => { json[k] = _data[k] })
     navigator.clipboard.writeText(JSON.stringify(json))
+    Message.add(`${Message.pick("copies")} （${cell_ids.length}件）`)
   }
 
   //  仮実装。保存する。
@@ -256,6 +318,7 @@ class ToolLogic {
     _data.state.currentLeftCell = left_cell_id
     _data.state.currentRightCell = right_cell_id
     _data.react.map.refresh()
+    Message.set("twoinoneSelect", "determination")
     return true
   }
 
@@ -334,6 +397,7 @@ class ToolLogic {
         palette_sticker_url_input.focus()
         palette_sticker_url_input.value = ""
         palette_sticker_url_input.style.width = null
+        Message.set("paletteStickers")
       }
     )
   }
@@ -344,6 +408,7 @@ class ToolLogic {
     _data.react.palette_sheet.setState({enable: true},
       () => {
         _data.state.paletteTarget = e.target.id
+        Message.set("paletteStickerMenu")
       }
     )
   }
@@ -354,6 +419,7 @@ class ToolLogic {
     _data.react.palette_sheet.setState({enable: true},
       () => {
         _data.state.paletteTarget = e.target.closest(".editor").id
+        Message.set("paletteDesign")
       }
     )
   }
@@ -413,8 +479,10 @@ class ToolLogic {
       })
     })
   }
+  //  ブックの公開／非公開
   static publish = (json) => {
     _data.authorization.is_public = !_data.authorization.is_public
+    Message.set("publish", _data.authorization.is_public)
   }
 
   static login = () => {
@@ -428,6 +496,7 @@ class ToolLogic {
   static union = () => {
     _data.state.paletteUnion = true
     _data.react.palette_sheet.setState({enable: true})
+    Message.set("paletteUnion")
   }
 
   //  ブックパレットを表示する
@@ -435,6 +504,7 @@ class ToolLogic {
     Api.loadUserProperty()
     _data.state.paletteBook = true
     _data.react.palette_sheet.setState({enable: true})
+    Message.set("paletteBooks")
   }
 
   static bookModeBind = (e) => {

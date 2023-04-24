@@ -25,7 +25,7 @@ class Api {
       let json = JSON.parse(data.data)
       window.data.book = json.book
       window.data.app_info = json.app_info
-      _data = dataRefresh()
+      _data = Util.indexOfHash()
     })
     .catch(() => {
       location.href = "/404"
@@ -45,7 +45,7 @@ class Api {
       //  ページを読み直す＝undo履歴をリセットする
       _undo.length = 0
       __undo.length = 0
-      _data = dataRefresh()
+      _data = Util.indexOfHash()
     })
     .catch(() => {
       location.href = "/404"
@@ -72,7 +72,7 @@ class Api {
         }
       })
       window.data.user = userData
-      _data = dataRefresh()
+      _data = Util.indexOfHash()
     })
     .catch(() => {
     })

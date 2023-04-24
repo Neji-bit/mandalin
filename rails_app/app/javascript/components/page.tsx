@@ -1,5 +1,5 @@
 import React from 'react'
-import {Util} from '../logic/util'
+import {Util, Message} from '../logic/util'
 import {Editor} from './cell_editor'
 import {Api} from '../logic/api'
 
@@ -32,8 +32,9 @@ class Page extends React.Component {
         _data.react.layout_right.forceUpdate()
         Api.loadPage(Util.urlParams().book, _data.state.currentPage.match(/.$/),
           () => {
-            _data = dataRefresh()
+            _data = Util.indexOfHash()
             _data.react.map.refresh()
+            Message.set("page")
           }
         )
       }
