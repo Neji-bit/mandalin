@@ -13,3 +13,7 @@ https://mandalin.herokuapp.com/
 興味のある方は、ぜひ私 Neji.bit にご連絡ください。
 
 Email: neji.bit+mandalin@gmail.com
+
+# マニュアル
+https://docs.google.com/document/d/1X6SLUv3iQBeVHlmvraH450YKd0IJBR9lIL9bwU-pstY/edit#
+
